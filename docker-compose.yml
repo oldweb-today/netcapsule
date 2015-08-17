@@ -1,0 +1,15 @@
+pywb:
+    build: ./pywb
+    restart: always
+
+
+app:
+    build: ./app
+    restart: always
+
+    volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+        - ./app/browser:/browser
+
+    ports:
+        - 9020:9020

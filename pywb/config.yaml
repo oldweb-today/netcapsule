@@ -1,0 +1,22 @@
+collections:
+    web:
+        index_paths: 'http://web.archive.org/cdx/search/cdx'
+        archive_prefix: 'http://web.archive.org/'
+        wb_handler_class: !!python/name:archivereplayview.ReplayHandler
+
+buffer_response: true
+urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
+
+enable_cdx_api: true
+framed_replay: inverse
+
+enable_http_proxy: true
+
+redir_to_exact: false
+
+proxy_options:
+    enable_https_proxy: true
+    use_default_coll: 'web'
+    cookie_resolver: ip
+    use_client_rewrite: false
+    use_banner: true

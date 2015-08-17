@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Memoframe Replay</title>
+<script>
+var container_id = "{{ id }}";
+</script>
+<style>
+html, body
+{
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  border: 0px;
+  overflow: hidden;
+}
+
+iframe
+{
+  width: 100%;
+  height: 100%
+}
+
+.header
+{
+  text-align: center;
+  font-size: 14px;
+  padding: 8px;
+  height: 40px;
+}
+
+</style>
+</head>
+<body>
+<div class="header">
+Date:
+<input type="text" value="2015"></input>
+<input type="submit" value="Update"></input>
+</div>
+<iframe src="http://{{ host }}/vnc_auto.html?password=secret" seamless="seamless" frameborder="0"></iframe>
+<script>
+window.frames[0].focus();
+</script>
+</body>
+</html>
