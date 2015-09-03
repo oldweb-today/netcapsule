@@ -10,6 +10,14 @@ sudo -E -i -u seluser \
   DISPLAY=$DISPLAY \
   xvfb-run --server-args="$DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR" \
   java -jar /opt/selenium/selenium-server-standalone.jar ${JAVA_OPTS} &
+  
+
+IP=$(head -n 1 /etc/hosts | cut -f 1)
+
+echo "$IP"
+echo "$URL"
+echo "$TS"
+sudo -E -i -u seluser python /opt/bin/app.py "$IP" "$URL" "$TS" &
 NODE_PID=$!
 
 trap shutdown SIGTERM SIGINT

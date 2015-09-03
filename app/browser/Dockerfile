@@ -19,14 +19,18 @@ RUN git clone https://github.com/kanaka/noVNC.git /novnc
 
 RUN git clone https://github.com/kanaka/websockify.git /novnc/utils/websockify
 
-#ADD run.sh /
+WORKDIR /opt/bin/
 
-#RUN chmod +x /run.sh
+ADD requirements.txt /opt/bin/
 
+RUN pip install -U -r requirements.txt
+
+ENV URL ''
+ENV TS ''
+
+COPY app.py /opt/bin/app.py
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
-
-#USER seluser
 
 EXPOSE 6080
 
