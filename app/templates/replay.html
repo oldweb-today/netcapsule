@@ -37,9 +37,14 @@ Date:
 <input type="text" value="{{ ts }}"></input>
 <input type="submit" value="Update"></input>
 </div>
-<iframe src="http://{{ host }}/vnc_auto.html?password=secret" seamless="seamless" frameborder="0"></iframe>
+<iframe seamless="seamless" frameborder="0"></iframe>
 <script>
 window.frames[0].focus();
+
+window.setTimeout(function() {
+    document.querySelector("iframe").src = "http://{{ host }}/vnc_auto.html?password=secret";
+}, 1000);
+
 </script>
 </body>
 </html>

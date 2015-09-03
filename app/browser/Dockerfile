@@ -10,6 +10,7 @@ RUN apt-get update -y \
     python2.7-dev \
     python-openssl \
     libssl-dev libffi-dev \
+    net-tools \
   && easy_install --upgrade pip \
   && rm -rf /var/lib/apt/lists/*
 

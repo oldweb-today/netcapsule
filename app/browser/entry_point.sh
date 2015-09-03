@@ -1,6 +1,10 @@
 #!/bin/bash
 export GEOMETRY="$SCREEN_WIDTH""x""$SCREEN_HEIGHT""x""$SCREEN_DEPTH"
 
+echo "LAUNCH NOVNC"
+bash /novnc/utils/launch.sh --vnc localhost:5900 &
+echo "END LAUNCH NOVNC"
+
 function shutdown {
   kill -s SIGTERM $NODE_PID
   wait $NODE_PID
@@ -34,7 +38,5 @@ done
 fluxbox -display $DISPLAY &
 
 x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
-
-bash /novnc/utils/launch.sh --vnc localhost:5900 &
 
 wait $NODE_PID
