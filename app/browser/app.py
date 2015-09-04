@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.proxy import *
 
-from bottle import route, default_app, run
+from bottle import route, default_app, run, request
 
 import requests
 
@@ -12,6 +12,7 @@ import sys
 PYWB_HOST_PORT = 'memoframe_pywb_1:8080'
 
 curr_ip = '127.0.0.1'
+driver = None
 
 def make_proxy(proxy_host):
     proxy = Proxy({
@@ -30,6 +31,8 @@ def load_browser(url='', ts=''):
 
     firefox_profile = webdriver.FirefoxProfile()
     firefox_profile.accept_untrusted_certs = True
+
+    global driver
 
     retries = 0
     while True:
@@ -82,7 +85,14 @@ def set_timestamp(timestamp):
 @route('/set')
 def route_set_ts():
     ts = request.query.get('ts')
-    return set_timestamp(ts)
+    res = set_timestamp(ts)
+
+    global driver
+    if driver and res.get('success'):
+        try:
+            driver.refresh()
+        except Exception as e:
+            print(e)
 
 
 def do_init():
@@ -106,5 +116,5 @@ application = do_init()
 
 
 if __name__ == "__main__":
-    run(host='0.0.0.0', port='9000')
+    run(host='0.0.0.0', port='6082')
 

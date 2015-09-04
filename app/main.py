@@ -5,10 +5,12 @@ from bottle import route, run, template, request, default_app, jinja2_view
 
 import os
 import datetime
+import re
 
 BUILD_PATH = '/browser'
 MEMOFRAME_TAG = 'mf_browser'
 VNC_PORT = 6080
+CMD_PORT = 6082
 VERSION='1.18'
 PYWB_HOST = 'memoframe_pywb_1'
 
@@ -32,22 +34,26 @@ class DockerController(object):
 
     def new_container(self, env=None):
         container = self.cli.create_container(image=MEMOFRAME_TAG,
-                                              ports=[VNC_PORT],
+                                              ports=[VNC_PORT, CMD_PORT],
                                               environment=env)
         id_ = container.get('Id')
 
         res = self.cli.start(container=id_,
-                             port_bindings={VNC_PORT: None},
+                             port_bindings={VNC_PORT: None, CMD_PORT: None},
                              links={PYWB_HOST: PYWB_HOST})
 
         vnc_port = self.cli.port(id_, VNC_PORT)
         vnc_port = vnc_port[0]['HostPort']
+
+        cmd_port = self.cli.port(id_, CMD_PORT)
+        cmd_port = cmd_port[0]['HostPort']
 
         info = self.cli.inspect_container(id_)
         ip = info['NetworkSettings']['IPAddress']
 
         cont_info = {'id': id_,
                      'vnc_port': vnc_port,
+                     'cmd_port': cmd_port,
                      'cont_ip': ip}
 
         self.all_containers[id_] = cont_info
@@ -73,11 +79,15 @@ def route_load_url(url='', ts=''):
 
     host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]
-    host = host + ':' + results['vnc_port']
-    if not ts:
-        ts = str(datetime.datetime.utcnow()).split('.')[0]
 
-    return {'host': host,
+    vnc_host = host + ':' + results['vnc_port']
+    cmd_host = host + ':' + results['cmd_port']
+
+    if not ts:
+        ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
+
+    return {'vnc_host': vnc_host,
+            'cmd_host': cmd_host,
             'ts': ts,
             'id': results['id']}
 

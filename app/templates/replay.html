@@ -2,6 +2,7 @@
 <html>
 <head>
 <title>Memoframe Replay</title>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script>
 var container_id = "{{ id }}";
 </script>
@@ -34,17 +35,29 @@ iframe
 <body>
 <div class="header">
 Date:
-<input type="text" value="{{ ts }}"></input>
-<input type="submit" value="Update"></input>
+<input id="ts" type="text" value="{{ ts }}"></input>
+<input id="update" type="button" value="Update"></input>
 </div>
 <iframe seamless="seamless" frameborder="0"></iframe>
 <script>
-window.frames[0].focus();
 
-window.setTimeout(function() {
-    document.querySelector("iframe").src = "http://{{ host }}/vnc_auto.html?password=secret";
-}, 1000);
+$(function() {
+    window.frames[0].focus();
 
+    window.setTimeout(function() {
+        document.querySelector("iframe").src = "http://{{ vnc_host }}/vnc_auto.html?password=secret";
+    }, 1000);
+
+    $("#update").click(function() {
+        var ts = $("#ts").val();
+
+        var url = "http://{{ cmd_host }}/set?ts=" + ts;
+
+        $.getJSON(url, function() {
+            console.log("Updated Date to " + ts);
+        });
+    });
+});
 </script>
 </body>
 </html>
