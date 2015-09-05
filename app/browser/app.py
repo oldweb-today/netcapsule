@@ -94,6 +94,8 @@ def route_set_ts():
         except Exception as e:
             print(e)
 
+    return res
+
 
 def do_init():
     url = ''
@@ -110,7 +112,6 @@ def do_init():
 
     load_browser(url, ts)
     return default_app()
-
 
 application = do_init()
 

@@ -11,6 +11,7 @@ RUN apt-get update -y \
     python-openssl \
     libssl-dev libffi-dev \
     net-tools \
+    xfonts-base fonts-arphic-bkai00mp fonts-arphic-bsmi00lp fonts-arphic-gbsn00lp fonts-arphic-gkai00mp fonts-arphic-ukai fonts-farsiweb fonts-nafees fonts-sil-abyssinica fonts-sil-ezra fonts-sil-padauk fonts-unfonts-extra fonts-unfonts-core ttf-indic-fonts fonts-thai-tlwg fonts-lklug-sinhala \
   && easy_install --upgrade pip \
   && rm -rf /var/lib/apt/lists/*
 
