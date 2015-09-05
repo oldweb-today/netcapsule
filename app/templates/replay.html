@@ -28,13 +28,18 @@ iframe
   font-size: 14px;
   padding: 8px;
   height: 40px;
+  font-size: 30px;
+}
+
+.header * {
+  font-size: 24px;
 }
 
 </style>
 </head>
 <body>
 <div class="header">
-Date:
+Date/Time:
 <input id="ts" type="text" value="{{ ts }}"></input>
 <input id="update" type="button" value="Update"></input>
 </div>
@@ -57,6 +62,10 @@ $(function() {
             console.log("Updated Date to " + ts);
         });
     });
+
+    window.setInterval(function() {
+        $.getJSON("/ping/" + container_id, function() { console.log("pinged"); });
+    }, 30000);
 });
 </script>
 </body>

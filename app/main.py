@@ -5,7 +5,12 @@ from bottle import route, run, template, request, default_app, jinja2_view
 
 import os
 import datetime
+import time
 import re
+import atexit
+
+from threading import Thread
+
 
 BUILD_PATH = '/browser'
 MEMOFRAME_TAG = 'mf_browser'
@@ -13,6 +18,8 @@ VNC_PORT = 6080
 CMD_PORT = 6082
 VERSION='1.18'
 PYWB_HOST = 'memoframe_pywb_1'
+
+EXPIRE_DELTA = datetime.timedelta(seconds=300)
 
 
 #=============================================================================
@@ -54,7 +61,9 @@ class DockerController(object):
         cont_info = {'id': id_,
                      'vnc_port': vnc_port,
                      'cmd_port': cmd_port,
-                     'cont_ip': ip}
+                     'cont_ip': ip,
+                     'last_ts': datetime.datetime.utcnow()
+                    }
 
         self.all_containers[id_] = cont_info
         return cont_info
@@ -64,15 +73,32 @@ class DockerController(object):
             self.cli.kill(id_)
             self.cli.remove_container(id_)
 
-    def find_cont(self, id_):
-        return self.all_containers.get(id_)
+    def heartbeat(self, id_):
+        cont_info = self.all_containers.get(id_)
+        if not cont_info:
+            return
+
+        print('UPDATED ' + id_)
+        cont_info['last_ts'] = datetime.datetime.utcnow()
+
+    def check_abandoned(self):
+        print('CHECKING ALL')
+        print(self.all_containers)
+        now = datetime.datetime.utcnow()
+        for id_ in self.all_containers.keys():
+            cont_info = self.all_containers[id_]
+            print('CHECKING ' + cont_info['id'] + ' ' + cont_info['cont_ip'])
+            if (now - cont_info['last_ts']) > EXPIRE_DELTA:
+                print('REMOVING ' + cont_info['id'] + ' ' + cont_info['cont_ip'])
+                self.cli.remove_container(id_, force=True)
+                del self.all_containers[id_]
+
+    def remove_all(self):
+        for id_ in self.all_containers.keys():
+            self.cli.remove_container(id_, force=True)
 
 
-#@route(['/load', '/load/<ts:re:[0-9-]+>/<url:re:.*>', '/load/<url:re:.*>'])
-#def test(url='', ts=''):
-#    return {'url': url, 'ts': ts}
-
-@route(['/load', '/load/<ts:re:[0-9-]+>/<url:re:.*>', '/load/<url:re:.*>'])
+@route(['/web', '/web/<ts:re:[0-9-]+>/<url:re:.*>', '/web/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(url='', ts=''):
     results = dc.new_container({'URL': url, 'TS': ts})
@@ -91,6 +117,13 @@ def route_load_url(url='', ts=''):
             'ts': ts,
             'id': results['id']}
 
+@route(['/ping/<cid>'])
+def ping(cid):
+    dc.heartbeat(cid)
+    return {}
+
+def onexit():
+    dc.remove_all()
 
 dc = DockerController()
 
@@ -98,5 +131,16 @@ dc.build_container()
 
 application = default_app()
 
-#run(host='0.0.0.0', port='9000')
+def check_abandonded():
+    while True:
+        dc.check_abandoned()
+        time.sleep(30)
+
+t = Thread(target=check_abandonded)
+t.daemon = True
+t.start()
+
+atexit.register(onexit)
+
+run(host='0.0.0.0', port='9020')
 
