@@ -40,15 +40,16 @@ class LiveDirectLoader(object):
             mem_date_time = response.headers.get('memento-datetime')
 
             if (response.status_code >= 400 and not mem_date_time):
-                if response.status_code == 403:
+                # assume temp failure, can try again
+                if response.status_code == 503:
+                    return None
+
+                elif response.status_code == 403 or response.status_code >= 500:
                     # don't try again
-                    skip_hosts.append(archive_host)
+                    skip_hosts.append(self.archive_prefix)
                     return None
 
-                elif response.status_code >= 500:
-                    return None
-
-                # try again
+                 # try again
                 continue
 
             # success
@@ -57,6 +58,9 @@ class LiveDirectLoader(object):
         return response
 
     def __call__(self, cdx, skip_hosts, cdx_loader, wbrequest):
+        if self.archive_prefix in skip_hosts:
+            raise Exception('Content Not Available')
+
         url = cdx['url']
         full_url = self.archive_prefix + wbrequest.coll + '/' + cdx['timestamp'] + 'id_/' + url
         try_urls = [full_url]
@@ -67,6 +71,7 @@ class LiveDirectLoader(object):
             response = None
 
         if response is None:
+            print(skip_hosts)
             raise CaptureException('Content Could Not Be Loaded')
 
         statusline = str(response.status_code) + ' ' + response.reason
