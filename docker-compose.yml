@@ -1,6 +1,12 @@
 pywb:
     build: ./pywb
     restart: always
+    links:
+        - redis
+
+redis:
+    image: redis:latest
+    restart: always
 
 
 app:

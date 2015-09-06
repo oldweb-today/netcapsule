@@ -13,6 +13,6 @@ ADD . /app/
 
 VOLUME /browser
 
-#CMD ["uwsgi", "uwsgi.ini"]
+CMD ["uwsgi", "uwsgi.ini"]
 
-CMD ["python", "main.py"]
+#CMD ["python", "main.py"]

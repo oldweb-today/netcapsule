@@ -1,6 +1,6 @@
 docker-py
-selenium
 bottle
 gevent
 uwsgi
 jinja2
+redis

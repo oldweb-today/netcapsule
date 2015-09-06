@@ -32,6 +32,16 @@ def load_browser(url='', ts=''):
     firefox_profile = webdriver.FirefoxProfile()
     firefox_profile.accept_untrusted_certs = True
 
+    if ts:
+        set_timestamp(ts)
+
+    if url:
+        if '://' not in url:
+            url = 'http://' + url
+
+        firefox_profile.set_preference('browser.startup.homepage', url)
+        firefox_profile.set_preference('browser.startup.page', '1')
+
     global driver
 
     retries = 0
@@ -51,19 +61,16 @@ def load_browser(url='', ts=''):
             if retries >= 10:
                 break
 
-    if ts:
-        set_timestamp(ts)
-
-    if url:
-        if '://' not in url:
-            url = 'http://' + url
+#    if url:
+#        if '://' not in url:
+#            url = 'http://' + url
 
         #driver.get(url)
-        try:
-            driver.set_script_timeout(1)
-            driver.execute_async_script('window.location.href = "{0}"'.format(url))
-        except Exception:
-            pass
+#        try:
+#            driver.set_script_timeout(1)
+#            driver.execute_async_script('window.location.href = "{0}"'.format(url))
+#        except Exception:
+#            pass
 
 
 def set_timestamp(timestamp):

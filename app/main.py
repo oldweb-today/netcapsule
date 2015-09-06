@@ -8,8 +8,10 @@ import datetime
 import time
 import re
 import atexit
+import redis
 
-from threading import Thread
+from uwsgidecorators import timer
+import uwsgi
 
 
 BUILD_PATH = '/browser'
@@ -18,14 +20,16 @@ VNC_PORT = 6080
 CMD_PORT = 6082
 VERSION='1.18'
 PYWB_HOST = 'memoframe_pywb_1'
+REDIS_HOST = 'memoframe_redis_1'
 
-EXPIRE_DELTA = datetime.timedelta(seconds=300)
+EXPIRE_TIME = 120
+CHECK_TIME = 10
 
 
 #=============================================================================
 class DockerController(object):
     def __init__(self):
-        self.all_containers = {}
+        self.redis = redis.StrictRedis(host=REDIS_HOST)
 
         if os.path.exists('/var/run/docker.sock'):
             self.cli = Client(base_url='unix://var/run/docker.sock',
@@ -62,40 +66,38 @@ class DockerController(object):
                      'vnc_port': vnc_port,
                      'cmd_port': cmd_port,
                      'cont_ip': ip,
-                     'last_ts': datetime.datetime.utcnow()
                     }
 
-        self.all_containers[id_] = cont_info
+        self.redis.sadd('all_containers', id_)
+        self.redis.setex('c:' + id_, EXPIRE_TIME, 1)
+
         return cont_info
 
-    def remove_all(self):
-        for id_ in self.all_containers.iter_keys():
-            self.cli.kill(id_)
-            self.cli.remove_container(id_)
-
     def heartbeat(self, id_):
-        cont_info = self.all_containers.get(id_)
-        if not cont_info:
+        if not self.redis.sismember('all_containers', id_):
             return
 
         print('UPDATED ' + id_)
-        cont_info['last_ts'] = datetime.datetime.utcnow()
+        self.redis.setex('c:' + id_, EXPIRE_TIME, 1)
 
     def check_abandoned(self):
-        print('CHECKING ALL')
-        print(self.all_containers)
-        now = datetime.datetime.utcnow()
-        for id_ in self.all_containers.keys():
-            cont_info = self.all_containers[id_]
-            print('CHECKING ' + cont_info['id'] + ' ' + cont_info['cont_ip'])
-            if (now - cont_info['last_ts']) > EXPIRE_DELTA:
-                print('REMOVING ' + cont_info['id'] + ' ' + cont_info['cont_ip'])
+        all_containers = self.redis.smembers('all_containers')
+        print('CHECK ABANDONDED')
+        print(all_containers)
+
+        for id_ in all_containers:
+            res = self.redis.get('c:' + id_)
+            if res != '1':
+                print('REMOVING ' + id_)
                 self.cli.remove_container(id_, force=True)
-                del self.all_containers[id_]
+                self.redis.srem('all_containers', id_)
 
     def remove_all(self):
-        for id_ in self.all_containers.keys():
+        all_containers = self.redis.smembers('all_containers')
+        for id_ in all_containers:
             self.cli.remove_container(id_, force=True)
+            self.redis.srem('all_containers', id_)
+            self.redis.delete('c:' + id_)
 
 
 @route(['/web', '/web/<ts:re:[0-9-]+>/<url:re:.*>', '/web/<url:re:.*>'])
@@ -131,16 +133,13 @@ dc.build_container()
 
 application = default_app()
 
-def check_abandonded():
-    while True:
-        dc.check_abandoned()
-        time.sleep(30)
+@timer(CHECK_TIME, target='mule')
+def check_abandonded(signum):
+    #while True:
+    dc.check_abandoned()
 
-t = Thread(target=check_abandonded)
-t.daemon = True
-t.start()
 
-atexit.register(onexit)
+uwsgi.atexit = onexit
 
-run(host='0.0.0.0', port='9020')
+#run(host='0.0.0.0', port='9020')
 
