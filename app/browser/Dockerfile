@@ -30,6 +30,8 @@ RUN pip install -U -r requirements.txt
 ENV URL ''
 ENV TS ''
 
+COPY vnc_auto.html /novnc/vnc_auto.html
+
 COPY app.py /opt/bin/app.py
 COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh

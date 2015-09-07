@@ -75,13 +75,19 @@ class DockerController(object):
             res = self.redis.get('c:' + short_id)
             if not res:
                 print('REMOVING ' + short_id)
-                self.cli.remove_container(short_id, force=True)
+                try:
+                    self.cli.remove_container(short_id, force=True)
+                except Exception as e:
+                    print(e)
                 self.redis.srem('all_containers', short_id)
 
     def remove_all(self):
         all_containers = self.redis.smembers('all_containers')
         for short_id in all_containers:
-            self.cli.remove_container(short_id, force=True)
+            try:
+                self.cli.remove_container(short_id, force=True)
+            except Exception as e:
+                print(e)
             self.redis.srem('all_containers', short_id)
             self.redis.delete('c:' + short_id)
 
