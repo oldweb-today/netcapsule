@@ -21,7 +21,9 @@ IP=$(head -n 1 /etc/hosts | cut -f 1)
 echo "$IP"
 echo "$URL"
 echo "$TS"
+
 sudo -E -i -u seluser python /opt/bin/app.py "$IP" "$URL" "$TS" &
+
 NODE_PID=$!
 
 trap shutdown SIGTERM SIGINT

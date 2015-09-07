@@ -8,7 +8,6 @@ redis:
     image: redis:latest
     restart: always
 
-
 app:
     build: ./app
     restart: always

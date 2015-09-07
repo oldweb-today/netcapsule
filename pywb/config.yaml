@@ -19,4 +19,4 @@ proxy_options:
     use_default_coll: 'web'
     cookie_resolver: ip
     use_client_rewrite: false
-    use_banner: false
+    use_banner: true

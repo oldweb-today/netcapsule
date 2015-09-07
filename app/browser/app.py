@@ -1,18 +1,34 @@
 from selenium import webdriver
 from selenium.webdriver.common.proxy import *
 
-from bottle import route, default_app, run, request
+from bottle import route, default_app, run, request, response
 
 import requests
+import redis
+import logging
 
 import time
 import sys
-
+import os
 
 PYWB_HOST_PORT = 'memoframe_pywb_1:8080'
 
+REDIS_HOST = 'memoframe_redis_1'
+
 curr_ip = '127.0.0.1'
 driver = None
+
+redis_client = redis.StrictRedis(REDIS_HOST)
+
+HOST = os.environ['HOSTNAME']
+
+EXPIRE_TIME = 300
+
+
+logging.basicConfig(format='%(asctime)s: [%(levelname)s]: %(message)s',
+                    level=logging.DEBUG)
+
+
 
 def make_proxy(proxy_host):
     proxy = Proxy({
@@ -39,8 +55,8 @@ def load_browser(url='', ts=''):
         if '://' not in url:
             url = 'http://' + url
 
-        firefox_profile.set_preference('browser.startup.homepage', url)
-        firefox_profile.set_preference('browser.startup.page', '1')
+        #firefox_profile.set_preference('browser.startup.homepage', url)
+        #firefox_profile.set_preference('browser.startup.page', '1')
 
     global driver
 
@@ -51,26 +67,23 @@ def load_browser(url='', ts=''):
             #driver = webdriver.Remote(command_executor=sel_url, browser_profile=firefox_profile, desired_capabilities=caps)
             driver = webdriver.Firefox(firefox_profile=firefox_profile, capabilities=caps)
             driver.maximize_window()
-            print('FF STARTED')
+            logging.debug('FF STARTED')
             break
         except Exception as e:
             retries = retries + 1
-            print(e)
-            print('Retrying ', retries)
+            logging.debug(e)
+            logging.debug('Retrying ' + str(retries))
             time.sleep(5)
             if retries >= 10:
                 break
 
-#    if url:
-#        if '://' not in url:
-#            url = 'http://' + url
-
-        #driver.get(url)
-#        try:
-#            driver.set_script_timeout(1)
-#            driver.execute_async_script('window.location.href = "{0}"'.format(url))
-#        except Exception:
-#            pass
+    if url:
+        driver.get(url)
+        try:
+            driver.set_script_timeout(1)
+            driver.execute_async_script('window.location.href = "{0}"'.format(url))
+        except Exception:
+            pass
 
 
 def set_timestamp(timestamp):
@@ -99,9 +112,43 @@ def route_set_ts():
         try:
             driver.refresh()
         except Exception as e:
-            print(e)
+            logging.debug(e)
 
     return res
+
+@route(['/ping'])
+def ping():
+    global redis_client
+
+    if not redis_client.sismember('all_containers', HOST):
+        return
+
+    redis_client.expire('c:' + HOST, EXPIRE_TIME)
+
+    global driver
+
+    ts = None
+    sec = None
+    url = None
+    try:
+        url = driver.current_url
+    except Exception as e:
+        logging.debug(e)
+
+    try:
+        driver.set_script_timeout(5)
+        sec = driver.execute_script('return window.__wbinfo.sec;')
+    except Exception as e:
+        logging.debug(e)
+
+    try:
+        driver.set_script_timeout(5)
+        ts = driver.execute_script('return window.__wbinfo.ts;')
+    except Exception as e:
+        logging.debug(e)
+
+    return {'url': url, 'ts': ts, 'sec': sec}
+
 
 
 def do_init():
@@ -121,6 +168,12 @@ def do_init():
     return default_app()
 
 application = do_init()
+
+@application.hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
+    response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
+    response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
 
 
 if __name__ == "__main__":

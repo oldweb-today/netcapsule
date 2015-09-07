@@ -35,5 +35,4 @@ COPY entry_point.sh /opt/bin/entry_point.sh
 RUN chmod +x /opt/bin/entry_point.sh
 
 EXPOSE 6080
-
-#CMD /run.sh
+EXPOSE 6082

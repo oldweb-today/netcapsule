@@ -3,9 +3,6 @@
 <head>
 <title>Memoframe Replay</title>
 <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
-<script>
-var container_id = "{{ id }}";
-</script>
 <style>
 html, body
 {
@@ -18,21 +15,20 @@ html, body
 
 iframe
 {
+  position: absolute;
   width: 100%;
-  height: 100%
+  height: 100%;
 }
 
 .header
 {
   text-align: center;
-  font-size: 14px;
   padding: 8px;
-  height: 40px;
-  font-size: 30px;
+  font-size: 20px;
 }
 
 .header * {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 </style>
@@ -43,11 +39,17 @@ Date/Time:
 <input id="ts" type="text" value="{{ ts }}"></input>
 <input id="update" type="button" value="Update"></input>
 </div>
+<div id="currLabel" class="header">
+Current Page: <b>{{url}}</b>
+</div>
 <iframe seamless="seamless" frameborder="0"></iframe>
 <script>
 
 $(function() {
     window.frames[0].focus();
+
+    var coll = "web";
+    var url = "{{ url }}";
 
     window.setTimeout(function() {
         document.querySelector("iframe").src = "http://{{ vnc_host }}/vnc_auto.html?password=secret";
@@ -60,12 +62,29 @@ $(function() {
 
         $.getJSON(url, function() {
             console.log("Updated Date to " + ts);
+            update_state();
         });
     });
 
-    window.setInterval(function() {
-        $.getJSON("/ping/" + container_id, function() { console.log("pinged"); });
-    }, 30000);
+    function update_state() {
+        var full_url = "/" + coll + "/" + $("#ts").val() + "/" + url;
+
+        window.history.replaceState({}, "", full_url);
+    }
+
+    function ping() {
+        $.getJSON("http://{{ cmd_host }}/ping", function(data) {
+            url = data.url;
+            var sec = data.sec;
+
+            $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+            
+            update_state();
+        });
+    }
+
+    window.setInterval(ping, 5000);
+    ping();
 });
 </script>
 </body>

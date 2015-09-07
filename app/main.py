@@ -62,67 +62,48 @@ class DockerController(object):
         info = self.cli.inspect_container(id_)
         ip = info['NetworkSettings']['IPAddress']
 
-        cont_info = {'id': id_,
-                     'vnc_port': vnc_port,
-                     'cmd_port': cmd_port,
-                     'cont_ip': ip,
-                    }
+        short_id = id_[:12]
+        self.redis.sadd('all_containers', short_id)
+        self.redis.setex('c:' + short_id, EXPIRE_TIME, 1)
 
-        self.redis.sadd('all_containers', id_)
-        self.redis.setex('c:' + id_, EXPIRE_TIME, 1)
-
-        return cont_info
-
-    def heartbeat(self, id_):
-        if not self.redis.sismember('all_containers', id_):
-            return
-
-        print('UPDATED ' + id_)
-        self.redis.setex('c:' + id_, EXPIRE_TIME, 1)
+        return vnc_port, cmd_port
 
     def check_abandoned(self):
         all_containers = self.redis.smembers('all_containers')
-        print('CHECK ABANDONDED')
-        print(all_containers)
 
-        for id_ in all_containers:
-            res = self.redis.get('c:' + id_)
-            if res != '1':
-                print('REMOVING ' + id_)
-                self.cli.remove_container(id_, force=True)
-                self.redis.srem('all_containers', id_)
+        for short_id in all_containers:
+            res = self.redis.get('c:' + short_id)
+            if not res:
+                print('REMOVING ' + short_id)
+                self.cli.remove_container(short_id, force=True)
+                self.redis.srem('all_containers', short_id)
 
     def remove_all(self):
         all_containers = self.redis.smembers('all_containers')
-        for id_ in all_containers:
-            self.cli.remove_container(id_, force=True)
-            self.redis.srem('all_containers', id_)
-            self.redis.delete('c:' + id_)
+        for short_id in all_containers:
+            self.cli.remove_container(short_id, force=True)
+            self.redis.srem('all_containers', short_id)
+            self.redis.delete('c:' + short_id)
 
 
 @route(['/web', '/web/<ts:re:[0-9-]+>/<url:re:.*>', '/web/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(url='', ts=''):
-    results = dc.new_container({'URL': url, 'TS': ts})
+    vnc_port, cmd_port = dc.new_container({'URL': url, 'TS': ts})
 
     host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]
 
-    vnc_host = host + ':' + results['vnc_port']
-    cmd_host = host + ':' + results['cmd_port']
+    vnc_host = host + ':' + vnc_port
+    cmd_host = host + ':' + cmd_port
 
     if not ts:
         ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
 
     return {'vnc_host': vnc_host,
             'cmd_host': cmd_host,
-            'ts': ts,
-            'id': results['id']}
-
-@route(['/ping/<cid>'])
-def ping(cid):
-    dc.heartbeat(cid)
-    return {}
+            'url': url,
+            'ts': ts}
 
 def onexit():
     dc.remove_all()
