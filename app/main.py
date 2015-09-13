@@ -14,8 +14,8 @@ from uwsgidecorators import timer
 import uwsgi
 
 
-BUILD_PATH = '/browser'
-MEMOFRAME_TAG = 'mf_browser'
+BUILD_PATHS = {'/browser': 'mf_browser', '/netscape': 'mf_netscape'}
+
 VNC_PORT = 6080
 CMD_PORT = 6082
 VERSION='1.18'
@@ -41,10 +41,12 @@ class DockerController(object):
             self.cli = Client(**kwargs)
 
     def build_container(self):
-        response = self.cli.build(BUILD_PATH, tag=MEMOFRAME_TAG, rm=True)
+        for path, tag in BUILD_PATHS.iteritems():
+            print(path, tag)
+            response = self.cli.build(path, tag=tag, rm=True)
 
-    def new_container(self, env=None):
-        container = self.cli.create_container(image=MEMOFRAME_TAG,
+    def new_container(self, tag, env=None):
+        container = self.cli.create_container(image=tag,
                                               ports=[VNC_PORT, CMD_PORT],
                                               environment=env)
         id_ = container.get('Id')
@@ -92,10 +94,15 @@ class DockerController(object):
             self.redis.delete('c:' + short_id)
 
 
-@route(['/web', '/web/<ts:re:[0-9-]+>/<url:re:.*>', '/web/<url:re:.*>'])
+@route(['/<tag:re:(ff|ns)>/<ts:re:[0-9-]+>/<url:re:.*>', '/<tag:re:(ff|ns)>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
-def route_load_url(url='', ts=''):
-    vnc_port, cmd_port = dc.new_container({'URL': url, 'TS': ts})
+def route_load_url(tag='', url='', ts=''):
+    if tag == 'ns':
+        tag = 'mf_netscape'
+    else:
+        tag = 'mf_browser'
+
+    vnc_port, cmd_port = dc.new_container(tag, {'URL': url, 'TS': ts})
 
     host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]
@@ -116,7 +123,7 @@ def onexit():
 
 dc = DockerController()
 
-dc.build_container()
+#dc.build_container()
 
 application = default_app()
 

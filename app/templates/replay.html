@@ -10,15 +10,24 @@ html, body
   margin: 0px;
   padding: 0px;
   border: 0px;
-  overflow: hidden;
+  overflow: auto;
 }
 
 iframe
 {
-  position: absolute;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
+
+.frame_div {
+  position: absolute;
+  padding-top: 50px; 
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+  
 
 .header
 {
@@ -42,7 +51,7 @@ Date/Time:
 <div id="currLabel" class="header">
 Current Page: <b>{{url}}</b>
 </div>
-<iframe seamless="seamless" frameborder="0"></iframe>
+<iframe seamless="seamless" frameborder="0" scrolling="no"></iframe>
 <script>
 
 $(function() {
@@ -58,9 +67,9 @@ $(function() {
     $("#update").click(function() {
         var ts = $("#ts").val();
 
-        var url = "http://{{ cmd_host }}/set?ts=" + ts;
+        var cmd_url = "http://{{ cmd_host }}/set?ts=" + ts;
 
-        $.getJSON(url, function() {
+        $.getJSON(cmd_url, function() {
             console.log("Updated Date to " + ts);
             update_state();
         });
@@ -69,15 +78,19 @@ $(function() {
     function update_state() {
         var full_url = "/" + coll + "/" + $("#ts").val() + "/" + url;
 
-        window.history.replaceState({}, "", full_url);
+        //window.history.replaceState({}, "", full_url);
     }
 
     function ping() {
         $.getJSON("http://{{ cmd_host }}/ping", function(data) {
-            url = data.url;
+            if (data.url) {
+                url = data.url;
+            }
             var sec = data.sec;
 
-            $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+            if (sec) {
+                $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+            }
             
             update_state();
         });
