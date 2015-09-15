@@ -16,6 +16,9 @@ RUN bash /download/install.sh
 
 COPY preferences.js /download/preferences.js
 
+COPY flux-apps /home/browser/.fluxbox/apps
+RUN sudo chown browser:browser -R /home/browser/.fluxbox
+
 COPY run.sh /app/run.sh
 RUN sudo chmod a+x /app/run.sh
 

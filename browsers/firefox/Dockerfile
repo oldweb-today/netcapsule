@@ -3,7 +3,7 @@ FROM memoframe/base-browser
 ENV FF_VERSION 40.0.3
 
 RUN apt-get update && apt-get install -y \
-    libgtk2.0-0 libasound2 libdbus-glib-1-2 libnss3-tools gnome-icon-theme lxappearance
+    libgtk2.0-0 libasound2 libdbus-glib-1-2 libnss3-tools \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /download
@@ -17,6 +17,9 @@ USER browser
 #WORKDIR /home/browser/ffprofile
 
 COPY ./ffprofile/. /home/browser/ffprofile/
+
+COPY flux-apps /home/browser/.fluxbox/apps
+RUN sudo chown browser:browser -R /home/browser/.fluxbox
 
 COPY run.sh /app/run.sh
 

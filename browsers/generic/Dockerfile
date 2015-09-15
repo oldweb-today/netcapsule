@@ -5,7 +5,7 @@ ENV URL about:blank
 
 ENV SCREEN_WIDTH 1360
 ENV SCREEN_HEIGHT 1020
-ENV SCREEN_DEPTH 24
+ENV SCREEN_DEPTH 16
 ENV DISPLAY :99
 
 RUN apt-get -y update && \
@@ -47,7 +47,7 @@ RUN git clone https://github.com/kanaka/websockify.git /novnc/utils/websockify
 
 COPY vnc_auto.html /novnc/vnc_auto.html
 
-WORKDIR /app
+WORKDIR /app/
 
 ADD requirements.txt /app/
 

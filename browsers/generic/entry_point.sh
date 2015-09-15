@@ -44,7 +44,7 @@ done
 fluxbox -display $DISPLAY &
 
 # start vnc
-x11vnc -forever -usepw -shared -rfbport 5900 -display $DISPLAY &
+x11vnc -forever -ncache_cr -xdamage -usepw -shared -rfbport 5900 -display $DISPLAY &
 
 
 wait $NODE_PID

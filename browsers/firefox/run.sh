@@ -14,4 +14,4 @@ http_proxy="http://memoframe_pywb_1:8080" wget "http://pywb.proxy/pywb-ca.pem"
 
 certutil -A -n "PYWB" -t "TCu,Cuw,Tuw" -i ./pywb-ca.pem -d /home/browser/ffprofile
 
-/opt/firefox/firefox --profile /home/browser/ffprofile -setDefaultBrowser --new-window "$URL" -width 1320 -height 1020
+/opt/firefox/firefox --profile /home/browser/ffprofile -setDefaultBrowser --new-window "$URL" -width 1320 -height 960
