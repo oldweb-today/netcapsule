@@ -14,8 +14,6 @@ from uwsgidecorators import timer
 import uwsgi
 
 
-BUILD_PATHS = {'/browser': 'mf_browser', '/netscape': 'mf_netscape'}
-
 VNC_PORT = 6080
 CMD_PORT = 6082
 VERSION='1.18'
@@ -40,11 +38,6 @@ class DockerController(object):
             kwargs['version'] = VERSION
             self.cli = Client(**kwargs)
 
-    def build_container(self):
-        for path, tag in BUILD_PATHS.iteritems():
-            print(path, tag)
-            response = self.cli.build(path, tag=tag, rm=True)
-
     def new_container(self, tag, env=None):
         container = self.cli.create_container(image=tag,
                                               ports=[VNC_PORT, CMD_PORT],
@@ -66,42 +59,45 @@ class DockerController(object):
         ip = info['NetworkSettings']['IPAddress']
 
         short_id = id_[:12]
-        self.redis.sadd('all_containers', short_id)
+        self.redis.hset('all_containers', short_id, ip)
         self.redis.setex('c:' + short_id, EXPIRE_TIME, 1)
 
         return vnc_port, cmd_port
 
-    def check_abandoned(self):
-        all_containers = self.redis.smembers('all_containers')
+    def remove_container(self, short_id, ip):
+        print('REMOVING ' + short_id)
+        try:
+            self.cli.remove_container(short_id, force=True)
+        except Exception as e:
+            print(e)
 
-        for short_id in all_containers:
-            res = self.redis.get('c:' + short_id)
-            if not res:
-                print('REMOVING ' + short_id)
-                try:
-                    self.cli.remove_container(short_id, force=True)
-                except Exception as e:
-                    print(e)
-                self.redis.srem('all_containers', short_id)
+        self.redis.hdel('all_containers', short_id)
+        self.redis.delete('c:' + short_id)
 
-    def remove_all(self):
-        all_containers = self.redis.smembers('all_containers')
-        for short_id in all_containers:
-            try:
-                self.cli.remove_container(short_id, force=True)
-            except Exception as e:
-                print(e)
-            self.redis.srem('all_containers', short_id)
-            self.redis.delete('c:' + short_id)
+        ip_keys = self.redis.keys(ip +':*')
+        for key in ip_keys:
+            self.redis.delete(key)
+
+    def remove_all(self, check_expired=False):
+        all_containers = self.redis.hgetall('all_containers')
+
+        for short_id, ip in all_containers.iteritems():
+            if check_expired:
+                remove = not self.redis.get('c:' + short_id)
+            else:
+                remove = True
+
+            if remove:
+                self.remove_container(short_id, ip)
 
 
-@route(['/<tag:re:(ff|ns)>/<ts:re:[0-9-]+>/<url:re:.*>', '/<tag:re:(ff|ns)>/<url:re:.*>'])
+@route(['/<path:re:(ff|web|ns)>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path:re:(ff|web|ns)>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
-def route_load_url(tag='', url='', ts=''):
-    if tag == 'ns':
-        tag = 'mf_netscape'
+def route_load_url(path='', url='', ts=''):
+    if path == 'ns':
+        tag = 'memoframe/netscape'
     else:
-        tag = 'mf_browser'
+        tag = 'memoframe/firefox'
 
     vnc_port, cmd_port = dc.new_container(tag, {'URL': url, 'TS': ts})
 
@@ -116,22 +112,21 @@ def route_load_url(tag='', url='', ts=''):
 
     return {'vnc_host': vnc_host,
             'cmd_host': cmd_host,
+            'coll': path,
             'url': url,
             'ts': ts}
 
 def onexit():
-    dc.remove_all()
+    dc.remove_all(False)
 
 dc = DockerController()
-
-#dc.build_container()
 
 application = default_app()
 
 @timer(CHECK_TIME, target='mule')
 def check_abandonded(signum):
     #while True:
-    dc.check_abandoned()
+    dc.remove_all(True)
 
 
 uwsgi.atexit = onexit

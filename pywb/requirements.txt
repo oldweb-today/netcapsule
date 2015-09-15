@@ -1,6 +1,7 @@
--e git+https://github.com/ikreymer/pywb.git@proxy-ip-resolver#egg=pywb-0.10.7-dev
+-e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.10.9-dev
 certauth
 youtube-dl
 boto
 uwsgi
 gevent
+redis

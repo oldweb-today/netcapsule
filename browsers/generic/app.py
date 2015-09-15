@@ -64,19 +64,26 @@ def route_set_ts():
 def ping():
     global redis_client
 
-    if not redis_client.sismember('all_containers', HOST):
+    if not redis_client.hget('all_containers', HOST):
         return
 
     redis_client.expire('c:' + HOST, EXPIRE_TIME)
 
-    global driver
+    ts = request.query.get('ts')
 
-    ts = None
-    sec = None
-    url = None
+    all_urls = redis_client.hgetall(curr_ip + ':' + ts + ':urls')
 
-    return {'url': url, 'ts': ts, 'sec': sec}
+    count = 0
+    min_sec = sys.maxint
+    max_sec = 0
+    for url, sec in all_urls.iteritems():
+        count += 1
+        sec = int(sec)
+        min_sec = min(sec, min_sec)
+        max_sec = max(sec, max_sec)
 
+    #return {'url': url, 'ts': ts, 'sec': sec}
+    return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec}
 
 
 def do_init():

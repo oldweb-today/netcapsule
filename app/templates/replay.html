@@ -40,16 +40,23 @@ iframe
   font-size: 20px;
 }
 
+.rel_message {
+  font-size: 16px;
+  color: red;
+  font-style: italic;
+  display: none;
+}
+
 </style>
 </head>
 <body>
 <div class="header">
 Date/Time:
 <input id="ts" type="text" value="{{ ts }}"></input>
-<input id="update" type="button" value="Update"></input>
+<input id="update" type="button" value="Update"></input><div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
 </div>
 <div id="currLabel" class="header">
-Current Page: <b>{{url}}</b>
+Loading <b>{{url}}</b>
 </div>
 <iframe seamless="seamless" frameborder="0" scrolling="no"></iframe>
 <script>
@@ -57,8 +64,9 @@ Current Page: <b>{{url}}</b>
 $(function() {
     window.frames[0].focus();
 
-    var coll = "web";
+    var coll = "{{ coll }}";
     var url = "{{ url }}";
+    var curr_ts = "{{ ts }}";
 
     window.setTimeout(function() {
         document.querySelector("iframe").src = "http://{{ vnc_host }}/vnc_auto.html?password=secret";
@@ -69,30 +77,35 @@ $(function() {
 
         var cmd_url = "http://{{ cmd_host }}/set?ts=" + ts;
 
-        $.getJSON(cmd_url, function() {
-            console.log("Updated Date to " + ts);
-            update_state();
+        $.getJSON(cmd_url, function(data) {
+            if (data && data.success) {
+                curr_ts = ts;
+                console.log("Updated Date to " + ts);
+                $(".rel_message").show();
+                update_state();
+            }
         });
 
         window.frames[0].focus();
     });
 
     function update_state() {
-        var full_url = "/" + coll + "/" + $("#ts").val() + "/" + url;
+        var full_url = "/" + coll + "/" + curr_ts + "/" + url;
 
-        //window.history.replaceState({}, "", full_url);
+        window.history.replaceState({}, "", full_url);
     }
 
     function ping() {
-        $.getJSON("http://{{ cmd_host }}/ping", function(data) {
-            if (data.url) {
-                url = data.url;
+        $.getJSON("http://{{ cmd_host }}/ping?ts=" + curr_ts, function(data) {
+            if (data.urls && data.min_sec && data.max_sec) {
+                var min_date = new Date(data.min_sec * 1000).toLocaleString();
+                var max_date = new Date(data.max_sec * 1000).toLocaleString();
+                $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
+                $(".rel_message").hide();
             }
-            var sec = data.sec;
-
-            if (sec) {
-                $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
-            }
+            //if (sec) {
+            //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+            //}
             
             update_state();
         });

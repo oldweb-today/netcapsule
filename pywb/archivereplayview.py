@@ -2,13 +2,16 @@ from pywb.webapp.handlers import WBHandler
 from pywb.utils.statusandheaders import StatusAndHeaders
 from pywb.webapp.replay_views import ReplayView, CaptureException
 from pywb.rewrite.url_rewriter import UrlRewriter
+from pywb.utils.timeutils import timestamp_to_sec
 
 import requests
 import re
+import redis
 
 
 #=============================================================================
 WBURL_RX = re.compile('(.*/)([0-9]{1,14})(\w{2}_)?(/https?://.*)')
+REDIS_HOST = 'memoframe_redis_1'
 
 
 #=============================================================================
@@ -24,6 +27,7 @@ class LiveDirectLoader(object):
         self.session = requests.Session()
         self.session.max_redirects = 6
         self.archive_prefix = config['archive_prefix']
+        self.redis = redis.StrictRedis(host=REDIS_HOST)
 
     def _do_req(self, urls, skip_hosts):
         response = None
@@ -73,6 +77,13 @@ class LiveDirectLoader(object):
         if response is None:
             print(skip_hosts)
             raise CaptureException('Content Could Not Be Loaded')
+
+        remote = wbrequest.env.get('REMOTE_ADDR')
+        req_ts = wbrequest.wb_url.timestamp
+        key = remote + ':' + req_ts + ':urls'
+
+        sec = timestamp_to_sec(cdx['timestamp'])
+        self.redis.hset(key, cdx['url'], sec)
 
         statusline = str(response.status_code) + ' ' + response.reason
 
