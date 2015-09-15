@@ -1,7 +1,7 @@
 from docker.client import Client
 from docker.utils import kwargs_from_env
 
-from bottle import route, run, template, request, default_app, jinja2_view
+from bottle import route, run, template, request, default_app, jinja2_view, static_file
 
 import os
 import datetime
@@ -115,6 +115,10 @@ def route_load_url(path='', url='', ts=''):
             'coll': path,
             'url': url,
             'ts': ts}
+
+@route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='/app/static/')
 
 def onexit():
     dc.remove_all(False)
