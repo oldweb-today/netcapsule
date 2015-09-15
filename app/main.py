@@ -51,7 +51,8 @@ class DockerController(object):
 
         res = self.cli.start(container=id_,
                              port_bindings={VNC_PORT: None, CMD_PORT: None},
-                             links={PYWB_HOST: PYWB_HOST})
+                             links={PYWB_HOST: PYWB_HOST,
+                                    REDIS_HOST: REDIS_HOST})
 
         vnc_port = self.cli.port(id_, VNC_PORT)
         vnc_port = vnc_port[0]['HostPort']
