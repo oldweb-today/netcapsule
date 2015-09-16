@@ -20,15 +20,24 @@ The virtual browser must then be reloaded to reflect the new date/time settings.
 
 First US web site, from 1991, in NCSA Mosaic (archive courtesy of Stanford web archives), see http://www.slac.stanford.edu/history/earlyweb/firstpages.shtml)
 
+(URL: `<HOST>/mosaic/1991/http://slacvm.slac.stanford.edu/FIND/default.html`)
 ![IMAGE](sample-screenshots/1991_SLAC.png)
 
+
 Another early SLAC site, from 1994, in NCSA Mosaic (archive courtesy of Stanford web archives):
+
+(URL: `<HOST>/mosaic/19940102000000/http://slacvm.slac.stanford.edu/FIND/slac.html`)
 ![IMAGE](sample-screenshots/1994_SLAC.png)
 
-http://yahoo.com from 1996, ib Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
+
+`http://yahoo.com` from 1996, ib Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
+
+(URL: `<HOST>/netscape/1996/http://yahoo.com/`)
 ![IMAGE](sample-screenshots/1996_yahoo.png)
 
-https://twitter.com/ from early 2015, (archive courtesy of Internet Archive Wayback Machine):
+`https://twitter.com/` from early 2015, (archive courtesy of Internet Archive Wayback Machine):
+
+(URL: `<HOST>/firefox/201501/https://twitter.com/`)
 ![IMAGE](sample-screenshots/2015_twitter.png)
 
 
