@@ -1,4 +1,4 @@
-# NetCapsule #
+# Netcapsule #
 
 ## Browse old websites the old way ##
 
@@ -50,15 +50,15 @@ To run locally, Docker and Docker Compose are required.
 The `browsers` directory corresponds to each supported browser and a `base-browser` image which serves as the base.
 
 Current Browsers are:
-   * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `ikreymer/netcapsule-mosaic`
-   * Netscape 4 (built based on instructions form https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `ikreymer/netcapsule-netscape`
-   * Firefox 40 `ikreymer/netcapsule-firefox`
+   * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
+   * Netscape 4 (built based on instructions form https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
+   * Firefox 40 `netcapsule/firefox`
 
-Each browser corresponds to a Docker image which extends `ikreymer/netcapsule-base-browser`.
+Each browser corresponds to a Docker image which extends `netcapsule/base-browser`.
 
 #### Adding new browsers
 
-To add a new browser, a new image should be created to extend `ikreymer/netcapsule-base-browser`.
+To add a new browser, a new image should be created to extend `netcapsule/base-browser`.
 This base images sets up a number of settings, such as Xvfb, VNC server, [noVNC](https://github.com/kanaka/noVNC), [Fluxbox](http://fluxbox.org)
 
 * A `run.sh` file is usually used to start the browser.
