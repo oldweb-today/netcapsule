@@ -1,8 +1,13 @@
 pywb:
-    build: ./pywb
+#    build: ./pywb
+    image: ikreymer/pywb:dev
     restart: always
     links:
         - redis
+
+    volumes:
+        - ./pywb:/webarchive
+        - './pywb/uwsgi.ini:/uwsgi/uwsgi.ini'
 
 redis:
     image: redis:latest
