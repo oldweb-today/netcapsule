@@ -91,11 +91,18 @@ class DockerController(object):
                 self.remove_container(short_id, ip)
 
 
-@route(['/<path:re:(ff|web|ns)>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path:re:(ff|web|ns)>/<url:re:.*>'])
+@route('/static/<filepath:path>')
+def server_static(filepath):
+    return static_file(filepath, root='/app/static/')
+
+
+@route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(path='', url='', ts=''):
-    if path == 'ns':
+    if path == 'ns' or path == 'netscape':
         tag = 'memoframe/netscape'
+    elif path == 'mosaic':
+        tag = 'memoframe/mosaic'
     else:
         tag = 'memoframe/firefox'
 
@@ -115,10 +122,6 @@ def route_load_url(path='', url='', ts=''):
             'coll': path,
             'url': url,
             'ts': ts}
-
-@route('/static/<filepath:path>')
-def server_static(filepath):
-    return static_file(filepath, root='/app/static/')
 
 def onexit():
     dc.remove_all(False)

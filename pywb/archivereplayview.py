@@ -12,7 +12,7 @@ import redis
 #=============================================================================
 WBURL_RX = re.compile('(.*/)([0-9]{1,14})(\w{2}_)?(/https?://.*)')
 REDIS_HOST = 'memoframe_redis_1'
-
+#REDIS_HOST = 'localhost'
 
 #=============================================================================
 class ReplayHandler(WBHandler):
@@ -35,6 +35,7 @@ class LiveDirectLoader(object):
             response = self.session.request(method='GET',
                                             url=url,
             #                                allow_redirects=False,
+                                            headers={'Accept-Encoding': 'identity'},
                                             stream=True,
                                             verify=False)
 

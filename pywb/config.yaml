@@ -4,11 +4,12 @@ collections:
         archive_prefix: 'http://web.archive.org/'
         wb_handler_class: !!python/name:archivereplayview.ReplayHandler
 
-buffer_response: true
+buffer_response: false
 urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
 
 enable_cdx_api: true
 framed_replay: inverse
+
 
 enable_http_proxy: true
 

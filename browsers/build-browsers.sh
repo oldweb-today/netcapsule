@@ -6,4 +6,5 @@ set -e
 docker build -t memoframe/base-browser $DIR/generic
 docker build -t memoframe/netscape $DIR/netscape
 docker build -t memoframe/firefox $DIR/firefox
+docker build -t memoframe/mosaic $DIR/mosaic
 
