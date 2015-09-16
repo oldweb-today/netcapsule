@@ -1,11 +1,17 @@
 
 collections:
-    web:
+
+    # For Single Archive Collections: Specify CDX Path, url template and name
+    single_archive:
         index_paths: 'http://web.archive.org/cdx/search/cdx'
-        archive_prefix: 'http://web.archive.org/'
+        archive_template: 'http://web.archive.org/web/{timestamp}id_/{url}'
+        archive_name: 'Internet Archive'
+
         wb_handler_class: !!python/name:archivereplayview.ReplayHandler
 
-    reconstruct:
+
+    # Memento Aggregator Collection: Specify paths to Timegate, Timemap
+    memento_reconstruct:
         index_paths:
             - http://timetravel.mementoweb.org/api/json/
             - http://labs.mementoweb.org/timemap/json/
@@ -13,7 +19,11 @@ collections:
         server_cls: !!python/name:mementoquery.MementoIndexServer
 
         wb_handler_class: !!python/name:archivereplayview.MementoHandler
- 
+
+
+# Specify memento archivelist XML
+memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
+
 
 buffer_response: false
 urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
@@ -27,11 +37,14 @@ enable_http_proxy: true
 
 redir_to_exact: false
 
-memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
 
 proxy_options:
     enable_https_proxy: true
-    use_default_coll: 'reconstruct'
+
+    # Select one of these
+    #use_default_coll: 'single_archive'
+    use_default_coll: 'memento_reconstruct'
+
     cookie_resolver: ip
     use_client_rewrite: false
     use_banner: false

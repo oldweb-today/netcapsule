@@ -2,6 +2,7 @@ from pywb.webapp.handlers import WBHandler
 from pywb.utils.statusandheaders import StatusAndHeaders
 from pywb.webapp.replay_views import ReplayView, CaptureException
 from pywb.rewrite.url_rewriter import UrlRewriter
+from pywb.rewrite.rewrite_live import LiveRewriter
 from pywb.utils.timeutils import timestamp_to_sec
 from pywb.utils.loaders import BlockLoader
 
@@ -63,18 +64,28 @@ class UpstreamArchiveLoader(object):
     def __init__(self, config):
         self.session = requests.Session()
         self.session.max_redirects = 6
-        self.archive_prefix = config['archive_prefix']
+        self.archive_template = config['archive_template']
+        self.archive_name = config['archive_name']
 
         # init redis here only
         redisclient.init_redis(config)
 
-    def _do_req(self, urls, host, skip_hosts):
+    def _do_req(self, urls, host, env, skip_hosts):
         response = None
+
+        headers = {}
+        user_agent = env.get('HTTP_USER_AGENT', '')
+
+        # disable gzip, as mosaic won't support it!
+        # TODO: maybe ungzip later
+        if 'NCSA_Mosaic' in user_agent:
+            headers={'Accept-Encoding': 'identity'}
+
         for url in urls:
             response = self.session.request(method='GET',
                                             url=url,
             #                                allow_redirects=False,
-                                            headers={'Accept-Encoding': 'identity'},
+                                            headers=headers,
                                             stream=True,
                                             verify=False)
 
@@ -104,11 +115,12 @@ class UpstreamArchiveLoader(object):
     def __call__(self, cdx, skip_hosts, cdx_loader, wbrequest):
         self.session.cookies.clear()
 
-        try_urls, host = self._get_urls_to_try(cdx, skip_hosts, wbrequest)
+        try_urls, host, archive_name = self._get_urls_to_try(cdx, skip_hosts, wbrequest)
 
         try:
-            response = self._do_req(try_urls, host, skip_hosts)
+            response = self._do_req(try_urls, host, wbrequest.env, skip_hosts)
         except Exception as e:
+            print(e)
             response = None
 
         if response is None:
@@ -121,7 +133,7 @@ class UpstreamArchiveLoader(object):
 
         sec = timestamp_to_sec(cdx['timestamp'])
         redisclient.redis.hset(base_key + ':urls', cdx['url'], sec)
-        redisclient.redis.sadd(base_key + ':hosts', host)
+        redisclient.redis.sadd(base_key + ':hosts', archive_name)
 
         statusline = str(response.status_code) + ' ' + response.reason
 
@@ -134,13 +146,15 @@ class UpstreamArchiveLoader(object):
         return (status_headers, stream)
 
     def _get_urls_to_try(self, cdx, skip_hosts, wbrequest):
-        if self.archive_prefix in skip_hosts:
+        if self.archive_template in skip_hosts:
             raise Exception('Content Not Available')
 
-        url = cdx['url']
-        full_url = self.archive_prefix + wbrequest.coll + '/' + cdx['timestamp'] + 'id_/' + url
+        #full_url = self.archive_template + wbrequest.coll + '/' + cdx['timestamp'] + 'id_/' + url
+        full_url = self.archive_template.format(timestamp=cdx['timestamp'],
+                                              url=cdx['url'])
+
         try_urls = [full_url]
-        return try_urls, self.archive_prefix
+        return try_urls, self.archive_template, self.archive_name
 
 
 #=============================================================================
@@ -166,6 +180,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
 
         for link in root.findall('link'):
             name = link.get('id')
+            longname = link.get('longname')
             archive = link.find('archive')
             timegate = link.find('timegate')
 
@@ -178,8 +193,9 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
 
             self.archive_infos[name] = {'uri': uri,
                                         'rewritten': rewritten,
-                                        'unrewritten_url': unrewritten_url
-                                       }
+                                        'unrewritten_url': unrewritten_url,
+                                        'name': longname
+                                        }
 
     def find_archive_info(self, host):
         host = host.split(':')[0]
@@ -208,7 +224,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
 
         wbrequest.urlrewriter.rewrite_opts['orig_src_url'] = cdx['src_url']
         wbrequest.urlrewriter.rewrite_opts['archive_info'] = info
-        return try_urls, archive_host
+        return try_urls, archive_host, info['name']
 
 
 #=============================================================================
