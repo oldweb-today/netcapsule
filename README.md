@@ -69,7 +69,9 @@ This base images sets up a number of settings, such as Xvfb, VNC server, [noVNC]
 * To read data from the archives, The HTTP (and optionally HTTPS) proxy servers should be set to
   `netcapsule_pywb_1:8080`. These setting are browser dependent.
 
+For convenience, the new browser Docker image build can be added to `browsers/build-browsers.sh` script.
 Consult the existing browser setups for examples on how to add browsers.
+
 
 ### General Workflow
 
@@ -158,15 +160,21 @@ This system is still an early proof-of-concept and there is much room for improv
 
 * Add support for Memento Link format API, to support archives that use this format (and do not support CDX).
 
-* Improved documentation
+* Input validation, eg. for Date/Time, URL, etc...
+
+* Improved documentation.
 
 * Better abstraction for Docker customization.
 
 * Additional browsers, list supported browsers, etc...
 
+* Any VNC configuration optimizations.
+
 
 ### LICENSE
 
-This software is released under the [MPL 2.0](http://www.mozilla.org/MPL/2.0/)
+This software is released under the [MPL 2.0](http://www.mozilla.org/MPL/2.0/). Created by Ilya Kreymer, September, 2015.
 
-with portions under the `./app/static/include/*.js` which are part of the [noVNC](https://github.com/kanaka/noVNC) project, also licensed under [MPL 2.0](http://www.mozilla.org/MPL/2.0/). See LICENSE.text for details.
+Portions under the `./app/static/include/*.js` which are part of the [noVNC](https://github.com/kanaka/noVNC) project, also licensed under [MPL 2.0](http://www.mozilla.org/MPL/2.0/).
+
+See LICENSE.txt for details.
