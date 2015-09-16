@@ -1,0 +1,30 @@
+Netcapsule is Copyright, 2015 Ilya Kreymer
+
+Netcapsule source code is subject to the terms of the Mozilla Public
+License, v. 2.0. If a copy of the MPL was not distributed with this
+file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+
+
+Netcapsule bundles the noVNC core library, under the ./app/static/include directory.
+
+noVNC is Copyright (C) 2011 Joel Martin <github@martintribe.org>
+
+The noVNC core library files are licensed under the MPL 2.0 (Mozilla
+Public License 2.0). The noVNC core library is composed of the
+Javascript code necessary for full noVNC operation. This includes (but
+is not limited to):
+
+    include/base64.js
+    include/des.js
+    include/display.js
+    include/input.js
+    include/jsunzip.js
+    include/keysym.js
+    include/logo.js
+    include/playback.js
+    include/rfb.js
+    include/ui.js
+    include/util.js
+    include/websock.js
+    include/webutil.js
