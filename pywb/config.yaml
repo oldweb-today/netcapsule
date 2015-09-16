@@ -1,23 +1,37 @@
+
 collections:
     web:
         index_paths: 'http://web.archive.org/cdx/search/cdx'
         archive_prefix: 'http://web.archive.org/'
         wb_handler_class: !!python/name:archivereplayview.ReplayHandler
 
+    reconstruct:
+        index_paths:
+            - http://timetravel.mementoweb.org/api/json/
+            - http://labs.mementoweb.org/timemap/json/
+
+        server_cls: !!python/name:mementoquery.MementoIndexServer
+
+        wb_handler_class: !!python/name:archivereplayview.MementoHandler
+ 
+
 buffer_response: false
 urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
 
 enable_cdx_api: true
-framed_replay: inverse
+framed_replay: false
 
+redis_url: redis://memoframe_redis_1:6379/0
 
 enable_http_proxy: true
 
 redir_to_exact: false
 
+memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
+
 proxy_options:
     enable_https_proxy: true
-    use_default_coll: 'web'
+    use_default_coll: 'reconstruct'
     cookie_resolver: ip
     use_client_rewrite: false
     use_banner: false
