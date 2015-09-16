@@ -144,8 +144,8 @@
                     $(".rel_message").hide();
                 }
 
-                if (data.hosts) {
-                    $("#hosts").html("Courtesy of <b>" + data.hosts + "</b>");
+                if (data.hosts && data.hosts.length > 0) {
+                    $("#hosts").html("Courtesy of <b>" + data.hosts.join(", ") + "</b>");
                 }
                 //if (sec) {
                 //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
