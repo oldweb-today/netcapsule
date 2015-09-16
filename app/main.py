@@ -17,8 +17,8 @@ import uwsgi
 VNC_PORT = 6080
 CMD_PORT = 6082
 VERSION='1.18'
-PYWB_HOST = 'memoframe_pywb_1'
-REDIS_HOST = 'memoframe_redis_1'
+PYWB_HOST = 'netcapsule_pywb_1'
+REDIS_HOST = 'netcapsule_redis_1'
 
 EXPIRE_TIME = 120
 CHECK_TIME = 10
@@ -100,11 +100,14 @@ def server_static(filepath):
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(path='', url='', ts=''):
     if path == 'ns' or path == 'netscape':
-        tag = 'memoframe/netscape'
+        tag = 'netcapsule/netscape'
     elif path == 'mosaic':
-        tag = 'memoframe/mosaic'
+        tag = 'netcapsule/mosaic'
+    elif path == 'firefox':
+        tag = 'netcapsule/firefox'
     else:
-        tag = 'memoframe/firefox'
+        tag = 'netcapsule/firefox'
+
 
     vnc_port, cmd_port = dc.new_container(tag, {'URL': url, 'TS': ts})
 

@@ -11,9 +11,9 @@ import time
 import sys
 import os
 
-PYWB_HOST_PORT = 'memoframe_pywb_1:8080'
+PYWB_HOST_PORT = 'netcapsule_pywb_1:8080'
 
-REDIS_HOST = 'memoframe_redis_1'
+REDIS_HOST = 'netcapsule_redis_1'
 
 curr_ip = '127.0.0.1'
 driver = None

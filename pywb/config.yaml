@@ -31,7 +31,7 @@ urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
 enable_cdx_api: true
 framed_replay: false
 
-redis_url: redis://memoframe_redis_1:6379/0
+redis_url: redis://netcapsule_redis_1:6379/0
 
 enable_http_proxy: true
 

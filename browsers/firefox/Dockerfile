@@ -1,4 +1,4 @@
-FROM memoframe/base-browser
+FROM netcapsule/base-browser
 
 ENV FF_VERSION 40.0.3
 

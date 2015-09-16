@@ -1,4 +1,4 @@
-FROM memoframe/base-browser
+FROM netcapsule/base-browser
 
 RUN apt-get update && apt-get install -y \
     build-essential libmotif-dev libjpeg62-turbo-dev libpng12-dev x11proto-print-dev libxmu-headers libxpm-dev libxmu-dev \
