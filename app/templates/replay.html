@@ -40,6 +40,14 @@
                 font-size: 20px;
             }
 
+            .hosts {
+                text-align: center;
+                font-size: 12px;
+            }
+            .hosts b {
+                font-size: 12px;
+            }
+
             .rel_message {
                 font-size: 16px;
                 color: red;
@@ -62,6 +70,8 @@
     </div>
 <div id="currLabel" class="header">
     Loading <b>{{url}}</b>
+</div>
+<div id="hosts" class="hosts">
 </div>
 <!--
 <iframe seamless="seamless" frameborder="0" scrolling="no"></iframe>
@@ -133,6 +143,10 @@
                     $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
                     $(".rel_message").hide();
                 }
+
+                if (data.hosts) {
+                    $("#hosts").html("Courtesy of <b>" + data.hosts + "</b>");
+                }
                 //if (sec) {
                 //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
                 //}
@@ -141,7 +155,7 @@
             });
         }
 
-        window.setInterval(ping, 5000);
+        window.setInterval(ping, 20000);
         ping();
     });
 </script>

@@ -71,6 +71,7 @@ def ping():
 
     ts = request.query.get('ts')
 
+    # all urls
     all_urls = redis_client.hgetall(curr_ip + ':' + ts + ':urls')
 
     count = 0
@@ -82,8 +83,13 @@ def ping():
         min_sec = min(sec, min_sec)
         max_sec = max(sec, max_sec)
 
+
+    # all_hosts
+    all_hosts = redis_client.smembers(curr_ip + ':' + ts + ':hosts')
+
     #return {'url': url, 'ts': ts, 'sec': sec}
-    return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec}
+    return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec,
+            'hosts': list(all_hosts)}
 
 
 def do_init():
