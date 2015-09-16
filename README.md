@@ -2,9 +2,9 @@
 
 ## Browse old websites the old way ##
 
-NetCapsule is a proof-of-concept system for browsing old web sites from existing web archives in old browsers, inside a modern browser.
+Netcapsule is a proof-of-concept system for browsing old web sites from existing web archives in old browsers, inside a modern browser.
 
-When the NetCapsule web page is loaded, the old browser is loaded in an emulator-like setup (Docker container) connecting to an existing archiving service through an HTTP/S proxy (powered by [pywb] (https://github.com/ikreymer/pywb) software). The proxy configures the datetime
+When the Netcapsule web page is loaded, the old browser is loaded in an emulator-like setup (Docker container) connecting to an existing archiving service through an HTTP/S proxy (powered by [pywb] (https://github.com/ikreymer/pywb) software). The proxy configures the date/time
 setting and proxies the content from the archive in its original form (whenever possible).
 
 Any web archive (supporting CDX or Memento protocol interfaces) can be a source, and any browser running under Linux can be used.
@@ -12,8 +12,8 @@ Currently included browsers are *Mosaic 2.7*, *Netscape 4* and a modern *Firefox
 
 The system allows user to navigate by both url and by time.
 
-The date can be changed dynamically by entering a new datetime (in 14-digit format currently) and hitting *Update*.
-The virtual browser must then be reloaded to reflect the new datetime settings.
+The date can be changed dynamically by entering a new date/time (in 14-digit format currently) and hitting *Update*.
+The virtual browser must then be reloaded to reflect the new date/time settings.
 
 
 ### Examples screenshots
@@ -44,9 +44,7 @@ To run locally, Docker and Docker Compose are required.
 
 4. You can now access the different browsers under: 
 
-   `http://<DOCKER HOST>/<BROWSER>/<TS>/<URL>`
-   
-    where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
+   `http://<DOCKER HOST>/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
 
 ### How It Works
 
@@ -169,8 +167,6 @@ This system is still an early proof-of-concept and there is much room for improv
 
 ### LICENSE
 
-This software is released under the (MPL 2.0)[http://www.mozilla.org/MPL/2.0/], Copyright Ilya Kreymer.
+This software is released under the [MPL 2.0](http://www.mozilla.org/MPL/2.0/)
 
-with the exception of the `app/static/include/*.js` which are part of the [noVNC](https://github.com/kanaka/noVNC) project, licensed under (MPL 2.0)[http://www.mozilla.org/MPL/2.0/]
-
-
+with portions under the `./app/static/include/*.js` which are part of the [noVNC](https://github.com/kanaka/noVNC) project, also licensed under [MPL 2.0](http://www.mozilla.org/MPL/2.0/). See LICENSE.text for details.
