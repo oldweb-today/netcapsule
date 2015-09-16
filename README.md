@@ -18,17 +18,17 @@ The virtual browser must then be reloaded to reflect the new date/time settings.
 
 ### Examples screenshots
 
-First US web site, from 1991, in NCSA Mosaic (courtesy of Stanford web archives), see http://www.slac.stanford.edu/history/earlyweb/firstpages.shtml)
+First US web site, from 1991, in NCSA Mosaic (archive courtesy of Stanford web archives), see http://www.slac.stanford.edu/history/earlyweb/firstpages.shtml)
 
 ![IMAGE](sample-screenshots/1991_SLAC.png)
 
-Another early SLAC site, from 1994, under NCSA Mosaic (courtesy of Stanford web archives):
+Another early SLAC site, from 1994, in NCSA Mosaic (archive courtesy of Stanford web archives):
 ![IMAGE](sample-screenshots/1994_SLAC.png)
 
-http://yahoo.com from 1996, (courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
+http://yahoo.com from 1996, ib Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
 ![IMAGE](sample-screenshots/1996_yahoo.png)
 
-https://twitter.com/ from early 2015, (courtesy of Internet Archive Wayback Machine):
+https://twitter.com/ from early 2015, (archive courtesy of Internet Archive Wayback Machine):
 ![IMAGE](sample-screenshots/2015_twitter.png)
 
 
