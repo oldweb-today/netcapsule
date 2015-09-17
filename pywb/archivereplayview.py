@@ -222,9 +222,14 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
         else:
             try_urls = [src_url]
 
+        if info:
+            name = info.get('name', archive_host)
+        else:
+            name = archive_host
+
         wbrequest.urlrewriter.rewrite_opts['orig_src_url'] = cdx['src_url']
         wbrequest.urlrewriter.rewrite_opts['archive_info'] = info
-        return try_urls, archive_host, info['name']
+        return try_urls, archive_host, name
 
 
 #=============================================================================
