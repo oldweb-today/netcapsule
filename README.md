@@ -16,7 +16,7 @@ The date can be changed dynamically by entering a new date/time (in 14-digit for
 The virtual browser must then be reloaded to reflect the new date/time settings.
 
 
-### Examples screenshots
+### Sample screenshots
 
 First US web site, from 1991, in NCSA Mosaic (archive courtesy of Stanford web archives), see http://www.slac.stanford.edu/history/earlyweb/firstpages.shtml)
 
@@ -30,7 +30,7 @@ Another early SLAC site, from 1994, in NCSA Mosaic (archive courtesy of Stanford
 ![IMAGE](sample-screenshots/1994_SLAC.png)
 
 
-`http://yahoo.com` from 1996, ib Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
+`http://yahoo.com` from 1996, in Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
 
 (URL: `<HOST>/netscape/1996/http://yahoo.com/`)
 ![IMAGE](sample-screenshots/1996_yahoo.png)
