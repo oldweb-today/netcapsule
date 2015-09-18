@@ -30,12 +30,12 @@ Another early SLAC site, from 1994, in NCSA Mosaic (archive courtesy of Stanford
 ![IMAGE](sample-screenshots/1994_SLAC.png)
 
 
-`http://yahoo.com` from 1996, in Netscape Navigator 4 (archive courtesy of Internet Archive Wayback Machine, and Icelandic Web Archive):
+`http://geocities.com` from end of 1996, in Netscape Navigator 4 (archive courtesy of Internet Archive):
 
-(URL: `<HOST>/netscape/1996/http://yahoo.com/`)
-![IMAGE](sample-screenshots/1996_yahoo.png)
+(URL: `<HOST>/netscape/1997/http://geocities.com/`)
+![IMAGE](sample-screenshots/1996_geocities.png)
 
-`https://twitter.com/` from early 2015, (archive courtesy of Internet Archive Wayback Machine):
+`https://twitter.com/` from early 2015 in modern Firefox (archive courtesy of Internet Archive):
 
 (URL: `<HOST>/firefox/201501/https://twitter.com/`)
 ![IMAGE](sample-screenshots/2015_twitter.png)
