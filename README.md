@@ -53,7 +53,10 @@ To run locally, Docker and Docker Compose are required.
 
 4. You can now access the different browsers under: 
 
-   `http://<DOCKER HOST>/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
+   `http://<DOCKER_HOST>:9020/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
+   
+   Netcapsule main app runs on port `9020` and can be changed in `docker-compose.yml`.
+   `DOCKER_HOST` is likely just `localhost` if on Linux or often `192.168.59.103` if using [boot2docker](http://boot2docker.io/)
 
 ### How It Works
 
