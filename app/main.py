@@ -96,18 +96,20 @@ def server_static(filepath):
     return static_file(filepath, root='/app/static/')
 
 
-@route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
-@jinja2_view('replay.html', template_lookup=['templates'])
-def route_load_url(path='', url='', ts=''):
-    if path == 'ns' or path == 'netscape':
+@route(['/init_browser'])
+def init_container():
+    browser = request.query.get('browser')
+    url = request.query.get('url')
+    ts = request.query.get('ts')
+
+    if browser == 'ns' or browser == 'netscape':
         tag = 'netcapsule/netscape'
-    elif path == 'mosaic':
+    elif browser == 'mosaic':
         tag = 'netcapsule/mosaic'
-    elif path == 'firefox':
+    elif browser == 'firefox':
         tag = 'netcapsule/firefox'
     else:
         tag = 'netcapsule/firefox'
-
 
     vnc_port, cmd_port = dc.new_container(tag, {'URL': url, 'TS': ts})
 
@@ -117,14 +119,21 @@ def route_load_url(path='', url='', ts=''):
     vnc_host = host + ':' + vnc_port
     cmd_host = host + ':' + cmd_port
 
+    return {'vnc_host': vnc_host,
+            'cmd_host': cmd_host
+           }
+
+
+@route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
+@jinja2_view('replay.html', template_lookup=['templates'])
+def route_load_url(path='', url='', ts=''):
     if not ts:
         ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
 
-    return {'vnc_host': vnc_host,
-            'cmd_host': cmd_host,
-            'coll': path,
+    return {'coll': path,
             'url': url,
             'ts': ts}
+
 
 def onexit():
     dc.remove_all(False)

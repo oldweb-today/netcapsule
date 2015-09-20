@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Netcapsule Web Archive Replay</title>
-        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="/static/jquery-2.1.4.min.js"></script>
         <style>
             html, body
             {
@@ -68,9 +68,7 @@
             <input id="ts" type="text" value="{{ ts }}"></input>
         <input id="update" type="button" value="Update"></input><div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
     </div>
-<div id="currLabel" class="header">
-    Loading <b>{{url}}</b>
-</div>
+<div id="currLabel" class="header">Initializing Browser...</div>
 <div id="hosts" class="hosts">
 </div>
 <!--
@@ -91,7 +89,25 @@
     var url = "{{ url }}";
     var curr_ts = "{{ ts }}";
 
+    var cmd_host = undefined;
+    var vnc_host = undefined;
+
     $(function() {
+        function init_container() {
+            var params = {"url": url, "ts": curr_ts, "browser": coll};
+
+            var init_url = "/init_browser?" + $.param(params);
+            $.getJSON(init_url, function(data) {
+                cmd_host = data.cmd_host;
+                vnc_host = data.vnc_host;
+
+                if (cmd_host && vnc_host) {
+                    $("#currLabel").html("Loading <b>" + url + "</b>");
+                    window.setTimeout(do_init, 1000);
+                }
+            });
+        }
+
         function do_init() {
             var res = do_vnc();
             if (!res) {
@@ -99,12 +115,10 @@
             }
         }
 
-        window.setTimeout(do_init, 1000);
-
         $("#update").click(function() {
             var ts = $("#ts").val();
 
-            var cmd_url = "http://{{ cmd_host }}/set?ts=" + ts;
+            var cmd_url = "http://" + cmd_host + "/set?ts=" + ts;
 
             $.getJSON(cmd_url, function(data) {
                 if (data && data.success) {
@@ -116,17 +130,24 @@
             });
         });
 
-        $("#ts").focus(function() {
+        function lose_focus() {
             if (!rfb) return;
             rfb.get_keyboard().set_focused(false);
             rfb.get_mouse().set_focused(false);
-        });
- 
-        $("#noVNC_screen").click(function() {
+        }
+
+        function grab_focus() {
             if (!rfb) return;
             rfb.get_keyboard().set_focused(true);
             rfb.get_mouse().set_focused(true);
-        });
+        }
+
+        $("#noVNC_screen").blur(lose_focus);
+        $("#noVNC_screen").mouseleave(lose_focus);
+ 
+        $("#noVNC_screen").mouseenter(grab_focus);
+
+        init_container();
     });
 
 
@@ -138,7 +159,7 @@
 
 
     function ping() {
-        $.getJSON("http://{{ cmd_host }}/ping?ts=" + curr_ts, function(data) {
+        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, function(data) {
             if (data.urls && data.min_sec && data.max_sec) {
                 var min_date = new Date(data.min_sec * 1000).toLocaleString();
                 var max_date = new Date(data.max_sec * 1000).toLocaleString();
@@ -205,7 +226,7 @@
             return false; // don't continue trying to connect
         }
 
-        var hostport = "{{ vnc_host }}".split(":");
+        var hostport = vnc_host.split(":");
         var host = hostport[0];
         var port = hostport[1];
         var password = "secret";
