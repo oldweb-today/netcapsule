@@ -1,6 +1,6 @@
 pywb:
-#    build: ./pywb
-    image: ikreymer/pywb:dev
+    build: ./pywb
+#    image: ikreymer/pywb:dev
     restart: always
     links:
         - redis

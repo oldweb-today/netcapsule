@@ -10,11 +10,12 @@ collections:
         wb_handler_class: !!python/name:archivereplayview.ReplayHandler
 
 
-    # Memento Aggregator Collection: Specify paths to Timegate, Timemap
+    # Memento Aggregator Collection: Specify paths to Timegate (Link-format or JSON), Timemap
     memento_reconstruct:
         index_paths:
-            - http://timetravel.mementoweb.org/api/json/
-            - http://labs.mementoweb.org/timemap/json/
+            'timegate-url': 'http://timetravel.mementoweb.org/timegate/'
+            'timemap-url': 'http://labs.mementoweb.org/timemap/json/'
+             #'timegate-json-url': 'http://timetravel.mementoweb.org/api/json/'
 
         server_cls: !!python/name:mementoquery.MementoIndexServer
 

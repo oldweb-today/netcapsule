@@ -1,16 +1,6 @@
-FROM python:2.7
+FROM ikreymer/pywb:dev
 MAINTAINER Ilya Kreymer <ikreymer at gmail.com>
 
-WORKDIR /webarchive
-
-COPY requirements.txt /webarchive/
-
-RUN pip install -U -r requirements.txt
-
-COPY config.yaml /webarchive/
-
-COPY . /webarchive/
-
-EXPOSE 8080
+RUN pip install git+https://github.com/ikreymer/py-memento-client.git@no-uri-checks
 
 CMD ["uwsgi", "/webarchive/uwsgi.ini"]

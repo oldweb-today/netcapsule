@@ -10,16 +10,20 @@ from collections import namedtuple
 
 from pywb.utils.canonicalize import canonicalize
 from pywb.utils.timeutils import iso_date_to_datetime, datetime_to_timestamp
-from pywb.utils.timeutils import timestamp_to_sec
+from pywb.utils.timeutils import timestamp_to_sec, timestamp_to_datetime
+from pywb.utils.timeutils import _pad_timestamp
 from pywb.utils.wbexception import AccessException, NotFoundException
 
 import logging
 from urlparse import urlsplit
 
 from redisclient import redisclient
+from memento_client import MementoClient
 
 
 EXCLUDE_LIST = ('http://archive.today/', 'http://archive.is', 'https://archive.today/', 'https://archive.is/')
+
+PADDING = '10000101000000'
 
 
 #=============================================================================
@@ -34,8 +38,8 @@ MemValue = namedtuple('MemValue', 'ts, sec, url')
 #=============================================================================
 class MementoJsonApi(object):
     def __init__(self, paths):
-        self.api_endpoint = paths[0]
-        self.timemap_endpoint = paths[1]
+        self.api_endpoint = paths.get('timegate-json-url')
+        self.timemap_endpoint = paths.get('timemap-url')
         self.session = requests.Session()
 
     def timegate_query(self, timestamp, url):
@@ -82,6 +86,33 @@ class MementoJsonApi(object):
     def parse_mem_value(self, m):
         iso = m['datetime']
         dt = iso_date_to_datetime(iso)
+        sec = datetime_to_secs(dt)
+        ts = datetime_to_timestamp(dt)
+        url = m['uri']
+
+        return MemValue(ts, sec, url)
+
+
+#=============================================================================
+class MementoClientWrapper(object):
+    def __init__(self, paths):
+        #TODO: support timemaps
+        self.mc = MementoClient(timegate_uri=paths.get('timegate-url'), check_native_timegate=False)
+
+    def timegate_query(self, timestamp, url):
+        try:
+            timestamp = _pad_timestamp(timestamp, PADDING)
+            dt = timestamp_to_datetime(timestamp)
+            response = self.mc.get_memento_info(url, dt, include_uri_checks=False)
+            return response['mementos']
+
+        except Exception as e:
+            logging.debug(e)
+            msg = 'No Mementos Found'
+            raise NotFoundException(msg, url=url)
+
+    def parse_mem_value(self, m):
+        dt = m['datetime']
         sec = datetime_to_secs(dt)
         ts = datetime_to_timestamp(dt)
         url = m['uri']
@@ -185,8 +216,10 @@ class MementoClosestQuery(object):
 #=============================================================================
 class MementoIndexServer(object):
     def __init__(self, paths, **kwargs):
-        self.loader = MementoJsonApi(paths)
-        #logging.basicConfig(level=logging.DEBUG)
+        if paths.get('timegate-json-url'):
+            self.loader = MementoJsonApi(paths)
+        else:
+            self.loader = MementoClientWrapper(paths)
 
     def load_cdx(self, **params):
         sort = params.get('sort')
