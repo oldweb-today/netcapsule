@@ -35,6 +35,13 @@ Another early SLAC site, from 1994, in NCSA Mosaic (archive courtesy of Stanford
 (URL: `<HOST>/netscape/1997/http://geocities.com/`)
 ![IMAGE](sample-screenshots/1996_geocities.png)
 
+
+Scrollbar - Composition Blue archive from 2006, in Internet Explorer 4 (archive courtesy of Internet Archive):
+
+(URL: `<HOST>/ie4/2006/http://www.leegte.org/works/online/composition_blue/index.htm`)
+![IMAGE](sample-screenshots/2006_scrollbars.png)
+
+
 `https://twitter.com/` from early 2015 in modern Firefox (archive courtesy of Internet Archive):
 
 (URL: `<HOST>/firefox/201501/https://twitter.com/`)
@@ -49,9 +56,11 @@ To run locally, Docker and Docker Compose are required.
 
 2. Run `pull-containers.sh` to pull all existing containers from Docker Hub. Alternatively, you can run `browsers/build-containers.sh` to build them locally.
 
-3. Run `docker-compose up -d`
+3. Run `docker-compose build` (only needed first time after sync/changes to ensure local images up-to-date)
 
-4. You can now access the different browsers under: 
+4. Run `docker-compose up -d`
+
+5. You can now access the different browsers under: 
 
    `http://<DOCKER_HOST>:9020/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
    
@@ -66,20 +75,26 @@ The `browsers` directory corresponds to each supported browser and a `base-brows
 
 Current Browsers are:
    * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
-   * Netscape 4 (built based on instructions form https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
+   * Netscape 4 (built based on [instructions from here](https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
    * Firefox 40 `netcapsule/firefox`
+   * Internet Explorer 4.02 `netcapsule/ie4` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=2743)
+   * 
+   * Internet Explorer 5.5 `netcapsule/ie5.5` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=240)
 
-Each browser corresponds to a Docker image which extends `netcapsule/base-browser`.
 
 #### Adding new browsers
 
 To add a new browser, a new image should be created to extend `netcapsule/base-browser`.
 This base images sets up a number of settings, such as Xvfb, VNC server, [noVNC](https://github.com/kanaka/noVNC), [Fluxbox](http://fluxbox.org)
 
+For adding [WINE](https://www.winehq.org/) (Windows-based browsers), extend the `netcapsule-base-wine-browser` image which
+provides a latest stable build of WINE.
+
 * A `run.sh` file is usually used to start the browser.
 * The `$URL` environment variable can be used to start browser at requested url.
 * To read data from the archives, The HTTP (and optionally HTTPS) proxy servers should be set to
   `netcapsule_pywb_1:8080`. These setting are browser dependent.
+* A [fluxbox-apps](http://fluxbox.org/help/man-fluxbox-apps.php) config is usually provided to have Fluxbox start the browser in either a fullscreen or maximized state.
 
 For convenience, the new browser Docker image build can be added to `browsers/build-browsers.sh` script.
 Consult the existing browser setups for examples on how to add browsers.
