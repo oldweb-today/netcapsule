@@ -115,7 +115,13 @@ def init_container():
     else:
         tag = 'netcapsule/firefox'
 
-    vnc_port, cmd_port = dc.new_container(tag, {'URL': url, 'TS': ts})
+    env = {}
+    env['URL'] = url
+    env['TS'] = ts
+    env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
+    env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
+
+    vnc_port, cmd_port = dc.new_container(tag, env)
 
     host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]

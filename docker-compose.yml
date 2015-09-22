@@ -23,5 +23,9 @@ app:
         - /var/run/docker.sock:/var/run/docker.sock
         - ./app/browser:/browser
 
+    environment:
+        - SCREEN_WIDTH=1360
+        - SCREEN_HEIGHT=1020
+
     ports:
         - 9020:9020
