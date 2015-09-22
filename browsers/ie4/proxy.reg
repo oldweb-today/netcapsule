@@ -1,0 +1,8 @@
+Regedit4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"MigrateProxy"=dword:00000001
+"ProxyEnable"=dword:00000001
+"ProxyHttp1.1"=dword:00000000
+"ProxyServer"="netcapsule_pywb_1:8080"
+"ProxyOverride"="<local>"

@@ -1,0 +1,5 @@
+Regedit4
+
+[HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Internet Settings]
+"ProxyEnable"=dword:00000001
+"ProxyServer"="http://netcapsule_pywb_1:8080"
