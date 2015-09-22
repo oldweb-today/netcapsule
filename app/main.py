@@ -108,8 +108,8 @@ def init_container():
         tag = 'netcapsule/mosaic'
     elif browser == 'ie4':
         tag = 'netcapsule/ie4'
-    elif browser == 'ie5':
-        tag = 'netcapsule/ie5'
+    elif browser == 'ie5' or browser == 'ie55':
+        tag = 'netcapsule/ie5.5'
     elif browser == 'firefox':
         tag = 'netcapsule/firefox'
     else:
