@@ -1,0 +1,35 @@
+
+vnc_port: 6080
+cmd_port: 6082
+redis_host: netcapsule_redis_1
+pywb_host: netcapsule_pywb_1
+api_version: '1.18'
+
+expire_secs: 300
+remove_expired_secs: 20
+
+image_prefix: netcapsule
+
+browsers:
+    # firefox
+    firefox: firefox
+    ff: firefox
+
+    # netscape    
+    netscape: netscape
+    ns: netscape
+
+    # mosaic
+    mosaic: mosaic
+
+    # IE
+    ie4: ie4
+    ie5.5: ie5.5
+    ie: ie5.5
+
+    # Safari
+    safari: safari5
+    safari5: safari
+
+    # default
+    '': firefox

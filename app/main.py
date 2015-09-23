@@ -9,50 +9,66 @@ import time
 import re
 import atexit
 import redis
+import yaml
 
 from uwsgidecorators import timer
 import uwsgi
 
 
-VNC_PORT = 6080
-CMD_PORT = 6082
-VERSION='1.18'
-PYWB_HOST = 'netcapsule_pywb_1'
-REDIS_HOST = 'netcapsule_redis_1'
-
-EXPIRE_TIME = 120
-CHECK_TIME = 10
-
-
 #=============================================================================
 class DockerController(object):
+    def _load_config(self):
+        with open('./config.yaml') as fh:
+            config = yaml.load(fh)
+        return config
+
     def __init__(self):
-        self.redis = redis.StrictRedis(host=REDIS_HOST)
+        config = self._load_config()
+
+        self.REDIS_HOST = config['redis_host']
+        self.PYWB_HOST = config['pywb_host']
+        self.EXPIRE_TIME = config['expire_secs']
+        self.REMOVE_EXP_TIME = config['remove_expired_secs']
+        self.VERSION = config['api_version']
+
+        self.VNC_PORT = config['vnc_port']
+        self.CMD_PORT = config['cmd_port']
+
+        self.image_prefix = config['image_prefix']
+        self.browsers = config['browsers']
+
+        self.redis = redis.StrictRedis(host=self.REDIS_HOST)
 
         if os.path.exists('/var/run/docker.sock'):
             self.cli = Client(base_url='unix://var/run/docker.sock',
-                              version=VERSION)
+                              version=self.VERSION)
         else:
             kwargs = kwargs_from_env()
             kwargs['tls'].assert_hostname = False
-            kwargs['version'] = VERSION
+            kwargs['version'] = self.VERSION
             self.cli = Client(**kwargs)
 
-    def new_container(self, tag, env=None):
-        container = self.cli.create_container(image=tag,
-                                              ports=[VNC_PORT, CMD_PORT],
+    def new_container(self, browser, env=None):
+        tag = self.browsers.get(browser)
+
+        # get default browser
+        if not tag:
+            tag = self.browsers['']
+
+        container = self.cli.create_container(image=self.image_prefix + '/' + tag,
+                                              ports=[self.VNC_PORT, self.CMD_PORT],
                                               environment=env)
         id_ = container.get('Id')
 
         res = self.cli.start(container=id_,
-                             port_bindings={VNC_PORT: None, CMD_PORT: None},
-                             links={PYWB_HOST: PYWB_HOST,
-                                    REDIS_HOST: REDIS_HOST})
+                             port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
+                             links={self.PYWB_HOST: self.PYWB_HOST,
+                                    self.REDIS_HOST: self.REDIS_HOST})
 
-        vnc_port = self.cli.port(id_, VNC_PORT)
+        vnc_port = self.cli.port(id_, self.VNC_PORT)
         vnc_port = vnc_port[0]['HostPort']
 
-        cmd_port = self.cli.port(id_, CMD_PORT)
+        cmd_port = self.cli.port(id_, self.CMD_PORT)
         cmd_port = cmd_port[0]['HostPort']
 
         info = self.cli.inspect_container(id_)
@@ -60,7 +76,7 @@ class DockerController(object):
 
         short_id = id_[:12]
         self.redis.hset('all_containers', short_id, ip)
-        self.redis.setex('c:' + short_id, EXPIRE_TIME, 1)
+        self.redis.setex('c:' + short_id, self.EXPIRE_TIME, 1)
 
         return vnc_port, cmd_port
 
@@ -102,26 +118,13 @@ def init_container():
     url = request.query.get('url')
     ts = request.query.get('ts')
 
-    if browser == 'ns' or browser == 'netscape':
-        tag = 'netcapsule/netscape'
-    elif browser == 'mosaic':
-        tag = 'netcapsule/mosaic'
-    elif browser == 'ie4':
-        tag = 'netcapsule/ie4'
-    elif browser == 'ie5' or browser == 'ie55':
-        tag = 'netcapsule/ie5.5'
-    elif browser == 'firefox':
-        tag = 'netcapsule/firefox'
-    else:
-        tag = 'netcapsule/firefox'
-
     env = {}
     env['URL'] = url
     env['TS'] = ts
     env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
     env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
 
-    vnc_port, cmd_port = dc.new_container(tag, env)
+    vnc_port, cmd_port = dc.new_container(browser, env)
 
     host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]
@@ -152,13 +155,14 @@ dc = DockerController()
 
 application = default_app()
 
-@timer(CHECK_TIME, target='mule')
-def check_abandonded(signum):
-    #while True:
-    dc.remove_all(True)
-
-
 uwsgi.atexit = onexit
+
+def init_cleanup_timer(dc, expire_time):
+    @timer(expire_time, target='mule')
+    def check_abandonded(signum):
+        dc.remove_all(True)
+
+init_cleanup_timer(dc, dc.REMOVE_EXP_TIME)
 
 #run(host='0.0.0.0', port='9020')
 

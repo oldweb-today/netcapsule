@@ -5,12 +5,17 @@
 # Latest pywb
 docker pull ikreymer/pywb:dev
 
-# Netcapsule
-docker pull netcapsule/base-browser
-docker pull netcapsule/netscape
-docker pull netcapsule/firefox
-docker pull netcapsule/mosaic
 
-docker pull netcapsule/base-wine-browser
-docker pull netcapsule/ie4
-docker pull netcapsule/ie55
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+# Browsers
+for dir in $DIR/browsers/*/
+do
+    dir=${dir%*/}
+    name=`basename $dir`
+
+    echo "docker pull netcapsule/$name"
+    docker pull netcapsule/$name
+done
+
+
