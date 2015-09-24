@@ -8,7 +8,16 @@ When the Netcapsule web page is loaded, the old browser is loaded in an emulator
 setting and proxies the content from the archive in its original form (whenever possible).
 
 Any web archive (supporting CDX or Memento protocol interfaces) can be a source, and any browser running under Linux can be used.
-Currently included browsers are *Mosaic 2.7*, *Netscape 4* and a modern *Firefox 40*.
+Currently included browsers are:
+
+ - *Mosaic 2.7*,
+ - *Netscape 4.08 on Mac (7.5.5)*
+ - *Netscape 4.79 on Linux*
+ - IE 4.0
+ - IE 5.5
+ - *Safari 5 for Windows*
+ - *Firefox 40*
+ - 
 
 The system allows user to navigate by both url and by time.
 
@@ -75,11 +84,12 @@ The `browsers` directory corresponds to each supported browser and a `base-brows
 
 Current Browsers are:
    * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
-   * Netscape 4 (built based on [instructions from here](https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
+   * Netscape 4.79 (built based on [instructions from here](https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
    * Firefox 40 `netcapsule/firefox`
    * Internet Explorer 4.02 `netcapsule/ie4` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=2743)
-   * 
    * Internet Explorer 5.5 `netcapsule/ie5.5` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=240)
+   * Safari 5 `netcapsule/safari5` (using WINE, built with `winetricks`)
+   * Netscape 4.08 `netcapsule/netscape-mac-4.08` on 68K MacOS Using [Basilik2](http://basilisk.cebix.net/)
 
 
 #### Adding new browsers
@@ -87,14 +97,18 @@ Current Browsers are:
 To add a new browser, a new image should be created to extend `netcapsule/base-browser`.
 This base images sets up a number of settings, such as Xvfb, VNC server, [noVNC](https://github.com/kanaka/noVNC), [Fluxbox](http://fluxbox.org)
 
-For adding [WINE](https://www.winehq.org/) (Windows-based browsers), extend the `netcapsule-base-wine-browser` image which
+For adding [WINE](https://www.winehq.org/) (Windows-based browsers), extend the `netcapsule/base-wine-browser` image which
 provides a latest stable build of WINE.
+
+For adding [Basilik2](http://basilisk.cebix.net/) (Mac-based browsers), extend the `netcapsule/base-basilisk2-browser` image
+which includes an installation of BasiliskII.
 
 * A `run.sh` file is usually used to start the browser.
 * The `$URL` environment variable can be used to start browser at requested url.
 * To read data from the archives, The HTTP (and optionally HTTPS) proxy servers should be set to
   `netcapsule_pywb_1:8080`. These setting are browser dependent.
 * A [fluxbox-apps](http://fluxbox.org/help/man-fluxbox-apps.php) config is usually provided to have Fluxbox start the browser in either a fullscreen or maximized state.
+* Finally, add the browser to the `app/config.yaml` browser configuration and rebuild with `docker-compose build`
 
 For convenience, the new browser Docker image build can be added to `browsers/build-browsers.sh` script.
 Consult the existing browser setups for examples on how to add browsers.
