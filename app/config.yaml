@@ -19,6 +19,9 @@ browsers:
     netscape: netscape
     ns: netscape
 
+    # netscape-mac
+    nsmac: netscape-mac-4.08
+
     # mosaic
     mosaic: mosaic
 

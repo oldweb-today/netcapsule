@@ -24,8 +24,8 @@ app:
         - ./app/browser:/browser
 
     environment:
-        - SCREEN_WIDTH=1360
-        - SCREEN_HEIGHT=1020
+        - SCREEN_WIDTH=1200
+        - SCREEN_HEIGHT=800
 
     ports:
         - 9020:9020
