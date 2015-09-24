@@ -20,6 +20,8 @@ import urlparse
 WBURL_RX = re.compile('(.*/)([0-9]{1,14})(\w{2}_)?(/https?://.*)')
 EXTRACT_ORIG_LINK = re.compile(r'<([^>]+)>;\s*rel=\"original\"')
 
+NO_GZIP_UAS = ['NCSA_Mosaic']
+
 
 #=============================================================================
 class ReplayHandler(WBHandler):
@@ -78,7 +80,7 @@ class UpstreamArchiveLoader(object):
 
         # disable gzip, as mosaic won't support it!
         # TODO: maybe ungzip later
-        if 'NCSA_Mosaic' in user_agent:
+        if any(exclude in user_agent for exclude in NO_GZIP_UAS):
             headers={'Accept-Encoding': 'identity'}
 
         for url in urls:

@@ -19,7 +19,7 @@ from urlparse import urlsplit
 from redisclient import redisclient
 
 
-EXCLUDE_LIST = ('http://archive.today/', 'http://archive.is', 'https://archive.today/', 'https://archive.is/')
+EXCLUDE_LIST = ('http://archive.today/', 'http://archive.is', 'https://archive.today/', 'https://archive.is/', 'http://arquivo.pt')
 
 
 #=============================================================================
