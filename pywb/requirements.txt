@@ -1,4 +1,5 @@
--e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.10.9-dev
+pywb==0.10.10
+#-e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.10.9-dev
 certauth
 youtube-dl
 boto
