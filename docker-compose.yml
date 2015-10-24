@@ -14,7 +14,7 @@ memento_agg:
     image: ibnesayeed/memgator
     restart: always
 
-    command: server --arcs=/archives.json -t 15s -r 30s -T 30s
+    command: --arcs=/archives.json -t 15s -T 30s -r 30s server
     ports:
         - 1208:1208
 
