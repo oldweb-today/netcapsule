@@ -68,7 +68,7 @@
     "name": "archive.today",
     "timemap": "http://archive.today/timemap/",
     "timegate": "http://archive.today/timegate/",
-    "probability": 0.07
+    "probability": 0.07,
     "ignore": true
   },
   {
