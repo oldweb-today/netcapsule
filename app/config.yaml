@@ -5,7 +5,8 @@ redis_host: netcapsule_redis_1
 pywb_host: netcapsule_pywb_1
 api_version: '1.18'
 
-expire_secs: 300
+container_expire_secs: 30
+queue_expire_secs: 30
 remove_expired_secs: 20
 
 image_prefix: netcapsule

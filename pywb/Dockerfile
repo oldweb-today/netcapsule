@@ -5,7 +5,11 @@ WORKDIR /webarchive
 
 COPY requirements.txt /webarchive/
 
-RUN pip install -U -r requirements.txt
+RUN pip install -r requirements.txt
+
+ENV PYWB_VERSION -e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.11.0
+
+RUN pip install $PYWB_VERSION
 
 COPY config.yaml /webarchive/
 

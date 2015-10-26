@@ -4,5 +4,3 @@ boto
 uwsgi
 gevent
 redis
--e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.11.0-dev
-

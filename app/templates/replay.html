@@ -94,18 +94,65 @@
 
     $(function() {
         function init_container() {
-            var params = {"url": url, "ts": curr_ts, "browser": coll};
+            var params = {"url": url, "ts": curr_ts, "browser": coll, "state": "ping"};
 
-            var init_url = "/init_browser?" + $.param(params);
-            $.getJSON(init_url, function(data) {
-                cmd_host = data.cmd_host;
-                vnc_host = data.vnc_host;
+            var init_url = "ws://" + window.location.host + "/init_browser";
 
-                if (cmd_host && vnc_host) {
+            var initsock = new WebSocket(init_url);
+
+            var send = function(data) {
+                initsock.send(JSON.stringify(data));
+            };
+
+            initsock.onopen = function(evt) {
+                console.log("opened");
+                send(params);
+            }
+ 
+            initsock.onclose = function(evt) {
+                console.log("closed");
+            }
+
+            initsock.onmessage = function(evt) {
+                console.log("received");
+
+                var data = JSON.parse(evt.data);
+                params.id = data.id;
+
+                if (handle_response(data)) {
+                    send({"state": "done"});
+                } else {
+                    window.setTimeout(function() { send(params); }, 3000);
+                }
+            }
+
+            initsock.onerror = function(evt) {
+                console.log(evt);
+            }
+ 
+            //$.getJSON(init_url, handle_response);
+
+            function handle_response(data) {
+                if (data.cmd_host && data.vnc_host) {
+                    cmd_host = data.cmd_host;
+                    vnc_host = data.vnc_host;
+
                     $("#currLabel").html("Loading <b>" + url + "</b>");
                     window.setTimeout(do_init, 1000);
+                    return true;
+
+                } else if (data.queue != undefined) {
+                    var msg = "Waiting for empty slot... ";
+                    if (data.queue == 0) {
+                        msg += "<b>You are next!</b>";
+                    } else {
+                        msg += "At most <b>" + data.queue + " user(s)</b> ahead of you";
+                    }
+                    $("#currLabel").html(msg);
+                    return false;
+
                 }
-            });
+            }
         }
 
         function do_init() {

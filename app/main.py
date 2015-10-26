@@ -4,16 +4,19 @@ from docker.utils import kwargs_from_env
 from bottle import route, run, template, request, default_app, jinja2_view, static_file
 
 import os
+import base64
 import datetime
 import time
 import re
 import atexit
 import redis
 import yaml
+import json
 
 from uwsgidecorators import timer
 import uwsgi
 
+MAX_CONT = 5
 
 #=============================================================================
 class DockerController(object):
@@ -27,7 +30,8 @@ class DockerController(object):
 
         self.REDIS_HOST = config['redis_host']
         self.PYWB_HOST = config['pywb_host']
-        self.EXPIRE_TIME = config['expire_secs']
+        self.C_EXPIRE_TIME = config['container_expire_secs']
+        self.Q_EXPIRE_TIME = config['queue_expire_secs']
         self.REMOVE_EXP_TIME = config['remove_expired_secs']
         self.VERSION = config['api_version']
 
@@ -38,6 +42,8 @@ class DockerController(object):
         self.browsers = config['browsers']
 
         self.redis = redis.StrictRedis(host=self.REDIS_HOST)
+
+        self.redis.setnx('next_client', '1')
 
         if os.path.exists('/var/run/docker.sock'):
             self.cli = Client(base_url='unix://var/run/docker.sock',
@@ -76,7 +82,7 @@ class DockerController(object):
 
         short_id = id_[:12]
         self.redis.hset('all_containers', short_id, ip)
-        self.redis.setex('c:' + short_id, self.EXPIRE_TIME, 1)
+        self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
         return vnc_port, cmd_port
 
@@ -106,6 +112,40 @@ class DockerController(object):
             if remove:
                 self.remove_container(short_id, ip)
 
+    def add_new_client(self):
+        #client_id = base64.b64encode(os.urandom(27))
+        #self.redis.rpush('q:clients', client_id)
+        client_id = self.redis.incr('clients')
+        self.redis.setex('q:' + str(client_id), self.Q_EXPIRE_TIME, 1)
+        return client_id
+
+    def am_i_next(self, client_id):
+        next_client = int(self.redis.get('next_client'))
+
+        # not next client
+        if next_client != client_id:
+            # if this client expired, delete it from queue
+            if not self.redis.get('q:' + str(next_client)):
+                print('skipping expired', next_client)
+                self.redis.incr('next_client')
+
+            # missed your number somehow, get a new one!
+            if client_id < next_client:
+                client_id = self.add_new_client()
+            else:
+                self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
+
+            return client_id, client_id - next_client
+
+        # not avail yet
+        num_containers = self.redis.hlen('all_containers')
+        if num_containers >= MAX_CONT:
+            self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
+            return client_id, client_id - next_client
+
+        self.redis.incr('next_client')
+        return client_id, -1
+
 
 @route('/static/<filepath:path>')
 def server_static(filepath):
@@ -114,10 +154,36 @@ def server_static(filepath):
 
 @route(['/init_browser'])
 def init_container():
-    browser = request.query.get('browser')
-    url = request.query.get('url')
-    ts = request.query.get('ts')
+    host = request.environ.get('HTTP_HOST', '')
 
+    uwsgi.websocket_handshake()
+
+    while True:
+        req = uwsgi.websocket_recv()
+        #print('REQ', req)
+        req = json.loads(req)
+        if req['state'] == 'done':
+            break
+
+        client_id = req.get('id')
+        if not client_id:
+            client_id = dc.add_new_client()
+
+        client_id, queue_pos = dc.am_i_next(client_id)
+
+        if queue_pos < 0:
+            resp = do_init(req['browser'], req['url'], req['ts'], host)
+        else:
+            resp = {'queue': queue_pos, 'id': client_id}
+
+        resp = json.dumps(resp)
+        #print('RESP', resp)
+        uwsgi.websocket_send(resp)
+
+    print('ABORTING')
+
+
+def do_init(browser, url, ts, host):
     env = {}
     env['URL'] = url
     env['TS'] = ts
@@ -126,13 +192,13 @@ def init_container():
 
     vnc_port, cmd_port = dc.new_container(browser, env)
 
-    host = request.environ.get('HTTP_HOST')
     host = host.split(':')[0]
 
     vnc_host = host + ':' + vnc_port
     cmd_host = host + ':' + cmd_port
 
-    return {'vnc_host': vnc_host,
+    return {'queue': 0,
+            'vnc_host': vnc_host,
             'cmd_host': cmd_host
            }
 
