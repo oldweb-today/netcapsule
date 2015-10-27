@@ -49,13 +49,13 @@ COPY vnc_auto.html /novnc/vnc_auto.html
 
 WORKDIR /app/
 
-ADD requirements.txt /app/
+COPY requirements.txt /app/
 
 RUN pip install -U -r requirements.txt
 
 COPY app.py /app/app.py
 
-ADD entry_point.sh /app/entry_point.sh
+COPY entry_point.sh /app/entry_point.sh
 RUN chmod a+x /app/entry_point.sh
 
 CMD /app/entry_point.sh

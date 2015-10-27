@@ -7,9 +7,9 @@ COPY requirements.txt /webarchive/
 
 RUN pip install -r requirements.txt
 
-ENV PYWB_VERSION -e git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.11.0
+ENV PYWB_VERSION git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.11.0
 
-RUN pip install $PYWB_VERSION
+RUN pip install -U $PYWB_VERSION
 
 COPY config.yaml /webarchive/
 

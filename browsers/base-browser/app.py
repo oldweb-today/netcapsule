@@ -27,7 +27,7 @@ redis = None
 DEF_EXPIRE_TIME = 30
 expire_time = DEF_EXPIRE_TIME
 
-HOST = os.environ['HOSTNAME']
+HOST = os.environ.get('HOSTNAME', 'localhost')
 
 
 def set_timestamp(timestamp):
@@ -91,7 +91,7 @@ def ping():
 @route('/')
 def homepage():
     global start_url
-    redirect(start_url)
+    redirect(start_url, code=302)
 
 
 
@@ -103,14 +103,14 @@ function FindProxyForURL(url, host)
         return "DIRECT";
     }
 
-    return "PROXY {pywb_ip}:8080";
+    return "PROXY %s:8080";
 }
 """
 
 @route('/proxy.pac')
 def proxy():
     response.content_type = 'application/x-ns-proxy-autoconfig'
-    return PROXY_PAC.format(pywb_ip=pywb_ip)
+    return PROXY_PAC % pywb_ip
 
 
 def do_init():
@@ -129,14 +129,14 @@ def do_init():
     my_ip = r.my_ip
 
     global pywb_ip
-    pywb_ip = p.pywb_ip
+    pywb_ip = r.pywb_ip
 
     global start_url
-    start_url = p.start_url
+    start_url = r.start_url
 
     # not used here for now
     global start_ts
-    start_ts = p.start_ts
+    start_ts = r.start_ts
 
     global redis
     redis = StrictRedis(REDIS_HOST)
