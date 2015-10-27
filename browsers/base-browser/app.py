@@ -1,38 +1,38 @@
 #from selenium import webdriver
 #from selenium.webdriver.common.proxy import *
 
-from bottle import route, default_app, run, request, response
+from bottle import route, default_app, run, request, response, redirect
 
 import requests
-import redis
 import logging
+from redis import StrictRedis
 
 import time
 import sys
 import os
 
+from argparse import ArgumentParser
+
+
 PYWB_HOST_PORT = 'netcapsule_pywb_1:8080'
 
 REDIS_HOST = 'netcapsule_redis_1'
 
-curr_ip = '127.0.0.1'
-driver = None
+my_ip = '127.0.0.1'
+pywb_ip = None
+start_url = None
+start_ts = None
 
-redis_client = redis.StrictRedis(REDIS_HOST)
+redis = None
+DEF_EXPIRE_TIME = 30
+expire_time = DEF_EXPIRE_TIME
 
 HOST = os.environ['HOSTNAME']
-
-EXPIRE_TIME = 300
-
-
-logging.basicConfig(format='%(asctime)s: [%(levelname)s]: %(message)s',
-                    level=logging.DEBUG)
-
 
 
 def set_timestamp(timestamp):
     params = {'ts': timestamp,
-              'ip': curr_ip}
+              'ip': my_ip}
 
     try:
         r = requests.get('http://set.pywb.proxy/', params=params, proxies={'http': PYWB_HOST_PORT, 'https': PYWB_HOST_PORT})
@@ -50,29 +50,25 @@ def set_timestamp(timestamp):
 def route_set_ts():
     ts = request.query.get('ts')
     res = set_timestamp(ts)
-
-    global driver
-    if driver and res.get('success'):
-        try:
-            driver.refresh()
-        except Exception as e:
-            logging.debug(e)
-
     return res
+
 
 @route(['/ping'])
 def ping():
-    global redis_client
-
-    if not redis_client.hget('all_containers', HOST):
+    if not redis.hget('all_containers', HOST):
         return
 
-    redis_client.expire('c:' + HOST, EXPIRE_TIME)
+    global expire_time
+    expire_time = redis.get('container_expire_time')
+    if not expire_time:
+        expire_time = DEF_EXPIRE_TIME
+
+    redis.expire('c:' + HOST, expire_time)
 
     ts = request.query.get('ts')
 
     # all urls
-    all_urls = redis_client.hgetall(curr_ip + ':' + ts + ':urls')
+    all_urls = redis.hgetall(my_ip + ':' + ts + ':urls')
 
     count = 0
     min_sec = sys.maxint
@@ -85,27 +81,66 @@ def ping():
 
 
     # all_hosts
-    all_hosts = redis_client.smembers(curr_ip + ':' + ts + ':hosts')
+    all_hosts = redis.smembers(my_ip + ':' + ts + ':hosts')
 
     #return {'url': url, 'ts': ts, 'sec': sec}
     return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec,
             'hosts': list(all_hosts)}
 
 
+@route('/')
+def homepage():
+    global start_url
+    redirect(start_url)
+
+
+
+
+PROXY_PAC = """
+function FindProxyForURL(url, host)
+{
+    if (isInNet(host, "10.0.2.2")) {
+        return "DIRECT";
+    }
+
+    return "PROXY {pywb_ip}:8080";
+}
+"""
+
+@route('/proxy.pac')
+def proxy():
+    response.content_type = 'application/x-ns-proxy-autoconfig'
+    return PROXY_PAC.format(pywb_ip=pywb_ip)
+
+
 def do_init():
-    url = ''
-    ts = ''
+    logging.basicConfig(format='%(asctime)s: [%(levelname)s]: %(message)s',
+                        level=logging.DEBUG)
 
-    if len(sys.argv) > 1:
-        global curr_ip
-        curr_ip = sys.argv[1]
+    parser = ArgumentParser('netcapsule browser manager')
+    parser.add_argument('--my-ip')
+    parser.add_argument('--pywb-ip')
+    parser.add_argument('--start-url')
+    parser.add_argument('--start-ts')
 
-        if len(sys.argv) > 2:
-            url = sys.argv[2]
-            if len(sys.argv) > 3:
-                ts = sys.argv[3]
+    r = parser.parse_args()
 
-    #load_browser(url, ts)
+    global my_ip
+    my_ip = r.my_ip
+
+    global pywb_ip
+    pywb_ip = p.pywb_ip
+
+    global start_url
+    start_url = p.start_url
+
+    # not used here for now
+    global start_ts
+    start_ts = p.start_ts
+
+    global redis
+    redis = StrictRedis(REDIS_HOST)
+
     return default_app()
 
 application = do_init()
