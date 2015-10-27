@@ -99,7 +99,7 @@ def homepage():
 PROXY_PAC = """
 function FindProxyForURL(url, host)
 {
-    if (isInNet(host, "10.0.2.2")) {
+    if (shExpMatch(url, "http://10.0.2.2:6082/*")) {
         return "DIRECT";
     }
 
@@ -133,6 +133,8 @@ def do_init():
 
     global start_url
     start_url = r.start_url
+    if '://' not in start_url:
+        start_url = 'http://' + start_url
 
     # not used here for now
     global start_ts
