@@ -16,24 +16,28 @@ browsers:
     firefox: firefox
     ff: firefox
 
-    # netscape    
+    # mosaic
+    mosaic: mosaic
+
+    # netscape linux  
     netscape: netscape
     ns: netscape
 
     # netscape-mac
-    nsmac: netscape-mac-4.08
-
-    # netscape-mac
     nsmac3: netscape-mac-3.04
+    
+    nsmac: netscape-mac-4.08
+    nsmac4: netscape-mac-4.08
+
+    nsmac4.8: netscape4.8-mac
 
     # IE Mac
     ie4mac: ie4.01-mac
+    ie5mac: ie5.01-mac
 
-    # mosaic
-    mosaic: mosaic
-
-    # IE
+    # IE Win
     ie4: ie4
+    ie5: ie5.5
     ie5.5: ie5.5
     ie: ie5.5
 
