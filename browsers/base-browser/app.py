@@ -99,7 +99,7 @@ def homepage():
 PROXY_PAC = """
 function FindProxyForURL(url, host)
 {
-    if (shExpMatch(url, "http://10.0.2.2:6082/*")) {
+    if (isInNet(host, "10.0.2.2") || shExpMatch(url, "http://10.0.2.2:6082/*")) {
         return "DIRECT";
     }
 
