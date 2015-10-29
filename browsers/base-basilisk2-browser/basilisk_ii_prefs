@@ -6,7 +6,7 @@ serialb
 ether slirp
 udptunnel false
 udpport 6066
-rom /app/quadra650.rom
+rom /app/performa.rom
 bootdrive 0
 bootdriver 0
 ramsize 67108864

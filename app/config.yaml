@@ -26,6 +26,9 @@ browsers:
     # netscape-mac
     nsmac3: netscape-mac-3.04
 
+    # IE Mac
+    ie4mac: ie4.01-mac
+
     # mosaic
     mosaic: mosaic
 

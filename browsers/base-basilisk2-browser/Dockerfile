@@ -8,6 +8,6 @@ RUN sudo dpkg --add-architecture i386 \
 WORKDIR /app
 USER browser
 
-COPY quadra650.rom /app/
+COPY performa.rom /app/
 COPY basilisk_ii_prefs /app/
 
