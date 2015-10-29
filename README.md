@@ -10,14 +10,15 @@ setting and proxies the content from the archive in its original form (whenever 
 Any web archive (supporting CDX or Memento protocol interfaces) can be a source, and any browser running under Linux can be used.
 Currently included browsers are:
 
- - *Mosaic 2.7*,
+ - *Mosaic 2.7 for Linux*,
+ - *Netscape 3.04 on Mac (7.5.5)*
  - *Netscape 4.08 on Mac (7.5.5)*
  - *Netscape 4.79 on Linux*
- - IE 4.0
- - IE 5.5
+ - *IE 4.0 for Windows*
+ - *IE 4.01 for Mac (7.5.5)*
+ - *IE 5.5 for Windows*
  - *Safari 5 for Windows*
- - *Firefox 40*
- - 
+ - *Firefox 40 for Linux*
 
 The system allows user to navigate by both url and by time.
 
