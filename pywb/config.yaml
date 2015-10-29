@@ -20,6 +20,10 @@ collections:
 
         wb_handler_class: !!python/name:archivereplayview.MementoHandler
 
+        fallback: live
+
+    live:
+        index_paths: $liveweb
 
 # Specify memento archivelist XML
 memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
