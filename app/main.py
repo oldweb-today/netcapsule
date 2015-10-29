@@ -63,13 +63,16 @@ class DockerController(object):
 
         container = self.cli.create_container(image=self.image_prefix + '/' + tag,
                                               ports=[self.VNC_PORT, self.CMD_PORT],
-                                              environment=env)
+                                              environment=env,
+                                             )
         id_ = container.get('Id')
 
         res = self.cli.start(container=id_,
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
                              links={self.PYWB_HOST: self.PYWB_HOST,
-                                    self.REDIS_HOST: self.REDIS_HOST})
+                                    self.REDIS_HOST: self.REDIS_HOST},
+                             volumes_from=['netcapsule_shared_data_1'],
+                            )
 
         vnc_port = self.cli.port(id_, self.VNC_PORT)
         vnc_port = vnc_port[0]['HostPort']
