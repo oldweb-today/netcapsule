@@ -21,7 +21,10 @@ browsers:
 
     # netscape linux  
     netscape: netscape
-    ns: netscape
+
+    # netscape win
+    nswin4: netscape4.8-win
+    ns: netscape4.8-win
 
     # netscape-mac
     nsmac3: netscape-mac-3.04
