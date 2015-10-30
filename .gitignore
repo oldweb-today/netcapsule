@@ -40,3 +40,5 @@ nosetests.xml
 .pydevproject
 
 .vagrant
+
+pywb/ca/certs/*
