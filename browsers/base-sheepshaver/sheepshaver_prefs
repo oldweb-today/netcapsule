@@ -1,4 +1,3 @@
-cdrom /dev/null
 screen win/1024/768
 windowmodes 0
 screenmodes 0
