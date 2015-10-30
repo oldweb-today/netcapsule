@@ -16,7 +16,7 @@ import json
 from uwsgidecorators import timer
 import uwsgi
 
-MAX_CONT = 5
+MAX_CONT = 8
 
 #=============================================================================
 class DockerController(object):
