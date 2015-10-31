@@ -1,23 +1,20 @@
 pywb:
     build: ./pywb
-#    image: ikreymer/pywb:dev
     restart: always
     links:
         - redis
 
-    #volumes:
-    #    - ./pywb:/webarchive
-    #    - './pywb/uwsgi.ini:/uwsgi/uwsgi.ini'
-
 redis:
     image: redis:latest
     restart: always
+# remote redis
+#    command: redis-server --slaveof test 6379
 
-shared_data:
-    image: python:2.7
-    command: python -i
-    volumes:
-        - ./shareddata:/shareddata
+#shared_data:
+#    image: python:2.7
+#    command: python -i
+#    volumes:
+#        - ./shareddata:/shareddata
 
 app:
     build: ./app

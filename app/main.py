@@ -16,7 +16,7 @@ import json
 from uwsgidecorators import timer
 import uwsgi
 
-MAX_CONT = 8
+MAX_CONT = 2
 
 #=============================================================================
 class DockerController(object):
@@ -28,8 +28,8 @@ class DockerController(object):
     def __init__(self):
         config = self._load_config()
 
-        self.REDIS_HOST = config['redis_host']
-        self.PYWB_HOST = config['pywb_host']
+        self.REDIS_HOST = os.environ.get('REDIS_HOST', 'netcapsule_redis_1')
+        self.PYWB_HOST = os.environ.get('PYWB_HOST', 'netcapsule_pywb_1')
         self.C_EXPIRE_TIME = config['container_expire_secs']
         self.Q_EXPIRE_TIME = config['queue_expire_secs']
         self.REMOVE_EXP_TIME = config['remove_expired_secs']
@@ -49,12 +49,20 @@ class DockerController(object):
             self.cli = Client(base_url='unix://var/run/docker.sock',
                               version=self.VERSION)
         else:
-            kwargs = kwargs_from_env()
-            kwargs['tls'].assert_hostname = False
+            kwargs = kwargs_from_env(assert_hostname=False)
             kwargs['version'] = self.VERSION
             self.cli = Client(**kwargs)
 
-    def new_container(self, browser, env=None):
+    def _get_host_port(self, info, port, default_host):
+        info = info['NetworkSettings']['Ports'][str(port) + '/tcp']
+        info = info[0]
+        host = info['HostIp']
+        if host == '0.0.0.0' and default_host:
+            host = default_host
+
+        return host + ':' + info['HostPort']
+
+    def new_container(self, browser, env=None, default_host=None):
         tag = self.browsers.get(browser)
 
         # get default browser
@@ -69,16 +77,10 @@ class DockerController(object):
 
         res = self.cli.start(container=id_,
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                             links={self.PYWB_HOST: self.PYWB_HOST,
-                                    self.REDIS_HOST: self.REDIS_HOST},
-                             volumes_from=['netcapsule_shared_data_1'],
+                             #links={self.PYWB_HOST: self.PYWB_HOST,
+                             #       self.REDIS_HOST: self.REDIS_HOST},
+                             #volumes_from=['netcapsule_shared_data_1'],
                             )
-
-        vnc_port = self.cli.port(id_, self.VNC_PORT)
-        vnc_port = vnc_port[0]['HostPort']
-
-        cmd_port = self.cli.port(id_, self.CMD_PORT)
-        cmd_port = cmd_port[0]['HostPort']
 
         info = self.cli.inspect_container(id_)
         ip = info['NetworkSettings']['IPAddress']
@@ -87,7 +89,8 @@ class DockerController(object):
         self.redis.hset('all_containers', short_id, ip)
         self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
-        return vnc_port, cmd_port
+        return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
+                'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host)}
 
     def remove_container(self, short_id, ip):
         print('REMOVING ' + short_id)
@@ -116,13 +119,22 @@ class DockerController(object):
                 self.remove_container(short_id, ip)
 
     def add_new_client(self):
-        #client_id = base64.b64encode(os.urandom(27))
-        #self.redis.rpush('q:clients', client_id)
         client_id = self.redis.incr('clients')
+        enc_id = base64.b64encode(os.urandom(27))
+        self.redis.setex('cm:' + enc_id, self.Q_EXPIRE_TIME, client_id)
         self.redis.setex('q:' + str(client_id), self.Q_EXPIRE_TIME, 1)
-        return client_id
+        return enc_id, client_id
 
-    def am_i_next(self, client_id):
+    def am_i_next(self, enc_id):
+        client_id = None
+        if enc_id:
+            self.redis.expire('cm:' + enc_id, self.Q_EXPIRE_TIME)
+            client_id = self.redis.get('cm:' + enc_id)
+
+        if not client_id:
+            enc_id, client_id = dc.add_new_client()
+
+        client_id = int(client_id)
         next_client = int(self.redis.get('next_client'))
 
         # not next client
@@ -134,20 +146,20 @@ class DockerController(object):
 
             # missed your number somehow, get a new one!
             if client_id < next_client:
-                client_id = self.add_new_client()
+                enc_id, client_id = self.add_new_client()
             else:
                 self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
 
-            return client_id, client_id - next_client
+            return enc_id, client_id - next_client
 
         # not avail yet
         num_containers = self.redis.hlen('all_containers')
         if num_containers >= MAX_CONT:
             self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
-            return client_id, client_id - next_client
+            return enc_id, client_id - next_client
 
         self.redis.incr('next_client')
-        return client_id, -1
+        return enc_id, -1
 
 
 @route('/static/<filepath:path>')
@@ -158,32 +170,19 @@ def server_static(filepath):
 @route(['/init_browser'])
 def init_container():
     host = request.environ.get('HTTP_HOST', '')
+    host = host.split(':')[0]
 
-    uwsgi.websocket_handshake()
+    client_id, queue_pos = dc.am_i_next(request.query.get('id'))
 
-    while True:
-        req = uwsgi.websocket_recv()
-        #print('REQ', req)
-        req = json.loads(req)
-        if req['state'] == 'done':
-            break
+    if queue_pos < 0:
+        browser = request.query.get('browser')
+        url = request.query.get('url')
+        ts = request.query.get('ts')
+        resp = do_init(browser, url, ts, host)
+    else:
+        resp = {'queue': queue_pos, 'id': client_id}
 
-        client_id = req.get('id')
-        if not client_id:
-            client_id = dc.add_new_client()
-
-        client_id, queue_pos = dc.am_i_next(client_id)
-
-        if queue_pos < 0:
-            resp = do_init(req['browser'], req['url'], req['ts'], host)
-        else:
-            resp = {'queue': queue_pos, 'id': client_id}
-
-        resp = json.dumps(resp)
-        #print('RESP', resp)
-        uwsgi.websocket_send(resp)
-
-    print('ABORTING')
+    return resp
 
 
 def do_init(browser, url, ts, host):
@@ -192,19 +191,12 @@ def do_init(browser, url, ts, host):
     env['TS'] = ts
     env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
     env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
+    env['REDIS_HOST'] = dc.REDIS_HOST
+    env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
 
-    vnc_port, cmd_port = dc.new_container(browser, env)
-
-    host = host.split(':')[0]
-
-    vnc_host = host + ':' + vnc_port
-    cmd_host = host + ':' + cmd_port
-
-    return {'queue': 0,
-            'vnc_host': vnc_host,
-            'cmd_host': cmd_host
-           }
-
+    info = dc.new_container(browser, env, host)
+    info['queue'] = 0
+    return info
 
 @route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])

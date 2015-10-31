@@ -96,50 +96,21 @@
         function init_container() {
             var params = {"url": url, "ts": curr_ts, "browser": coll, "state": "ping"};
 
-            var init_url = "ws://" + window.location.host + "/init_browser";
+            function send_request() {
+                var init_url = "/init_browser?" + $.param(params);
 
-            var initsock = new WebSocket(init_url);
-
-            var send = function(data) {
-                initsock.send(JSON.stringify(data));
-            };
-
-            initsock.onopen = function(evt) {
-                console.log("opened");
-                send(params);
+                $.getJSON(init_url, handle_response);
             }
- 
-            initsock.onclose = function(evt) {
-                console.log("closed");
-            }
-
-            initsock.onmessage = function(evt) {
-                console.log("received");
-
-                var data = JSON.parse(evt.data);
-                params.id = data.id;
-
-                if (handle_response(data)) {
-                    send({"state": "done"});
-                } else {
-                    window.setTimeout(function() { send(params); }, 3000);
-                }
-            }
-
-            initsock.onerror = function(evt) {
-                console.log(evt);
-            }
- 
-            //$.getJSON(init_url, handle_response);
 
             function handle_response(data) {
+                params.id = data.id;
+                
                 if (data.cmd_host && data.vnc_host) {
                     cmd_host = data.cmd_host;
                     vnc_host = data.vnc_host;
 
                     $("#currLabel").html("Loading <b>" + url + "</b>");
                     window.setTimeout(do_init, 1000);
-                    return true;
 
                 } else if (data.queue != undefined) {
                     var msg = "Waiting for empty slot... ";
@@ -149,10 +120,12 @@
                         msg += "At most <b>" + data.queue + " user(s)</b> ahead of you";
                     }
                     $("#currLabel").html(msg);
-                    return false;
 
+                    window.setTimeout(send_request, 3000);
                 }
             }
+
+            send_request();
         }
 
         function do_init() {

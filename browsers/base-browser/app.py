@@ -14,11 +14,12 @@ import os
 from argparse import ArgumentParser
 
 
-PYWB_HOST_PORT = 'netcapsule_pywb_1:8080'
+PYWB_HOST_PORT = os.environ.get('PYWB_HOST_PORT', 'netcapsule_pywb_1:8080')
 
-REDIS_HOST = 'netcapsule_redis_1'
+REDIS_HOST = os.environ.get('REDIS_HOST', 'netcapsule_redis_1')
 
 my_ip = '127.0.0.1'
+
 pywb_ip = None
 start_url = None
 start_ts = None

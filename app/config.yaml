@@ -1,9 +1,6 @@
-
+api_version: '1.18'
 vnc_port: 6080
 cmd_port: 6082
-redis_host: netcapsule_redis_1
-pywb_host: netcapsule_pywb_1
-api_version: '1.18'
 
 container_expire_secs: 30
 queue_expire_secs: 30
