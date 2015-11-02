@@ -20,5 +20,5 @@ echo -n -e "$URL\r" >> ./share/proxy_prefs
 
 touch ./share/RUN_$RUN_BROWSER
 
-./SheepShaver --rom ./newworld86.rom --disk ./hd.dsk --extfs ./share/
+./SheepShaver --rom ./oldworld.rom --disk ./hd.dsk --extfs ./share/
 

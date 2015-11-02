@@ -33,7 +33,7 @@ browsers:
 
     # IE Mac
     ie4mac: ie4.01-mac
-    ie5mac: ie5.01-mac
+    ie5mac: ie5.1-mac
 
     # IE Win
     ie4: ie4
