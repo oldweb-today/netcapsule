@@ -10,7 +10,7 @@ WORKDIR /home/browser
 
 #COPY ./SheepShaver /home/browser/SheepShaver
 
-COPY newworld86.rom /home/browser/
+COPY oldworld.rom /home/browser/
 COPY NetscapePreferences /home/browser/NetscapePreferences
 COPY sheepshaver_prefs /home/browser/.sheepshaver_prefs
 

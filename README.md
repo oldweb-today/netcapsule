@@ -13,15 +13,15 @@ Currently included browsers are:
 
  - *Mosaic 2.7 on Linux*
 
- - *Netscape 3.04 on Mac (7.5.5)*
- - *Netscape 4.08 on Mac (7.5.5)*
+ - *Netscape 3.04 on Mac *
+ - *Netscape 4.08 on Mac *
  - *Netscape 4.79 on Linux*
  - *Netscape 4.8 on Windows*
- - *Netscape 4.8 on Mac (8.6)*
+ - *Netscape 4.8 on Mac *
 
  - *IE 4.0 on Windows*
- - *IE 4.01 on Mac (7.5.5)*
- - *IE 5.1.7 on Mac (8.6)*
+ - *IE 4.01 on Mac *
+ - *IE 5.1.7 on Mac *
  - *IE 5.5 on Windows*
 
  - *Safari 5 on Windows*
