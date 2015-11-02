@@ -14,8 +14,8 @@ awk -v RS="\r" -v URL="$URL" '{gsub("HOME_PAGE_URL", URL, $0); print}' ./Netscap
 mv /tmp/prefs.tmp "./share/Netscape Preferences"
 
 # For IE
-echo -n -e "$PYWB_IP:8080\r" > ./share/proxy_prefs
-echo -n -e "$URL\r" >> ./share/proxy_prefs
+echo -n "$PYWB_IP:8080" > ./share/proxy_ip
+echo -n $URL > ./share/home_page
 
 
 touch ./share/RUN_$RUN_BROWSER

@@ -79,7 +79,7 @@ class DockerController(object):
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
                              #links={self.PYWB_HOST: self.PYWB_HOST,
                              #       self.REDIS_HOST: self.REDIS_HOST},
-                             #volumes_from=['netcapsule_shared_data_1'],
+                             volumes_from=['netcapsule_shared_data_1'],
                             )
 
         info = self.cli.inspect_container(id_)
