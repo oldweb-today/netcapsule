@@ -28,7 +28,8 @@ class DockerController(object):
     def __init__(self):
         config = self._load_config()
 
-        self.REDIS_HOST = os.environ.get('REDIS_HOST', 'netcapsule_redis_1')
+        self.LOCAL_REDIS_HOST = 'netcapsule_redis_1'
+        self.REDIS_HOST = os.environ.get('REDIS_HOST', self.LOCAL_REDIS_HOST)
         self.PYWB_HOST = os.environ.get('PYWB_HOST', 'netcapsule_pywb_1')
         self.C_EXPIRE_TIME = config['container_expire_secs']
         self.Q_EXPIRE_TIME = config['queue_expire_secs']
@@ -77,8 +78,8 @@ class DockerController(object):
 
         res = self.cli.start(container=id_,
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                             #links={self.PYWB_HOST: self.PYWB_HOST,
-                             #       self.REDIS_HOST: self.REDIS_HOST},
+                             links={self.PYWB_HOST: self.PYWB_HOST,
+                                    self.LOCAL_REDIS_HOST: self.LOCAL_REDIS_HOST},
                              volumes_from=['netcapsule_shared_data_1'],
                             )
 
