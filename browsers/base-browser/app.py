@@ -16,7 +16,9 @@ from argparse import ArgumentParser
 
 PYWB_HOST_PORT = os.environ.get('PYWB_HOST_PORT', 'netcapsule_pywb_1:8080')
 
-REDIS_HOST = os.environ.get('REDIS_HOST', 'netcapsule_redis_1')
+LOCAL_REDIS_HOST = 'netcapsule_redis_1'
+
+REDIS_HOST = os.environ.get('REDIS_HOST', LOCAL_REDIS_HOST)
 
 my_ip = '127.0.0.1'
 
@@ -25,6 +27,7 @@ start_url = None
 start_ts = None
 
 redis = None
+local_redis = None
 DEF_EXPIRE_TIME = 30
 expire_time = DEF_EXPIRE_TIME
 
@@ -69,7 +72,7 @@ def ping():
     ts = request.query.get('ts')
 
     # all urls
-    all_urls = redis.hgetall(my_ip + ':' + ts + ':urls')
+    all_urls = local_redis.hgetall(my_ip + ':' + ts + ':urls')
 
     count = 0
     min_sec = sys.maxint
@@ -82,7 +85,7 @@ def ping():
 
 
     # all_hosts
-    all_hosts = redis.smembers(my_ip + ':' + ts + ':hosts')
+    all_hosts = local_redis.smembers(my_ip + ':' + ts + ':hosts')
 
     #return {'url': url, 'ts': ts, 'sec': sec}
     return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec,
@@ -143,6 +146,12 @@ def do_init():
 
     global redis
     redis = StrictRedis(REDIS_HOST)
+
+    global local_redis
+    if REDIS_HOST != LOCAL_REDIS_HOST:
+        local_redis = StrictRedis(LOCAL_REDIS_HOST)
+    else:
+        local_redis = redis
 
     return default_app()
 

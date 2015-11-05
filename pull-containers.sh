@@ -3,7 +3,7 @@
 # Pull all containers used by Netcapsule from Dockerhub
 
 # Latest pywb
-docker pull ikreymer/pywb:dev
+#docker pull ikreymer/pywb:dev
 
 
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
