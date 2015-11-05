@@ -3,6 +3,24 @@ pywb:
     restart: always
     links:
         - redis
+        - memgator
+
+    environment:
+        - ARCHIVE_JSON=http://webenact.rhizome.org/collinfo.json
+    #volumes:
+    #    - ./archives.json:/archives.json
+
+memgator:
+#    image: ibnesayeed/memgator
+    image: ikreymer/memgator
+    restart: always
+
+    command: --arcs=http://webenact.rhizome.org/collinfo.json server
+    ports:
+        - 1208:1208
+
+    #volumes:
+    #    - ./archives.json:/archives.json
 
 redis:
     image: redis:latest
@@ -22,7 +40,6 @@ app:
 
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
-        - ./app/browser:/browser
 
     environment:
         - SCREEN_WIDTH=1200

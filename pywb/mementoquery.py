@@ -45,9 +45,10 @@ class MementoJsonApi(object):
             r = self.session.get(full)
             result = r.json()
         except Exception as e:
-            #if r.status_code == 404:
-            #    return {}
-            logging.debug(e)
+            if r.status_code != 404:
+                import traceback
+                traceback.print_exc(e)
+
             msg = 'No Mementos Found'
             raise NotFoundException(msg, url=url)
 

@@ -13,21 +13,24 @@ collections:
     # Memento Aggregator Collection: Specify paths to Timegate, Timemap
     memento_reconstruct:
         index_paths:
-            - http://timetravel.mementoweb.org/api/json/
-            - http://labs.mementoweb.org/timemap/json/
+            #- http://timetravel.mementoweb.org/api/json/
+            #- http://labs.mementoweb.org/timemap/json/
+            - http://netcapsule_memgator_1:1208/timenav/json/
+            - http://netcapsule_memgator_1:1208/timemap/json/
 
         server_cls: !!python/name:mementoquery.MementoIndexServer
 
         wb_handler_class: !!python/name:archivereplayview.MementoHandler
 
-        fallback: live
+#        fallback: live
 
     live:
         index_paths: $liveweb
 
 # Specify memento archivelist XML
-memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
-
+#memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
+#memento_archive_json: '/archives.json'
+memento_archive_json: $ARCHIVE_JSON
 
 buffer_response: false
 urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter

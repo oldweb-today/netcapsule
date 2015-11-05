@@ -14,6 +14,8 @@ import logging
 
 import xml.etree.ElementTree as ElementTree
 import urlparse
+import json
+import os
 
 
 #=============================================================================
@@ -163,10 +165,40 @@ class UpstreamArchiveLoader(object):
 class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
     def __init__(self, config):
         super(MementoUpstreamArchiveLoader, self).__init__(config)
-        self.load_archive_info_xml(config.get('memento_archive_xml'))
+        if config.get('memento_archive_json'):
+            self.load_archive_info_json(config.get('memento_archive_json'))
+        else:
+            self.load_archive_info_xml(config.get('memento_archive_xml'))
+
+    def load_archive_info_json(self, url):
+        self.archive_infos = {}
+        url = os.path.expandvars(url)
+        logging.debug('Loading XML from {0}'.format(url))
+        if not url:
+            return
+
+        try:
+            stream = BlockLoader().load(url)
+        except Exception as e:
+            logging.debug(e)
+            logging.debug('Proceeding without json archive info')
+
+        archives = json.loads(stream.read())
+        for arc in archives:
+            id_ = arc['id']
+            name = arc['name']
+            uri = arc['timegate']
+            unrewritten_url = uri + '{timestamp}id_/{url}'
+
+            self.archive_infos[id_] = {'uri': uri,
+                                       'name': name,
+                                       'rewritten': True,
+                                       'unrewritten_url': unrewritten_url}
+
 
     def load_archive_info_xml(self, url):
         self.archive_infos = {}
+        url = os.path.expandvars(url)
         logging.debug('Loading XML from {0}'.format(url))
         if not url:
             return
@@ -199,10 +231,10 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
                                         'name': longname
                                         }
 
-    def find_archive_info(self, host):
-        host = host.split(':')[0]
+    def find_archive_info(self, uri):
+        #uri = uri.split('://', 1)[-1]
         for name, info in self.archive_infos.iteritems():
-            if host in info['uri']:
+            if info['uri'] in uri:
                 return info
         return None
 
@@ -210,28 +242,30 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
     def _get_urls_to_try(self, cdx, skip_hosts, wbrequest):
         src_url = cdx['src_url']
         parts = urlparse.urlsplit(src_url)
-        archive_host = parts.netloc
 
-        if archive_host in skip_hosts:
-            raise CaptureException('Skipping already failed: ' + archive_host)
+        if src_url in skip_hosts:
+            raise CaptureException('Skipping already failed: ' + src_url)
 
-        info = self.find_archive_info(archive_host)
+        info = self.find_archive_info(src_url)
+        print(src_url)
+        print(info)
 
-        if info and info['unrewritten_url']:
+        if info and info.get('unrewritten_url'):
             orig_url = info['unrewritten_url'].format(timestamp=cdx['timestamp'],
                                                       url=cdx['url'])
             try_urls = [orig_url]
+            print(try_urls)
         else:
             try_urls = [src_url]
 
         if info:
-            name = info.get('name', archive_host)
+            name = info.get('name', src_url)
         else:
-            name = archive_host
+            name = src_url
 
         wbrequest.urlrewriter.rewrite_opts['orig_src_url'] = cdx['src_url']
         wbrequest.urlrewriter.rewrite_opts['archive_info'] = info
-        return try_urls, archive_host, name
+        return try_urls, src_url, name
 
 
 #=============================================================================
@@ -247,7 +281,7 @@ class ReUrlRewriter(UrlRewriter):
         # or archive is not rewritten, use as is
         # (but add regex check for rewritten urls just in case, as they
         # may pop up in Location headers)
-        if info and (info['unrewritten_url'] or not info['rewritten']):
+        if info and (info.get('unrewritten_url') or not info.get('rewritten')):
             m = WBURL_RX.match(url)
             if m:
                 if not mod:
