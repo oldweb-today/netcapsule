@@ -1,26 +1,22 @@
 pywb:
     build: ./pywb
     restart: always
-    links:
-        - redis
-        - memgator
-
     environment:
-        - ARCHIVE_JSON=http://webenact.rhizome.org/collinfo.json
-    #volumes:
-    #    - ./archives.json:/archives.json
+        - ARCHIVE_JSON=${ARCHIVE_JSON}
+
+    volumes:
+        - ./archives.json:/archives.json
 
 memgator:
-#    image: ibnesayeed/memgator
-    image: ikreymer/memgator
+    image: ibnesayeed/memgator:master
     restart: always
 
-    command: --arcs=http://webenact.rhizome.org/collinfo.json server
+    command: --arcs=${ARCHIVE_JSON} server
     ports:
         - 1208:1208
 
-    #volumes:
-    #    - ./archives.json:/archives.json
+    volumes:
+        - ./archives.json:/archives.json
 
 redis:
     image: redis:latest
@@ -35,8 +31,6 @@ shared_data:
 app:
     build: ./app
     restart: always
-    links:
-        - redis
 
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock

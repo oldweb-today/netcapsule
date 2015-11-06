@@ -1,4 +1,4 @@
-api_version: '1.18'
+api_version: '1.21'
 vnc_port: 6080
 cmd_port: 6082
 

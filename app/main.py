@@ -78,10 +78,10 @@ class DockerController(object):
 
         res = self.cli.start(container=id_,
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                             links={self.PYWB_HOST: self.PYWB_HOST,
-                                    self.LOCAL_REDIS_HOST: self.LOCAL_REDIS_HOST},
                              volumes_from=['netcapsule_shared_data_1'],
                             )
+
+        self.cli.connect_container_to_network(id_, 'netcapsule')
 
         info = self.cli.inspect_container(id_)
         ip = info['NetworkSettings']['IPAddress']

@@ -247,14 +247,11 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             raise CaptureException('Skipping already failed: ' + src_url)
 
         info = self.find_archive_info(src_url)
-        print(src_url)
-        print(info)
 
         if info and info.get('unrewritten_url'):
             orig_url = info['unrewritten_url'].format(timestamp=cdx['timestamp'],
                                                       url=cdx['url'])
             try_urls = [orig_url]
-            print(try_urls)
         else:
             try_urls = [src_url]
 
