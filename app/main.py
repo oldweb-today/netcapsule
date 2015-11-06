@@ -84,6 +84,8 @@ class DockerController(object):
 
         info = self.cli.inspect_container(id_)
         ip = info['NetworkSettings']['IPAddress']
+        if not ip:
+            ip = info['NetworkSettings']['Networks']['netcapsule']['IPAddress']
 
         short_id = id_[:12]
         self.redis.hset('all_containers', short_id, ip)
