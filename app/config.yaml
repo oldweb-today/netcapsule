@@ -2,7 +2,7 @@ api_version: '1.21'
 vnc_port: 6080
 cmd_port: 6082
 
-container_expire_secs: 60
+container_expire_secs: 90
 queue_expire_secs: 30
 remove_expired_secs: 20
 
