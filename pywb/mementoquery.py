@@ -34,8 +34,8 @@ MemValue = namedtuple('MemValue', 'ts, sec, url')
 #=============================================================================
 class MementoJsonApi(object):
     def __init__(self, paths):
-        self.api_endpoint = paths[0]
-        self.timemap_endpoint = paths[1]
+        self.api_endpoint = paths['timegate']
+        self.timemap_endpoint = paths['timemap']
         self.session = requests.Session()
 
     def timegate_query(self, timestamp, url):

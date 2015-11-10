@@ -247,10 +247,13 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
         if src_url in skip_hosts:
             raise CaptureException('Skipping already failed: ' + src_url)
 
+        archive_host = parts.netloc
+
         info = self.find_archive_info(src_url)
 
         if info and info.get('unrewritten_url'):
-            orig_url = info['unrewritten_url'].format(timestamp=cdx['timestamp'],
+            orig_url = info['unrewritten_url'].format(archive_host=archive_host,
+                                                      timestamp=cdx['timestamp'],
                                                       url=cdx['url'])
             try_urls = [orig_url]
         else:
