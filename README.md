@@ -41,6 +41,8 @@ The system allows user to navigate by both url and by time.
 The date can be changed dynamically by entering a new date/time (in 14-digit format currently) and hitting *Update*.
 The virtual browser must then be reloaded to reflect the new date/time settings.
 
+Note: Netcapsule now requires latest Docker Engine 1.9 and Docker Compose 1.5
+
 
 ### Sample screenshots
 
@@ -82,16 +84,14 @@ To run locally, Docker and Docker Compose are required.
 
 2. Run `pull-containers.sh` to pull all existing containers from Docker Hub. Alternatively, you can run `browsers/build-containers.sh` to build them locally.
 
-3. Run `docker-compose build` (only needed first time after sync/changes to ensure local images up-to-date)
-
-4. Run `docker-compose up -d`
+3. Run `run-local.sh`, which will invoke Docker Compose build and run steps. (Netcapsule uses the new Docker networking,
+requiring Docker Engine 1.9 and Compose 1.5)
 
 5. You can now access the different browsers under: 
 
-   `http://<DOCKER_HOST>:9020/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`
+   `http://<DOCKER_HOST>:9020/<BROWSER>/<TS>/<URL>` where `<BROWSER>` is one of `netscape`, `firefox`, `mosaic`, etc..
    
    Netcapsule main app runs on port `9020` and can be changed in `docker-compose.yml`.
-   `DOCKER_HOST` is likely just `localhost` if on Linux or often `192.168.59.103` if using [boot2docker](http://boot2docker.io/)
 
 ### How It Works
 
