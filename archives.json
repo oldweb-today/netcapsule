@@ -1,0 +1,88 @@
+[
+  {
+    "id": "ia",
+    "name": "Internet Archive",
+    "timemap": "http://web.archive.org/web/timemap/link/",
+    "timegate": "http://web.archive.org/web/",
+    "probability": 0.5
+  },
+  {
+    "id": "proni",
+    "name": "PRONI Web Archive",
+    "timemap": "http://webarchive.proni.gov.uk/timemap/",
+    "timegate": "http://webarchive.proni.gov.uk/timegate/",
+    "probability": 0.001
+  },
+  {
+    "id": "pastpages",
+    "name": "PastPages Web Archive",
+    "timemap": "http://www.pastpages.org/timemap/link/",
+    "timegate": "http://www.pastpages.org/timegate/",
+    "probability": 0.001,
+    "ignore": true
+  },
+  {
+    "id": "ba",
+    "name": "Bibliotheca Alexandrina Web Archive",
+    "timemap": "http://web.archive.bibalex.org/web/timemap/link/",
+    "timegate": "http://web.archive.bibalex.org/web/",
+    "probability": 0.0,
+    "ignore": true
+  },
+  {
+    "id": "blarchive",
+    "name": "UK Web Archive",
+    "timemap": "http://www.webarchive.org.uk/wayback/archive/timemap/link/",
+    "timegate": "http://www.webarchive.org.uk/wayback/archive/",
+    "probability": 0.2
+  },
+  {
+    "id": "loc",
+    "name": "Library of Congress",
+    "timemap": "http://webarchive.loc.gov/all/timemap/link/",
+    "timegate": "http://webarchive.loc.gov/all/",
+    "probability": 0.05
+  },
+  {
+    "id": "archiveit",
+    "name": "Archive-It",
+    "timemap": "http://wayback.archive-it.org/all/timemap/link/",
+    "timegate": "http://wayback.archive-it.org/all/",
+    "probability": 0.1
+  },
+  {
+    "id": "ukparliament",
+    "name": "UK Parliament Web Archive",
+    "timemap": "http://webarchive.parliament.uk/timemap/",
+    "timegate": "http://webarchive.parliament.uk/timegate/"
+  },
+  {
+    "id": "uknationalarchives",
+    "name": "UK National Archives Web Archive",
+    "timemap": "http://webarchive.nationalarchives.gov.uk/timemap/",
+    "timegate": "http://webarchive.nationalarchives.gov.uk/timegate/",
+    "probability": 0.04
+  },
+  {
+    "id": "archive.is",
+    "name": "archive.today",
+    "timemap": "http://archive.today/timemap/",
+    "timegate": "http://archive.today/timegate/",
+    "probability": 0.07,
+    "ignore": true
+  },
+  {
+    "id": "is",
+    "name": "Icelandic Web Archive",
+    "timemap": "http://wayback.vefsafn.is/wayback/timemap/link/",
+    "timegate": "http://wayback.vefsafn.is/wayback/",
+    "probability": 0.06
+  },
+  {
+    "id": "swa",
+    "name": "Stanford Web Archive",
+    "timemap": "https://swap.stanford.edu/timemap/link/",
+    "timegate": "https://swap.stanford.edu/",
+    "probability": 0.001
+  }
+]
