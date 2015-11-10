@@ -41,11 +41,12 @@ class MementoJsonApi(object):
     def timegate_query(self, timestamp, url):
         url = urllib.quote(url, ':/')
         full = self.api_endpoint + timestamp + '/' + url
+        r = None
         try:
             r = self.session.get(full)
             result = r.json()
         except Exception as e:
-            if r.status_code != 404:
+            if not r or r.status_code != 404:
                 import traceback
                 traceback.print_exc(e)
 
@@ -57,18 +58,21 @@ class MementoJsonApi(object):
     def timemap_query(self, url, closest='1'):
         url = urllib.quote(url, ':/')
         full = self.timemap_endpoint + closest + '/' + url
+        r = None
         try:
             r = self.session.get(full)
             result = r.json()
         except Exception as e:
             logging.debug(e)
-            if r.status_code == 503:
+            if r and r.status_code == 503:
                 msg = 'No Mementos Currently Available: <br/>'
                 msg += r.text
-            elif r.status_code == 404:
+            elif r and r.status_code == 404:
                 return {"list": []}
-            else:
+            elif r:
                 msg = 'Unknown response with: ' + str(r.status_code)
+            else:
+                msg = 'No response'
 
             raise NotFoundException(msg, url=url)
 

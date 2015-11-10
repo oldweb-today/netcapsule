@@ -182,6 +182,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
         except Exception as e:
             logging.debug(e)
             logging.debug('Proceeding without json archive info')
+            return
 
         archives = json.loads(stream.read())
         for arc in archives:
