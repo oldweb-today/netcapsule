@@ -13,6 +13,9 @@ browsers:
     firefox: firefox
     ff: firefox
 
+    # chrome
+    chrome: chrome
+
     # mosaic
     mosaic: mosaic
 

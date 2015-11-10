@@ -11,6 +11,8 @@ ENV PYWB_VERSION git+https://github.com/ikreymer/pywb.git@develop#egg=pywb-0.11.
 
 RUN pip install -U $PYWB_VERSION
 
+RUN pip install -U certauth
+
 COPY config.yaml /webarchive/
 
 COPY . /webarchive/
