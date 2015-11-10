@@ -10,22 +10,31 @@ setting and proxies the content from the archive in its original form (whenever 
 Any web archive (supporting CDX or Memento protocol interfaces) can be a source, and any browser running under Linux can be used.
 Currently included browsers are:
 
+ - **Mosaic**
 
- - *Mosaic 2.7 on Linux*
+   - *Mosaic 2.7 on Linux*
 
- - *Netscape 3.04 on Mac *
- - *Netscape 4.08 on Mac *
- - *Netscape 4.79 on Linux*
- - *Netscape 4.8 on Windows*
- - *Netscape 4.8 on Mac *
+ - **Netscape**
+   - *Netscape 3.04 on Mac*
+   - *Netscape 4.08 on Mac*
+   - *Netscape 4.79 on Linux*
+   - *Netscape 4.8 on Windows*
+   - *Netscape 4.8 on Mac*
 
- - *IE 4.0 on Windows*
- - *IE 4.01 on Mac *
- - *IE 5.1.7 on Mac *
- - *IE 5.5 on Windows*
+ - **Internet Explorer**
+   - *IE 4.0 on Windows*
+   - *IE 4.01 on Mac*
+   - *IE 5.1.7 on Mac*
+   - *IE 5.5 on Windows*
 
- - *Safari 5 on Windows*
- - *Firefox 40 on Linux*
+ - **Safari**
+   - *Safari 5 on Windows*
+ 
+ - **Firefox**
+   - *Firefox 40 on Linux*
+
+ - **Chrome**
+   - *Chrome 46 on Linux*
 
 The system allows user to navigate by both url and by time.
 
@@ -90,7 +99,7 @@ To run locally, Docker and Docker Compose are required.
 
 The `browsers` directory corresponds to each supported browser and a `base-browser` image which serves as the base.
 
-Current Browsers are:
+Current Browsers include:
    * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
    * Netscape 4.79 (built based on [instructions from here](https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
    * Firefox 40 `netcapsule/firefox`
@@ -98,6 +107,7 @@ Current Browsers are:
    * Internet Explorer 5.5 `netcapsule/ie5.5` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=240)
    * Safari 5 `netcapsule/safari5` (using WINE, built with `winetricks`)
    * Netscape 4.08 `netcapsule/netscape-mac-4.08` on 68K MacOS Using [Basilik2](http://basilisk.cebix.net/)
+   * See [Browsers](browsers) for all currently available browsers.
 
 
 #### Adding new browsers
