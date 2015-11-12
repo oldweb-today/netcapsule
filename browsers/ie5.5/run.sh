@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export WINEPREFIX="/home/browser/.ie55"
+export WINEPREFIX="/home/browser/ie55"
 
 wine regedit proxy.reg
 

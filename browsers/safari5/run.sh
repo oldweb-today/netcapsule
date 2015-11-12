@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export WINEPREFIX="/home/browser/.safari"
+export WINEPREFIX="/home/browser/safari"
 
 wine regedit proxy.reg
 

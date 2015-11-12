@@ -10,4 +10,9 @@ mkdir ~/.config/
 mkdir ~/.config/google-chrome
 touch ~/.config/google-chrome/First\ Run
 
-google-chrome --proxy-server="netcapsule_pywb_1:8080"  "$URL"
+if [ -n "$NO_PROXY" ]; then
+    google-chrome "$URL"
+else
+    google-chrome --proxy-server="netcapsule_pywb_1:8080"  "$URL"
+fi
+

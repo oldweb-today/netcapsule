@@ -3,11 +3,9 @@ FROM netcapsule/base-wine-browser
 USER browser
 WORKDIR /home/browser
 
-COPY ie4wine.tar.gz /home/browser/ie4wine.tar.gz
+ADD ie4wine.tar.gz /home/browser/
 
 COPY proxy.reg /home/browser/proxy.reg
-
-RUN tar xvf /home/browser/ie4wine.tar.gz; mv /home/browser/ie4 /home/browser/.ie4
 
 COPY flux-apps /home/browser/.fluxbox/apps
 RUN sudo chown browser:browser -R /home/browser/.fluxbox
