@@ -45,8 +45,6 @@ RUN git clone https://github.com/kanaka/noVNC.git /novnc
 
 RUN git clone https://github.com/kanaka/websockify.git /novnc/utils/websockify
 
-COPY vnc_auto.html /novnc/vnc_auto.html
-
 WORKDIR /app/
 
 COPY requirements.txt /app/
