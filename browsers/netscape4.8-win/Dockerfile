@@ -6,7 +6,6 @@ WORKDIR /home/browser
 ADD ns48.tar.gz /home/browser/
 
 COPY prefs.js /home/browser/prefs.js
-COPY screen.reg /home/browser/screen.reg
 
 COPY run.sh /app/run.sh
 RUN sudo chmod a+x /app/run.sh
