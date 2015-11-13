@@ -4,8 +4,7 @@ export WINEPREFIX="/home/browser/ns48"
 
 PYWB_IP=$(grep netcapsule_pywb_1 /etc/hosts | cut -f 1 | head -n 1)
 
-sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/screen.reg
-wine regedit /home/browser/screen.reg
+sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/ns48/user.reg
 
 sudo chown browser:browser /home/browser/prefs.js
 echo "user_pref(\"browser.window_rect\", \"0,0,$SCREEN_WIDTH,$SCREEN_HEIGHT\");" >> /home/browser/prefs.js

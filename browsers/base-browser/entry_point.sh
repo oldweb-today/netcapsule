@@ -8,7 +8,7 @@ x11vnc -storepasswd secret ~/.vnc/passwd
 Xvfb $DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR &
 
 # start fluxbox
-fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
+#fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
 
 # start websockify / novnc
 bash /novnc/utils/launch.sh --vnc localhost:5900 &

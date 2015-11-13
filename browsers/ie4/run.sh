@@ -1,8 +1,7 @@
 #!/bin/bash
 export WINEPREFIX="/home/browser/ie4"
 
-sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/screen.reg
-wine regedit /home/browser/screen.reg
+sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/ie4/user.reg
 
 wine regedit proxy.reg
 

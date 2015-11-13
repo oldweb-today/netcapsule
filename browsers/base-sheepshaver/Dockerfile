@@ -26,8 +26,5 @@ ENV RUN_BROWSER netscape4.8
 COPY run.sh /home/browser/run.sh
 RUN sudo chown browser /home/browser/run.sh
 
-COPY flux-apps /home/browser/.fluxbox/apps
-RUN sudo chown browser:browser -R /home/browser/.fluxbox
-
 CMD /app/entry_point.sh /home/browser/run.sh
 

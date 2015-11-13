@@ -1,4 +1,4 @@
 [app] (.*)
-  [Fullscreen] {yes}
+  [Maximized] {yes}
 [end]
 

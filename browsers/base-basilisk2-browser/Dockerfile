@@ -10,7 +10,3 @@ USER browser
 
 COPY performa.rom /app/
 COPY basilisk_ii_prefs /app/
-
-COPY flux-apps /home/browser/.fluxbox/apps
-RUN sudo chown browser:browser -R /home/browser/.fluxbox
-

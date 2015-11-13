@@ -1,5 +1,7 @@
 #!/bin/bash
 
+fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
+
 export XKEYSYMDB=XKeysymDB
 export LD_LIBRARY_PATH=/opt/netscape/lib
 

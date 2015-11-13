@@ -1,8 +1,6 @@
 #!/bin/bash
 
-#mkdir /home/browser/ffprofile
-
-#sudo mv /download/user.js /home/browser/ffprofile/user.js
+fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
 
 sudo chown browser:browser /home/browser/ffprofile
 

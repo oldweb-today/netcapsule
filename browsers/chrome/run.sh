@@ -1,5 +1,7 @@
 #!/bin/bash
 
+fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
+
 http_proxy="http://netcapsule_pywb_1:8080" wget "http://pywb.proxy/pywb-ca.pem"
 
 mkdir -p $HOME/.pki/nssdb
