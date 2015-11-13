@@ -21,7 +21,9 @@ RUN apt-get -y update && \
     x11vnc \
     xvfb \
     fluxbox \
-    wget
+    curl \
+    wget \
+    vim
 
 RUN apt-get -qqy install \
     fonts-ipafont-gothic \
@@ -30,6 +32,7 @@ RUN apt-get -qqy install \
     xfonts-cyrillic \
     xfonts-scalable \
     xfonts-base \
+    fonts-liberation \
     fonts-arphic-bkai00mp fonts-arphic-bsmi00lp fonts-arphic-gbsn00lp fonts-arphic-gkai00mp fonts-arphic-ukai fonts-farsiweb fonts-nafees fonts-sil-abyssinica fonts-sil-ezra fonts-sil-padauk fonts-unfonts-extra fonts-unfonts-core fonts-indic fonts-thai-tlwg fonts-lklug-sinhala \
   && easy_install --upgrade pip \
   && rm -rf /var/lib/apt/lists/*

@@ -1,0 +1,12 @@
+Regedit4
+
+[HKEY_CURRENT_USER\Software\Wine\Explorer]
+"Desktop"="Default"
+ 
+[HKEY_CURRENT_USER\Software\Wine\Explorer\Desktops]
+"Default"="DIMENSION"
+
+[HKEY_CURRENT_USER\Software\Wine\X11 Driver]
+"Decorated"="N"
+"Managed"="N"
+
