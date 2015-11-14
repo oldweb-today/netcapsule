@@ -36,8 +36,8 @@ app:
         - /var/run/docker.sock:/var/run/docker.sock
 
     environment:
-        - SCREEN_WIDTH=1200
-        - SCREEN_HEIGHT=800
+        - SCREEN_WIDTH=1024
+        - SCREEN_HEIGHT=768
 
     ports:
         - 9020:9020

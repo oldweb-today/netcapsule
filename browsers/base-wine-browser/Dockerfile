@@ -32,15 +32,10 @@ USER browser
 ENV HOME /home/browser
 ENV WINEARCH win32
 
-# Set fluxbox fullscreen
-COPY flux-apps /home/browser/.fluxbox/apps
-RUN sudo chown browser:browser -R /home/browser/.fluxbox
-
 # Use xclient's home dir as working dir
 WORKDIR /home/browser
 
 COPY proxy.reg /home/browser/proxy.reg
-COPY screen.reg /home/browser/screen.reg
 
 
 
