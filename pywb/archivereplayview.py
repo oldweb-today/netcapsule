@@ -139,6 +139,10 @@ class UpstreamArchiveLoader(object):
         redisclient.redis.hset(base_key + ':urls', cdx['url'], sec)
         redisclient.redis.sadd(base_key + ':hosts', archive_name)
 
+        referrer = wbrequest.env.get('HTTP_REFERER')
+        if referrer and not referrer.endswith('.css'):
+            redisclient.redis.set(base_key + ':r', referrer)
+
         statusline = str(response.status_code) + ' ' + response.reason
 
         headers = response.headers.items()

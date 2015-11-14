@@ -71,8 +71,10 @@ def ping():
 
     ts = request.query.get('ts')
 
+    base_key = my_ip + ':' + ts + ':'
+
     # all urls
-    all_urls = local_redis.hgetall(my_ip + ':' + ts + ':urls')
+    all_urls = local_redis.hgetall(base_key + 'urls')
 
     count = 0
     min_sec = sys.maxint
@@ -83,13 +85,20 @@ def ping():
         min_sec = min(sec, min_sec)
         max_sec = max(sec, max_sec)
 
-
     # all_hosts
-    all_hosts = local_redis.smembers(my_ip + ':' + ts + ':hosts')
+    all_hosts = local_redis.smembers(base_key + 'hosts')
 
-    #return {'url': url, 'ts': ts, 'sec': sec}
-    return {'urls': count, 'min_sec': min_sec, 'max_sec': max_sec,
-            'hosts': list(all_hosts)}
+    referrer = local_redis.get(base_key + 'r')
+
+    referrer_secs = int(all_urls.get(referrer, 0))
+
+    return {'urls': count,
+            'min_sec': min_sec,
+            'max_sec': max_sec,
+            'hosts': list(all_hosts),
+            'referrer': referrer,
+            'referrer_secs': referrer_secs
+           }
 
 
 @route('/')
@@ -152,6 +161,10 @@ def do_init():
         local_redis = StrictRedis(LOCAL_REDIS_HOST)
     else:
         local_redis = redis
+
+    # set initial url
+    base_key = my_ip + ':' + start_ts + ':'
+    local_redis.set(base_key + 'r', start_url)
 
     return default_app()
 

@@ -27,4 +27,4 @@ RUN sudo chmod a+x /app/run.sh
 
 CMD /app/entry_point.sh /app/run.sh
 
-
+WORKDIR /home/browser

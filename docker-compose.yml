@@ -27,6 +27,7 @@ shared_data:
     command: python -i
     volumes:
         - ./shareddata:/shareddata
+        - ./app/browser_app.py:/app/app.py
 
 app:
     build: ./app

@@ -180,11 +180,19 @@
 
     function ping() {
         $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, function(data) {
+            /*
             if (data.urls && data.min_sec && data.max_sec) {
                 var min_date = new Date(data.min_sec * 1000).toLocaleString();
                 var max_date = new Date(data.max_sec * 1000).toLocaleString();
                 $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
                 $(".rel_message").hide();
+            }
+            */
+            if (data.referrer && data.referrer_secs) {
+                var url_date = new Date(data.referrer_secs * 1000).toLocaleString();
+                $("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
+                $(".rel_message").hide();
+                url = data.referrer;
             }
 
             if (data.hosts && data.hosts.length > 0) {

@@ -54,8 +54,6 @@ COPY requirements.txt /app/
 
 RUN pip install -U -r requirements.txt
 
-COPY app.py /app/app.py
-
 COPY entry_point.sh /app/entry_point.sh
 RUN chmod a+x /app/entry_point.sh
 
