@@ -115,38 +115,6 @@ html {
   float:right;
 }
 
-/* Do not set width/height for VNC_screen or VNC_canvas or incorrect
- * scaling will occur. Canvas resizes to remote VNC settings */
-#noVNC_screen {
-  display: table;
-  width:100%;
-  height:100%;
-  background-color:#313131;
-  /*border-bottom-right-radius: 800px 600px;*/
-  /*border-top-left-radius: 800px 600px;*/
-}
-
-#noVNC_container {
-  display: none;
-  /*position: absolute;*/
-  margin: 0px;
-  padding: 0px;
-  bottom: 0px;
-  top: 0px; /* the height of the control bar */
-  left: 0px;
-  right: 0px;
-  width: auto;
-  height: auto;
-}
-
-#noVNC_canvas {
-  /* position: absolute; */
-  left: 0;
-  right: 0;
-  margin-left: 30px;
-  margin-right: 30px;
-}
-
 #VNC_clipboard_clear_button {
   float:right;
 }
