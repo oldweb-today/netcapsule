@@ -185,6 +185,9 @@ function updateState(rfb, state, oldstate, msg) {
     if (state == "failed" || state == "fatal") {
         window.setTimeout(do_vnc, 1000);
     } else if (state == "normal") {
+        $("#noVNC_canvas").show();
+        $("#browserMsg").hide();
+        
         // first ping
         window.setTimeout(ping, 1000);
         // start ping at regular intervals
@@ -227,3 +230,50 @@ window.onresize = function () {
         UIresize();
     }, 500);
 };
+
+
+
+$(function() {
+    $("#browser-dropdown").click(function(e) {
+        $("#browser-selector").toggle();
+        if ($("#browser-selector").is(":visible")) {       
+            var pos = $("#browser-dropdown").offset();
+            pos.top += $("#browser-dropdown").outerHeight() + 1;
+            $("#browser-selector").offset(pos);
+        }
+        e.stopPropagation();
+    });
+    
+    $("#browser-close").click(function(e) {
+        $("#browser-selector").hide();
+    });
+    
+    $(document).click(function(e){
+        $("#browser-selector").hide();
+    });
+
+    $("#browser-selector").click(function(e){
+        e.stopPropagation();
+    });
+    
+    $("#browser-selector td:not(:empty)").click(function(e) {
+        $("#browser-selector td").removeClass("selected");
+        $(this).addClass("selected");
+        
+        var tr = $(this).parent();
+        var browserTH;
+        do {
+            browserTH = tr.find("th");
+            tr = tr.prev();
+        } while (tr && !browserTH.length);
+        
+        
+        var platform = $("#browser-selector thead").find("th").eq($(this).index());
+        
+        $("#browser-text").text(browserTH.text() + " on " + platform.text());
+        $("#browser-icon").attr("src", $(this).find("img").attr("src"));
+        $("#browser-label").text($(this).find("label").text());
+        
+        $("#browser-selector").hide();
+    });
+});

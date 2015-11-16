@@ -11,8 +11,6 @@ ADD main.py /app/
 ADD uwsgi.ini /app/
 ADD . /app/
 
-VOLUME /browser
-
 CMD ["uwsgi", "uwsgi.ini"]
 
 #CMD ["python", "main.py"]

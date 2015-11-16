@@ -6,7 +6,7 @@
 
         <!-- noVNC Stylesheet and script -->
         <!--
-        <link rel="stylesheet" href="/static/novnc/base.css" title="plain">-->
+<link rel="stylesheet" href="/static/novnc/base.css" title="plain">-->
         <script src="/static/novnc/util.js"></script>
 
         <!-- Skeleton -->
@@ -26,26 +26,30 @@
 
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="three column">
-                    <nav class="header">
-                        Date/Time:
-                        <input id="ts" type="text" value="{{ ts }}"/>
-                        <input id="update" type="button" value="Update"/>
-                        <div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
-                        <div id="currLabel" class="header">Initializing Browser...</div>
-                        <div id="hosts" class="hosts"></div>
-                    </nav>
-                </div>
-                <div class="nine column">
-                    <div id="noVNC_screen" class="browser">
-                        <canvas id="noVNC_canvas" width="640px" height="20px">
-                            Canvas not supported.
-                        </canvas>
-                    </div>
-                </div>
+        <nav class="header">
+            <div id="browser-dropdown">
+                <span id="browser-icon-group">
+                <img id="browser-icon" src="/static/icons/mac-ns4.png"/>
+                <label id="browser-label"></label>
+                </span>
+                <span id="browser-text">Browser</span>
+                <span id="browser-arrow" class="arrow-down"></span>
+            </div>
+            <div>Date/Time:</div>
+            <input id="ts" type="text" value="{{ ts }}"/>
+            <input id="update" type="button" value="Update"/>
+            <div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
+            <div id="currLabel">Initializing Browser...</div>
+            <div id="hosts" class="hosts"></div>
+        </nav>
+        <div class="browser">
+            <div id="browserMsg">Initializing Browser...</div>
+            <div id="noVNC_screen">
+                <canvas id="noVNC_canvas" style="display: none">
+                    Canvas not supported.
+                </canvas>
             </div>
         </div>
+        {% include 'browser-select.html' %}
     </body>
 </html>

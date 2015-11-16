@@ -28,15 +28,28 @@ iframe
 {
     padding: 8px;
     font-size: 20px;
-    max-width: 220px;
-    position: fixed;
+    width: 306px;
+    height: 100%;
+    position: absolute;
     left: 0px;
+    top: 0px;
+    overflow: hidden;
+    overflow-wrap: break-word;
 }
 
 .browser
 {
-    margin-top: 12px !important;
-    margin-bottom: 12px !important;
+    top: 0px;
+    left: 320px;
+    position: absolute;
+    margin: 12px 0px 12px 0px;
+    min-width: 1000px;
+}
+
+#browserMsg
+{
+    text-align: center;
+    margin: auto;
 }
 
 .header * {
@@ -58,8 +71,8 @@ iframe
     display: none;
 }
 
-/* Do not set width/height for VNC_screen or VNC_canvas or incorrect
-* scaling will occur. Canvas resizes to remote VNC settings */
+
+/* noVNC classes */
 #noVNC_screen {
     display: table;
     width: auto;
@@ -74,4 +87,114 @@ iframe
     left: 0;
     right: 0;
     margin: 0;
+}
+
+
+/* Browser Selector */
+#browser-selector {
+    font-family: "Arial", sans-serif;
+    font-size: 12px;
+    position: absolute;
+    float: left;
+    top: 40px;
+    left: 0px;
+    background-color: white;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+}
+
+#browser-selector table {
+    border-spacing: 0;
+}
+
+#browser-selector thead {height: 40px;}
+
+#browser-selector th,
+#browser-selector td {
+    width: 56px;
+    padding: 6px 10px;
+}
+#browser-selector th {font-weight: normal; background: #fff;}
+#browser-selector tbody th {text-align: left; vertical-align: top;}
+
+#browser-selector tr.r-odd {background: #f8f8f8;}
+#browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
+#browser-selector tr.r-even {background: #e8e8e8;}
+#browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
+
+/* selection colors */
+#browser-selector td:not(:empty):hover {background: #ccf !important;}
+#browser-selector td.selected,
+#browser-selector td.selected:hover
+{background: #99e !important;}
+
+#browser-selector img {width: 32px; height: 32px;}
+#browser-selector img,
+#browser-selector label {
+    display: block;
+    margin: 0 auto;
+}
+
+#browser-selector label {text-align: center;}
+
+#browser-selector input {display: none;}
+
+#browser-close {
+    font-size: smaller;
+    text-align: right;
+    cursor: pointer;
+}
+
+#browser-close:hover {
+    color: grey !important;
+}
+
+#browser-dropdown
+{
+    padding: 8px;
+    background-color: white;
+    cursor: pointer;
+    margin-right: 2px;
+    margin-bottom: 30px;
+    
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+    
+    /*
+    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
+    */
+}
+
+#browser-dropdown span
+{
+    font-size: 14px;
+}
+
+#browser-icon-group
+{
+    vertical-align: middle;
+    display: inline-block;
+}
+
+#browser-dropdown label {
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 0;
+    margin-bottom: 2px;
+}
+
+.arrow-down {
+    width: 0; 
+    height: 0;
+    margin-right: 8px;
+    margin-top: 14px;
+    float: right;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 8px solid black;
+    display: inline-block;
+    margin-left: 4px;
 }

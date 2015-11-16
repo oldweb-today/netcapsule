@@ -2,153 +2,175 @@
 <head>
     <meta charset="utf-8">
     <style>
-    #browser-selector {
-        font-family: "Arial", sans-serif;
-        font-size: 12px;
-        position: absolute;
-        float: left;
-        top: 50px;
-        left: 50px;
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
-    }
+        #browser-selector {
+            font-family: "Arial", sans-serif;
+            font-size: 12px;
+            position: absolute;
+            float: left;
+            top: 50px;
+            left: 50px;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+        }
 
         #browser-selector table {
             border-spacing: 0;
         }
 
-            #browser-selector thead {height: 40px;}
+        #browser-selector thead {height: 40px;}
 
-            #browser-selector th,
-            #browser-selector td {
-                width: 56px;
-                padding: 6px 10px;
-            }
-            #browser-selector th {font-weight: normal; background: #fff;}
-                #browser-selector tbody th {text-align: left; vertical-align: top;}
-                
-                    #browser-selector tr.r-odd {background: #f8f8f8;}
-                        #browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
-                    #browser-selector tr.r-even {background: #e8e8e8;}
-                        #browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
+        #browser-selector th,
+        #browser-selector td {
+            width: 56px;
+            padding: 6px 10px;
+        }
+        #browser-selector th {font-weight: normal; background: #fff;}
+        #browser-selector tbody th {text-align: left; vertical-align: top;}
 
-                            /* selection colors */
-                            #browser-selector td:not(:empty):hover {background: #ccf !important;}
-                            #browser-selector td.selected,
-                            #browser-selector td.selected:hover
-                                {background: #99e !important;}
+        #browser-selector tr.r-odd {background: #f8f8f8;}
+        #browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
+        #browser-selector tr.r-even {background: #e8e8e8;}
+        #browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
 
-                            #browser-selector img {width: 32px; height: 32px;}
-                            #browser-selector img,
-                            #browser-selector label {
-                                display: block;
-                                margin: 0 auto;
-                            }
-                
-                            #browser-selector label {text-align: center;}
+        /* selection colors */
+        #browser-selector td:not(:empty):hover {background: #ccf !important;}
+        #browser-selector td.selected,
+        #browser-selector td.selected:hover
+        {background: #99e !important;}
 
-                            #browser-selector input {display: none;}
+        #browser-selector img {width: 32px; height: 32px;}
+        #browser-selector img,
+        #browser-selector label {
+            display: block;
+            margin: 0 auto;
+        }
+
+        #browser-selector label {text-align: center;}
+
+        #browser-selector input {display: none;}
     </style>
 </head>
 <body>
-<div id="browser-selector">
-    <table>
-        <thead>
-            <tr>
-                <th>Windows</th>
-                <th>Macintosh</th>
-                <th>Linux</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr class="r-odd">
-                <td></td>
-                <td></td>
-                <td>
-                    <img src="/static/icons/mosaic.png">
-                    <label>2.2</label>
-                    <input type="radio" name="browser" value="mosaic">
-                </td>
-                <th>NSCA Mosaic</th>
-            </tr>
+    <div id="browser-selector">
+        <table>
+            <thead>
+                <tr>
+                    <th>Windows</th>
+                    <th>Macintosh</th>
+                    <th>Linux</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="r-odd">
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <img src="/static/icons/mosaic.png">
+                        <label>2.2</label>
+                        <input type="radio" name="browser" value="mosaic">
+                    </td>
+                    <th>NSCA Mosaic</th>
+                </tr>
 
-            <tr class="r-even">
-                <td></td>
-                <td>
-                    <img src="/static/icons/mac-ns2-3.png">
-                    <label>3.04</label>
-                    <input type="radio" name="browser" value="macns3">
-                </td>
-                <td></td>
-                <th rowspan="2">Netscape Navigator</th>
-            </tr>
+                <tr class="r-even">
+                    <td></td>
+                    <td>
+                        <img src="/static/icons/mac-ns2-3.png">
+                        <label>3.04</label>
+                        <input type="radio" name="browser" value="macns3">
+                    </td>
+                    <td></td>
+                    <th rowspan="2">Netscape Navigator</th>
+                </tr>
 
-            <tr class="r-even">
-                <td>
-                    <img src="/static/icons/win32-ns4.png">
-                    <label>4.08</label>
-                    <input type="radio" name="browser" value="winns4">
-                </td>
-                <td>
-                    <img src="/static/icons/mac-ns4.png">
-                    <label>4.08</label>
-                    <input type="radio" name="browser" value="macns4">
-                </td>
-                <td>
-                    <img src="/static/icons/win32-ns4.png">
-                    <label>4.79</label>
-                    <input type="radio" name="browser" value="ns4">
-                </td>
-            </tr>
+                <tr class="r-even">
+                    <td>
+                        <img src="/static/icons/win32-ns4.png">
+                        <label>4.08</label>
+                        <input type="radio" name="browser" value="winns4">
+                    </td>
+                    <td>
+                        <img src="/static/icons/mac-ns4.png">
+                        <label>4.08</label>
+                        <input type="radio" name="browser" value="macns4">
+                    </td>
+                    <td>
+                        <img src="/static/icons/win32-ns4.png">
+                        <label>4.79</label>
+                        <input type="radio" name="browser" value="ns4">
+                    </td>
+                </tr>
+                
+                <tr class="r-even">
+                    <td>
+                    </td>
+                    <td>
+                        <img src="/static/icons/mac-ns4.png">
+                        <label>4.8</label>
+                        <input type="radio" name="browser" value="macns4">
+                    </td>
+                    <td>
+                    </td>
+                </tr>
 
-            <tr class="r-odd">
-                <td class="selected">
-                    <img src="/static/icons/win32-ie4.png">
-                    <label>4.0</label>
-                    <input type="radio" name="browser" value="winie4" checked>
-                </td>
-                <td>
-                    <img src="/static/icons/mac-ie4.png">
-                    <label>4.01</label>
-                    <input type="radio" name="browser" value="macie4">
-                </td>
-                <td></td>
-                <th rowspan="2">Internet Explorer</th>
-            </tr>
+                <tr class="r-odd">
+                    <td class="selected">
+                        <img src="/static/icons/win32-ie4.png">
+                        <label>4.0</label>
+                        <input type="radio" name="browser" value="winie4" checked>
+                    </td>
+                    <td>
+                        <img src="/static/icons/mac-ie4.png">
+                        <label>4.01</label>
+                        <input type="radio" name="browser" value="macie4">
+                    </td>
+                    <td></td>
+                    <th rowspan="2">Internet Explorer</th>
+                </tr>
 
-            <tr class="r-odd">
-                <td>
-                    <img src="/static/icons/win32-ie5.5.png">
-                    <label>5.5</label>
-                    <input type="radio" name="browser" value="winie55">
-                </td>
-                <td>
-                    <img src="/static/icons/mac-ie5.1.png">
-                    <label>5.1.7</label>
-                    <input type="radio" name="browser" value="macie5">
-                </td>
-                <td></td>
-            </tr>
-            <tr class="r-even">
-                <td></td>
-                <td></td>
-                <td>
-                    <img src="/static/icons/firefox.png">
-                    <label>40</label>
-                    <input type="radio" name="browser" value="ff40">
-                </td>
-                <th>Mozilla Firefox</th>
-            </tr>
-            <tr class="r-odd">
-                <td></td>
-                <td></td>
-                <td>
-                    <img src="/static/icons/chrome.png">
-                    <label>46</label>
-                    <input type="radio" name="browser" value="chrome46">
-                </td>
-                <th>Google Chrome</th>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                <tr class="r-odd">
+                    <td>
+                        <img src="/static/icons/win32-ie5.5.png">
+                        <label>5.5</label>
+                        <input type="radio" name="browser" value="winie55">
+                    </td>
+                    <td>
+                        <img src="/static/icons/mac-ie5.1.png">
+                        <label>5.1.7</label>
+                        <input type="radio" name="browser" value="macie5">
+                    </td>
+                    <td></td>
+                </tr>
+                <tr class="r-even">
+                    <td>
+                        <img src="/static/icons/safari.png">
+                        <label>5</label>
+                        <input type="radio" name="browser" value="safari5">
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <th>Apple Safari</th>
+                </tr>
+                <tr class="r-odd">
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <img src="/static/icons/firefox.png">
+                        <label>40</label>
+                        <input type="radio" name="browser" value="ff40">
+                    </td>
+                    <th>Mozilla Firefox</th>
+                </tr>
+                <tr class="r-even">
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <img src="/static/icons/chrome.png">
+                        <label>46</label>
+                        <input type="radio" name="browser" value="chrome46">
+                    </td>
+                    <th>Google Chrome</th>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
