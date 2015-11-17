@@ -29,10 +29,10 @@
         <nav class="header">
             <div id="browser-dropdown">
                 <span id="browser-icon-group">
-                <img id="browser-icon" src="/static/icons/mac-ns4.png"/>
-                <label id="browser-label"></label>
+                <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
+                <label id="browser-label">{{ browser.version }}</label>
                 </span>
-                <span id="browser-text">Browser</span>
+                <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
             <div>Date/Time:</div>

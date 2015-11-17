@@ -8,45 +8,103 @@ remove_expired_secs: 20
 
 image_prefix: netcapsule
 
+default_browser: firefox
+
 browsers:
+
     # firefox
-    firefox: firefox
-    ff: firefox
+    - id: firefox
+      name: 'Mozilla Firefox'
+      os: 'Linux'
+      version: '40'
+      icon: 'firefox.png'
+      path: firefox
 
     # chrome
-    chrome: chrome
+    - id: chrome
+      name: 'Google Chrome'
+      os: 'Linux'
+      version: '46'
+      icon: 'chrome.png'
+      path: chrome
 
     # mosaic
-    mosaic: mosaic
+    - id: mosaic
+      name: 'NCSA Mosaic'
+      os: 'Linux'
+      version: '2.2'
+      icon: 'mosaic.png'
+      path: mosaic
 
-    # netscape linux  
-    netscape: netscape
+    # netscape 
+    - id: netscape
+      name: 'Netscape Navigator'
+      os: 'Linux'
+      version: '4.79'
+      icon: 'win32-ns4.png'
+      path: nslinux
 
-    # netscape win
-    nswin4: netscape4.8-win
-    ns: netscape4.8-win
-
-    # netscape-mac
-    nsmac3: netscape-mac-3.04
+    - id: netscape4.8-win
+      name: 'Netscape Navigator'
+      os: 'Windows'
+      version: '4.8'
+      icon: 'win32-ns4.png'
+      path: nswin
     
-    nsmac: netscape-mac-4.08
-    nsmac4: netscape-mac-4.08
+    - id: netscape-mac-3.04
+      name: 'Netscape Navigator'
+      os: 'Macintosh'
+      version: '3.04'
+      icon: 'mac-ns2-3.png'
+      path: nsmac3
 
-    nsmac4.8: netscape4.8-mac
+    - id: netscape-mac-4.08
+      name: 'Netscape Navigator'
+      os: 'Macintosh'
+      version: '4.08'
+      icon: 'mac-ns4.png'
+      path: nsmac4
 
-    # IE Mac
-    ie4mac: ie4.01-mac
-    ie5mac: ie5.1-mac
+    - id: netscape4.8-mac
+      name: 'Netscape Navigator'
+      os: 'Macintosh'
+      version: '4.8'
+      icon: 'mac-ns4.png'
+      path: nsmac4.8
 
-    # IE Win
-    ie4: ie4
-    ie5: ie5.5
-    ie5.5: ie5.5
-    ie: ie5.5
+    # Internet Explorer
+    - id: ie4.01-mac
+      name: 'Internet Explorer'
+      os: 'Macintosh'
+      version: '4.01'
+      icon: 'mac-ie4.png'
+      path: ie4mac
+
+    - id: ie5.1-mac
+      name: 'Internet Explorer'
+      os: 'Macintosh'
+      version: '5.1.7'
+      icon: 'mac-ie5.1.png'
+      path: ie5mac
+
+    - id: ie4
+      name: 'Internet Explorer'
+      os: 'Windows'
+      version: '4.01'
+      icon: 'win32-ie4.png'
+      path: ie4
+
+    - id: ie5.5
+      name: 'Internet Explorer'
+      os: 'Windows'
+      version: '5.5'
+      icon: 'win32-ie5.5.png'
+      path: ie5.5
 
     # Safari
-    safari: safari5
-    safari5: safari
-
-    # default
-    '': firefox
+    - id: safari5
+      name: 'Apple Safari'
+      os: 'Windows'
+      version: '5.0'
+      icon: 'safari.png'
+      path: safari

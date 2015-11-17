@@ -139,7 +139,6 @@ iframe
 #browser-selector input {display: none;}
 
 #browser-close {
-    font-size: smaller;
     text-align: right;
     cursor: pointer;
 }
@@ -165,9 +164,14 @@ iframe
     */
 }
 
-#browser-dropdown span
+.browser-drop-shown
 {
-    font-size: 14px;
+    background-color: #99e !important;
+}
+
+#browser-dropdown *
+{
+    font-size: 13px;
 }
 
 #browser-icon-group

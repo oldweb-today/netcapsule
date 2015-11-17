@@ -1,7 +1,8 @@
 from docker.client import Client
 from docker.utils import kwargs_from_env
 
-from bottle import route, run, template, request, default_app, jinja2_view, static_file
+from bottle import route, run, template, request, default_app, jinja2_view
+from bottle import redirect, static_file
 
 import os
 import base64
@@ -40,7 +41,18 @@ class DockerController(object):
         self.CMD_PORT = config['cmd_port']
 
         self.image_prefix = config['image_prefix']
-        self.browsers = config['browsers']
+
+        self.browser_list = config['browsers']
+        self.browser_paths = {}
+
+        for browser in self.browser_list:
+            path = browser['path']
+            if path in self.browser_paths:
+                raise Exception('Already a browser for path {0}'.format(path))
+
+            self.browser_paths[path] = browser
+
+        self.default_browser = config['default_browser']
 
         self.redis = redis.StrictRedis(host=self.REDIS_HOST)
 
@@ -63,14 +75,14 @@ class DockerController(object):
 
         return host + ':' + info['HostPort']
 
-    def new_container(self, browser, env=None, default_host=None):
-        tag = self.browsers.get(browser)
+    def new_container(self, browser_id, env=None, default_host=None):
+        browser = self.browser_paths.get(browser_id)
 
         # get default browser
-        if not tag:
-            tag = self.browsers['']
+        if not browser:
+            browser = self.browser_paths.get(self.default_browser)
 
-        container = self.cli.create_container(image=self.image_prefix + '/' + tag,
+        container = self.cli.create_container(image=self.image_prefix + '/' + browser['id'],
                                               ports=[self.VNC_PORT, self.CMD_PORT],
                                               environment=env,
                                              )
@@ -92,7 +104,8 @@ class DockerController(object):
         self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
         return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
-                'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host)}
+                'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host),
+               }
 
     def remove_container(self, short_id, ip):
         print('REMOVING ' + short_id)
@@ -206,9 +219,20 @@ def route_load_url(path='', url='', ts=''):
     if not ts:
         ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
 
+
+    browser = dc.browser_paths.get(path)
+    if not browser:
+        redirect('/' + dc.default_browser + '/' + ts + '/' + url)
+
+    browser_info = dict(name=browser['name'],
+                        os=browser['os'],
+                        version=browser['version'],
+                        icon=browser['icon'])
+
     return {'coll': path,
             'url': url,
-            'ts': ts}
+            'ts': ts,
+            'browser': browser_info}
 
 
 def onexit():
