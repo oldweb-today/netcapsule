@@ -145,6 +145,11 @@ function FBUComplete(rfb, fbu) {
     rfb.set_onFBUComplete(function() { });
 }
 
+function onVNCCopyCut(rfb, text)
+{
+    //$("#clipcontent").text(text);
+}
+
 function do_vnc() {
     try {
         rfb = new RFB({'target':       $D('noVNC_canvas'),
@@ -156,8 +161,7 @@ function do_vnc() {
                        'shared':       WebUtil.getQueryVar('shared', true),
                        'view_only':    WebUtil.getQueryVar('view_only', false),
                        'onUpdateState':  updateState,
-                       //'onXvpInit':    xvpInit,
-                       //'onPasswordRequired':  passwordRequired,
+                       'onClipboard': onVNCCopyCut,
                        'onFBUComplete': FBUComplete});
     } catch (exc) {
         //updateState(null, 'fatal', null, 'Unable to create RFB client -- ' + exc);
@@ -237,9 +241,6 @@ $(function() {
     $("#browser-dropdown").click(function(e) {
         if (!$("#browser-selector").is(":visible")) {
             show_menu();
-            var pos = $("#browser-dropdown").offset();
-            pos.top += $("#browser-dropdown").outerHeight() + 1;
-            $("#browser-selector").offset(pos);
         } else {
             hide_menu();
         }
@@ -293,6 +294,10 @@ $(function() {
     {
         $("#browser-selector").show();
         $("#browser-dropdown").addClass("browser-drop-shown");
+
+        var pos = $("#browser-dropdown").offset();
+        pos.top += $("#browser-dropdown").outerHeight();
+        $("#browser-selector").offset(pos);
     }
         
     $("#browser-selector td[data-path='" + coll + "']").addClass("selected");

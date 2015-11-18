@@ -104,6 +104,7 @@ iframe
 
 #browser-selector table {
     border-spacing: 0;
+    margin-bottom: 1px;
 }
 
 #browser-selector thead {height: 40px;}
@@ -112,6 +113,8 @@ iframe
 #browser-selector td {
     width: 56px;
     padding: 6px 10px;
+    border-bottom: 0px;
+    text-align: center;
 }
 #browser-selector th {font-weight: normal; background: #fff;}
 #browser-selector tbody th {text-align: left; vertical-align: top;}
@@ -139,8 +142,13 @@ iframe
 #browser-selector input {display: none;}
 
 #browser-close {
-    text-align: right;
+    text-align: right !important;
     cursor: pointer;
+    font-size: 15px;
+}
+
+#browser-close span {
+    margin-right: 9px;
 }
 
 #browser-close:hover {
@@ -152,7 +160,7 @@ iframe
     padding: 8px;
     background-color: white;
     cursor: pointer;
-    margin-right: 2px;
+    margin-right: 1px;
     margin-bottom: 30px;
     
     box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
@@ -166,7 +174,7 @@ iframe
 
 .browser-drop-shown
 {
-    background-color: #99e !important;
+    border: 1px solid #99e;
 }
 
 #browser-dropdown *
