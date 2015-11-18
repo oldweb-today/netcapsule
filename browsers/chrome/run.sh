@@ -1,6 +1,7 @@
 #!/bin/bash
 
-fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
+#fluxbox -display $DISPLAY -log /tmp/fluxbox.log &
+jwm -display $DISPLAY &
 
 http_proxy="http://netcapsule_pywb_1:8080" wget "http://pywb.proxy/pywb-ca.pem"
 

@@ -1,0 +1,26 @@
+# default Styles:
+
+DestroyModuleConfig FE-StartMaximised: *
+*FE-StartMaximised: Cmd Function
+*FE-StartMaximised: add_window FuncStartMaximised
+
+Module FvwmEvent FE-StartMaximised
+
+DestroyFunc FuncStartMaximised
+AddToFunc   FuncStartMaximised
++ I Maximize
+
+
+Style "*"           BorderWidth 7, HandleWidth 7
+Style "*"           Color lightgrey/dimgrey
+Style "*"           MWMFunctions, MWMDecor, HintOverride
+Style "*"           DecorateTransient, NoPPosition
+Style "*"           IconBox 0 -10 -280 -1
+Style "*"           FocusFollowsMouse
+Style "*"           PositionPlacement, StaysOnTop
+
+Mouse 1 R A Nop
+
+Mouse 0 1 A Nop
+Mouse 0 2 A Nop
+Mouse 0 4 A Nop

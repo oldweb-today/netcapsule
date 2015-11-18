@@ -20,7 +20,6 @@ RUN apt-get -y update && \
     net-tools \
     x11vnc \
     xvfb \
-    fluxbox \
     curl \
     wget \
     vim
