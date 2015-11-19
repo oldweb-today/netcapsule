@@ -12,4 +12,4 @@ echo "user_pref(\"browser.window_rect\", \"0,0,$SCREEN_WIDTH,$SCREEN_HEIGHT\");"
 sed s/netcapsule_pywb_1/$PYWB_IP/g /home/browser/prefs.js > /home/browser/ns48/drive_c/Program\ Files/Netscape/Users/default/prefs.js
 
 
-wine 'C:/Program Files/Netscape/Communicator/Program/netscape.exe' $URL
+run_browser wine 'C:/Program Files/Netscape/Communicator/Program/netscape.exe' $URL

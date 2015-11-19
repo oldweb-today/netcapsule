@@ -20,5 +20,5 @@ awk -v URL="$URL" '{gsub("HOME_PAGE_URL", URL, $0); print}' ./preferences.js > /
 
 cd /opt/netscape
 
-/opt/netscape/lib/ld-linux.so.2 /opt/netscape/netscape -no-about-splash
+run_browser /opt/netscape/lib/ld-linux.so.2 /opt/netscape/netscape -no-about-splash
 

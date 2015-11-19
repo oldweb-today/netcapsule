@@ -12,5 +12,5 @@ echo -n -e "$PYWB_IP:8080\r" > /app/share/proxy_prefs
 # URL
 echo -n -e "$URL\r" >> /app/share/proxy_prefs
 
-BasiliskII-jit --config /app/basilisk_ii_prefs --extfs /app/share/ --display $DISPLAY
+run_browser BasiliskII-jit --config /app/basilisk_ii_prefs --extfs /app/share/ --display $DISPLAY
 

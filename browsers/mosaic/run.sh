@@ -4,5 +4,5 @@
 fvwm -d $DISPLAY &
 
 cd /download/ncsa-mosaic
-./src/Mosaic $URL
+run_browser ./src/Mosaic $URL
 

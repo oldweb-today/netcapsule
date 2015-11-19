@@ -6,4 +6,4 @@ sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/ie55/user.reg
 
 wine regedit proxy.reg
 
-wine start /max 'C:/Program Files/Internet Explorer/iexplore.exe' $URL
+run_browser wine start /max /W 'C:/Program Files/Internet Explorer/iexplore.exe' $URL

@@ -20,5 +20,5 @@ echo -n $URL > ./share/home_page
 
 touch ./share/RUN_$RUN_BROWSER
 
-./SheepShaver --rom ./oldworld.rom --disk ./hd.dsk --extfs ./share/
+run_browser ./SheepShaver --rom ./oldworld.rom --disk ./hd.dsk --extfs ./share/
 

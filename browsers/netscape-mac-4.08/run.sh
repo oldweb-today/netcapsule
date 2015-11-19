@@ -12,5 +12,5 @@ awk -v RS="\r" -v URL="$URL" '{gsub("HOME_PAGE_URL", URL, $0); print}' /app/Nets
 
 mv /tmp/prefs.tmp "/app/share/Netscape Preferences"
 
-BasiliskII-jit --config /app/basilisk_ii_prefs --extfs /app/share/ --display $DISPLAY
+run_browser BasiliskII-jit --config /app/basilisk_ii_prefs --extfs /app/share/ --display $DISPLAY
 

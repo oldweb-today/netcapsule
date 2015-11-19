@@ -54,6 +54,7 @@ COPY requirements.txt /app/
 RUN pip install -U -r requirements.txt
 
 COPY entry_point.sh /app/entry_point.sh
-RUN chmod a+x /app/entry_point.sh
+
+COPY run_browser /usr/bin/run_browser
 
 CMD /app/entry_point.sh

@@ -6,4 +6,4 @@ sed -i s/DIMENSION/$SCREEN_WIDTH"x"$SCREEN_HEIGHT/g /home/browser/safari/user.re
 
 wine regedit proxy.reg
 
-wine start /max 'C:/Program Files/Safari/Safari.exe' $URL
+run_browser wine start /max /W 'C:/Program Files/Safari/Safari.exe' $URL
