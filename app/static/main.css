@@ -1,212 +1,269 @@
-html, body
-{
+html, body {
     height: 100%;
     margin: 0px;
     padding: 0px;
     border: 0px;
     overflow: auto;
-    background-color: #eee;
+    background-color: #f0f0f0;
 }
 
-iframe
-{
+iframe {
     width: 100%;
     height: 100%;
     overflow: hidden;
 }
 
-.frame_div {
-    position: absolute;
-    padding-top: 50px; 
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-}
+    .frame_div {
+        position: absolute;
+        padding-top: 50px; 
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+
+/* front page */
+
+#frontpage {}
+
+    #frontpage h1 {
+        margin-bottom: 5rem;
+        margin-top: 3rem;
+    }
+
+    #frontpage label {
+        width: 100%;
+        text-align: right;
+        line-height: 4rem;
+    }
+
+    #frontpage button {margin: 5rem 0 1rem;}
+    
+        /*.logo .colors {font-family: 'Comic Sans MS'}*/
+
+    .section {
+        margin-top: 11rem;
+    }
+
+    #frontpage div.support {margin-top: -7px;}
+        a.support {display: inline-block; opacity: 0.7;}
+            a.support:hover{opacity: 1;}
+            a.support.rhizome {padding: 6px 0 0 20px;}
+            a.support.shuttleworth {margin: -6px 0 6px -3px;}
+    .link-github {margin-top: 1.5rem;}
+
+/* rainbow */
+span.red{color:red}
+span.orange{color:orange}
+span.yellow{color:yellow}
+span.lime{color:lime}
+span.green{color:green}
+span.turquoise{color:turquoise}
+span.blue{color:blue}
+span.purple{color:purple}
 
 
-.header
-{
+/* app menu on the left */
+
+.header {
     padding: 8px;
     font-size: 20px;
-    width: 306px;
-    height: 100%;
+    width: 310px;
     position: absolute;
     left: 0px;
     top: 0px;
-    overflow: hidden;
+    bottom: 0;
+
     overflow-wrap: break-word;
 }
 
-.browser
-{
+ /*   .header * {
+        font-size: 20px;
+    }
+*/
+
+    #browserMsg {
+        text-align: center;
+        margin: auto;
+    }
+
+
+
+    .hosts {
+        text-align: center;
+        font-size: 14px;
+    }
+    .hosts b {
+        font-size: 14px;
+    }
+
+    .rel_message {
+        font-size: 16px;
+        color: red;
+        font-style: italic;
+        display: none;
+    }
+
+    /* button that opens the browser selector */
+
+    #browser-dropdown {
+        width: 287px;
+        padding: 8px;
+        background-color: white;
+        cursor: pointer;
+        margin-bottom: 30px;
+        border: 1px solid #d1d1d1;
+        border-radius: 4px;
+        box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+        font-size: 13px;
+    }
+
+        a.about-browser {
+            display: block;
+            margin: -24px 0 1rem 0;
+        }
+        #browser-dropdown.browser-drop-shown {
+            border: 1px solid #1EAEDB;
+        }
+        #browser-icon-group {
+            vertical-align: middle;
+            display: inline-block;
+            position: relative;
+            top: -3px;
+            margin-right: 8px;
+        }
+            /* version number of browser */
+            #browser-icon-group label {
+                display: block;
+                margin: 0 auto;
+                text-align: center;
+                font-size: 12px;
+                font-weight: bold;
+                margin-top: 2px;
+                line-height: 0;
+            }
+
+        /* button triangle */
+        .arrow-down {
+            width: 0; 
+            height: 0;
+            margin-right: 7px;
+            margin-top: 17px;
+            float: right;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid black;
+            display: inline-block;
+            margin-left: 4px;
+        }
+            #browser-dropdown:hover .arrow-down {border-top-color: #33C3F0}
+            .browser-drop-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
+
+
+    /* Browser Selector */
+    #browser-selector {
+        width: 304px;
+        font-size: 12px;
+        position: absolute;
+        float: left;
+        top: 40px;
+        left: 0px;
+
+        background-color: white;
+        box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+    }
+
+        #browser-selector table {
+            border-spacing: 0;
+            margin-bottom: 0px;
+        }
+
+            #browser-selector thead {height: 40px;}
+
+                /* table top row */
+                #browser-selector thead th {
+                    width: 56px;
+                    padding: 6px 10px;
+                    text-align: center;
+                }
+                    /* close menu via × */
+                    #browser-close {
+                        text-align: right !important;
+                        cursor: pointer;
+                        font-size: 15px;
+                    }
+                    #browser-close span { margin-right: 7px; }
+                    #browser-close:hover { color: #33C3F0; }
+
+                /* background colors / stripes */
+
+                #browser-selector tr.r-odd {background: #f8f8f8;}
+                #browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
+                #browser-selector tr.r-even {background: #e8e8e8;}
+                #browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
+
+                #browser-selector tbody th {
+                    padding: 3px 6px 0;
+                    text-align: center;
+                }
+
+                    #browser-selector td {
+                        border-bottom: 0;
+                        padding: 8px 10px 2px;
+                    }
+
+                    #browser-selector th {font-weight: normal; background: #fff;}
+                    #browser-selector tbody th {text-align: left; vertical-align: top;}
+
+
+
+                    /* selection colors */
+                    #browser-selector td:not(:empty):hover {background-image: radial-gradient(circle, rgba(0,0,0,0), rgba(51,195,240,.5)) !important;}
+                    #browser-selector td.selected,
+                    #browser-selector td.selected:hover
+                        {background-image: radial-gradient(circle, #fff, #1EAEDB) !important;}
+
+                    
+                    /* display of browser icons */
+                    #browser-selector img {width: 32px; height: 32px;}
+                    #browser-selector img,
+                    #browser-selector label {
+                        display: block;
+                        margin: 0 auto;
+                    }
+
+                    #browser-selector label {text-align: center;} /* browser version numbers*/
+
+                    #browser-selector input {display: none;}      /* make radio buttons invisible */
+
+
+/* Area for browser */
+
+.browser {
+    position: absolute;
     top: 0px;
-    left: 320px;
-    position: absolute;
-    margin: 12px 0px 12px 0px;
-    min-width: 1000px;
-}
-
-#browserMsg
-{
-    text-align: center;
-    margin: auto;
-}
-
-.header * {
-    font-size: 20px;
-}
-
-.hosts {
-    text-align: center;
-    font-size: 14px;
-}
-.hosts b {
-    font-size: 14px;
-}
-
-.rel_message {
-    font-size: 16px;
-    color: red;
-    font-style: italic;
-    display: none;
-}
-
-
-/* noVNC classes */
-#noVNC_screen {
-    display: table;
-    width: auto;
-    height: auto;
-    margin: auto;
-    background-color:#313131;
-    line-height: 0;
-}
-
-#noVNC_canvas {
-    /* position: absolute; */
-    left: 0;
+    left: 326px;
+    bottom: 0;
     right: 0;
-    margin: 0;
+    background: #e1e1e1
 }
 
+    /* noVNC classes */
+    #noVNC_screen {
+        display: table;
+        width: auto;
+        height: auto;
+        margin: auto;
+        background-color:#313131;
+        line-height: 0;
+        margin-top: 8px;
+    }
 
-/* Browser Selector */
-#browser-selector {
-    font-family: "Arial", sans-serif;
-    font-size: 12px;
-    position: absolute;
-    float: left;
-    top: 40px;
-    left: 0px;
-    background-color: white;
-    box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
-}
+        #noVNC_canvas {
+            margin: 0px;
+            left: 0px;
+            top: 0px;
+        }
 
-#browser-selector table {
-    border-spacing: 0;
-    margin-bottom: 1px;
-}
 
-#browser-selector thead {height: 40px;}
 
-#browser-selector th,
-#browser-selector td {
-    width: 56px;
-    padding: 6px 10px;
-    border-bottom: 0px;
-    text-align: center;
-}
-#browser-selector th {font-weight: normal; background: #fff;}
-#browser-selector tbody th {text-align: left; vertical-align: top;}
 
-#browser-selector tr.r-odd {background: #f8f8f8;}
-#browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
-#browser-selector tr.r-even {background: #e8e8e8;}
-#browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
-
-/* selection colors */
-#browser-selector td:not(:empty):hover {background: #ccf !important;}
-#browser-selector td.selected,
-#browser-selector td.selected:hover
-{background: #99e !important;}
-
-#browser-selector img {width: 32px; height: 32px;}
-#browser-selector img,
-#browser-selector label {
-    display: block;
-    margin: 0 auto;
-}
-
-#browser-selector label {text-align: center;}
-
-#browser-selector input {display: none;}
-
-#browser-close {
-    text-align: right !important;
-    cursor: pointer;
-    font-size: 15px;
-}
-
-#browser-close span {
-    margin-right: 9px;
-}
-
-#browser-close:hover {
-    color: grey !important;
-}
-
-#browser-dropdown
-{
-    padding: 8px;
-    background-color: white;
-    cursor: pointer;
-    margin-right: 1px;
-    margin-bottom: 30px;
-    
-    box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
-    
-    /*
-    -webkit-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    -moz-box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    box-shadow: 2px 2px 2px 0px rgba(0,0,0,0.75);
-    */
-}
-
-.browser-drop-shown
-{
-    border: 1px solid #99e;
-}
-
-#browser-dropdown *
-{
-    font-size: 13px;
-}
-
-#browser-icon-group
-{
-    vertical-align: middle;
-    display: inline-block;
-}
-
-#browser-dropdown label {
-    display: block;
-    margin: 0 auto;
-    text-align: center;
-    font-size: 12px;
-    font-weight: bold;
-    line-height: 0;
-    margin-bottom: 2px;
-}
-
-.arrow-down {
-    width: 0; 
-    height: 0;
-    margin-right: 8px;
-    margin-top: 14px;
-    float: right;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid black;
-    display: inline-block;
-    margin-left: 4px;
-}
