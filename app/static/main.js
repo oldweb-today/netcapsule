@@ -3,14 +3,35 @@ window.INCLUDE_URI = "/static/novnc/";
 var cmd_host = undefined;
 var vnc_host = undefined;
 
+var connected = false;
+var ping_id = undefined;
+var ping_interval = undefined;
+
+// Load supporting scripts
+Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
+                   "keysymdef.js", "keyboard.js", "input.js", "display.js",
+                   "inflator.js", "rfb.js", "keysym.js"]);
+
 $(function() {
     function init_container() {
         var params = {"url": url, "ts": curr_ts, "browser": coll, "state": "ping"};
+        
+        var fail_count = 0;
 
         function send_request() {
             var init_url = "/init_browser?" + $.param(params);
 
-            $.getJSON(init_url, handle_response);
+            $.getJSON(init_url, handle_response)
+            .fail(function() {
+                fail_count++;
+                
+                if (fail_count <= 3) {
+                    browserMsg.text("Retry Browser Init...");
+                    setTimeout(send_request, 5000);
+                } else {
+                    browserMsg.text("Failed to init browser... Please try again later");
+                }
+            });
         }
 
         function handle_response(data) {
@@ -79,19 +100,18 @@ $(function() {
     $("#noVNC_screen").mouseenter(grab_focus);
 
     init_container();
-});
 
 
-function update_replay_state() {
-    var full_url = "/" + coll + "/" + curr_ts + "/" + url;
+    function update_replay_state() {
+        var full_url = "/" + coll + "/" + curr_ts + "/" + url;
 
-    window.history.replaceState({}, "", full_url);
-}
+        window.history.replaceState({}, "", full_url);
+    }
 
 
-function ping() {
-    $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, function(data) {
-        /*
+    function ping() {
+        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, function(data) {
+            /*
 if (data.urls && data.min_sec && data.max_sec) {
 var min_date = new Date(data.min_sec * 1000).toLocaleString();
 var max_date = new Date(data.max_sec * 1000).toLocaleString();
@@ -99,141 +119,154 @@ $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_dat
 $(".rel_message").hide();
 }
 */
-        if (data.referrer && data.referrer_secs) {
-            var url_date = new Date(data.referrer_secs * 1000).toLocaleString();
-            $("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
-            $(".rel_message").hide();
-            url = data.referrer;
+            if (data.referrer && data.referrer_secs) {
+                var date_time = new Date(data.referrer_secs * 1000).toISOString().slice(0, -5).split("T");
+                //$("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
+                $(".rel_message").hide();
+                $("#curr-date").html(date_time[0]);
+                $("#curr-time").html(date_time[1]);
+                url = data.referrer;
+                ping_interval = 10000;
+            }
+
+            
+            if (data.hosts && data.hosts.length > 0) {
+                $("#hosts").html("Archived content courtesy of <b>" + data.hosts.join(", ") + "</b>");
+            }
+            //if (sec) {
+            //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+            //}
+
+            update_replay_state();
+        });
+    }
+
+    var rfb;
+    var resizeTimeout;
+
+
+    function UIresize() {
+        if (WebUtil.getQueryVar('resize', false)) {
+            var innerW = window.innerWidth;
+            var innerH = window.innerHeight;
+            var controlbarH = $D('noVNC_status_bar').offsetHeight;
+            var padding = 5;
+            if (innerW !== undefined && innerH !== undefined)
+                rfb.setDesktopSize(innerW, innerH - controlbarH - padding);
         }
-
-        if (data.hosts && data.hosts.length > 0) {
-            $("#hosts").html("Archived content courtesy of <b>" + data.hosts.join(", ") + "</b>");
-        }
-        //if (sec) {
-        //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
-        //}
-
-        update_replay_state();
-    });
-}
-
-/*jslint white: false */
-/*global window, $, Util, RFB, */
-"use strict";
-
-// Load supporting scripts
-Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
-                   "keysymdef.js", "keyboard.js", "input.js", "display.js",
-                   "inflator.js", "rfb.js", "keysym.js"]);
-
-var rfb;
-var resizeTimeout;
-
-
-function UIresize() {
-    if (WebUtil.getQueryVar('resize', false)) {
-        var innerW = window.innerWidth;
-        var innerH = window.innerHeight;
-        var controlbarH = $D('noVNC_status_bar').offsetHeight;
-        var padding = 5;
-        if (innerW !== undefined && innerH !== undefined)
-            rfb.setDesktopSize(innerW, innerH - controlbarH - padding);
     }
-}
-function FBUComplete(rfb, fbu) {
-    UIresize();
-    rfb.set_onFBUComplete(function() { });
-}
-
-function onVNCCopyCut(rfb, text)
-{
-    //$("#clipcontent").text(text);
-}
-
-function do_vnc() {
-    try {
-        rfb = new RFB({'target':       $D('noVNC_canvas'),
-                       'encrypt':      WebUtil.getQueryVar('encrypt',
-                                                           (window.location.protocol === "https:")),
-                       'repeaterID':   WebUtil.getQueryVar('repeaterID', ''),
-                       'true_color':   WebUtil.getQueryVar('true_color', true),
-                       'local_cursor': WebUtil.getQueryVar('cursor', true),
-                       'shared':       WebUtil.getQueryVar('shared', true),
-                       'view_only':    WebUtil.getQueryVar('view_only', false),
-                       'onUpdateState':  updateState,
-                       'onClipboard': onVNCCopyCut,
-                       'onFBUComplete': FBUComplete});
-    } catch (exc) {
-        //updateState(null, 'fatal', null, 'Unable to create RFB client -- ' + exc);
-        console.warn(exc);
-        return false; // don't continue trying to connect
-    }
-
-    var hostport = vnc_host.split(":");
-    var host = hostport[0];
-    var port = hostport[1];
-    var password = "secret";
-    var path = "websockify";
-
-    try {
-        rfb.connect(host, port, password, path);
-    } catch (exc) {
-        console.warn(exc);
-        return false;
-    }
-
-    return true;
-}
-
-function updateState(rfb, state, oldstate, msg) {
-    if (state == "failed" || state == "fatal") {
-        window.setTimeout(do_vnc, 1000);
-    } else if (state == "normal") {
-        $("#noVNC_canvas").show();
-        $("#browserMsg").hide();
-        
-        // first ping
-        window.setTimeout(ping, 1000);
-        // start ping at regular intervals
-        window.setInterval(ping, 10000);
-    }
-
-    //        var s, sb, cad, level;
-    //        s = $D('noVNC_status');
-    //        sb = $D('noVNC_status_bar');
-    //        cad = $D('sendCtrlAltDelButton');
-    //        switch (state) {
-    //            case 'failed':       level = "error";  break;
-    //            case 'fatal':        level = "error";  break;
-    //            case 'normal':       level = "normal"; break;
-    //            case 'disconnected': level = "normal"; break;
-    //            case 'loaded':       level = "normal"; break;
-    //            default:             level = "warn";   break;
-    //        }
-    //
-    //        if (state === "normal") {
-    //            cad.disabled = false;
-    //        } else {
-    //            cad.disabled = true;
-    //            xvpInit(0);
-    //        }
-    //
-    //        if (typeof(msg) !== 'undefined') {
-    //            sb.setAttribute("class", "noVNC_status_" + level);
-    //            s.innerHTML = msg;
-    //        }
-    console.log(msg);
-}
-
-window.onresize = function () {
-    // When the window has been resized, wait until the size remains
-    // the same for 0.5 seconds before sending the request for changing
-    // the resolution of the session
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(function(){
+    function FBUComplete(rfb, fbu) {
         UIresize();
-    }, 500);
-};
+        rfb.set_onFBUComplete(function() { });
+    }
+
+    function onVNCCopyCut(rfb, text)
+    {
+        //$("#clipcontent").text(text);
+    }
+
+    function do_vnc() {
+        try {
+            rfb = new RFB({'target':       $D('noVNC_canvas'),
+                           'encrypt':      WebUtil.getQueryVar('encrypt',
+                                                               (window.location.protocol === "https:")),
+                           'repeaterID':   WebUtil.getQueryVar('repeaterID', ''),
+                           'true_color':   WebUtil.getQueryVar('true_color', true),
+                           'local_cursor': WebUtil.getQueryVar('cursor', true),
+                           'shared':       WebUtil.getQueryVar('shared', true),
+                           'view_only':    WebUtil.getQueryVar('view_only', false),
+                           'onUpdateState':  updateState,
+                           'onClipboard': onVNCCopyCut,
+                           'onFBUComplete': FBUComplete});
+        } catch (exc) {
+            //updateState(null, 'fatal', null, 'Unable to create RFB client -- ' + exc);
+            console.warn(exc);
+            return false; // don't continue trying to connect
+        }
+
+        var hostport = vnc_host.split(":");
+        var host = hostport[0];
+        var port = hostport[1];
+        var password = "secret";
+        var path = "websockify";
+
+        try {
+            rfb.connect(host, port, password, path);
+            connected = true;
+        } catch (exc) {
+            console.warn(exc);
+            return false;
+        }
+
+        return true;
+    }
+
+    function updateState(rfb, state, oldstate, msg) {
+        if (state == "failed" || state == "fatal") {
+            // if not connected yet, attempt to connect until succeed
+            if (!connected) {
+                window.setTimeout(do_vnc, 1000);
+            }
+        } else if (state == "disconnected") {
+            if (connected) {
+                connected = false;
+                $("#noVNC_canvas").hide();
+                $("#browserMsg").show();
+
+                if (ping_id) {
+                    window.clearInterval(ping_id);
+                }
+
+                init_container();
+            }
+        } else if (state == "normal") {
+            $("#noVNC_canvas").show();
+            $("#browserMsg").hide();
+            
+            ping_interval = 1000;
+
+            // start ping at regular intervals
+            ping_id = window.setInterval(ping, ping_interval);
+        }
+
+        //        var s, sb, cad, level;
+        //        s = $D('noVNC_status');
+        //        sb = $D('noVNC_status_bar');
+        //        cad = $D('sendCtrlAltDelButton');
+        //        switch (state) {
+        //            case 'failed':       level = "error";  break;
+        //            case 'fatal':        level = "error";  break;
+        //            case 'normal':       level = "normal"; break;
+        //            case 'disconnected': level = "normal"; break;
+        //            case 'loaded':       level = "normal"; break;
+        //            default:             level = "warn";   break;
+        //        }
+        //
+        //        if (state === "normal") {
+        //            cad.disabled = false;
+        //        } else {
+        //            cad.disabled = true;
+        //            xvpInit(0);
+        //        }
+        //
+        //        if (typeof(msg) !== 'undefined') {
+        //            sb.setAttribute("class", "noVNC_status_" + level);
+        //            s.innerHTML = msg;
+        //        }
+        console.log(msg);
+    }
+
+    window.onresize = function () {
+        // When the window has been resized, wait until the size remains
+        // the same for 0.5 seconds before sending the request for changing
+        // the resolution of the session
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function(){
+            UIresize();
+        }, 500);
+    };
+});
+
 
 
 
@@ -246,11 +279,11 @@ $(function() {
         }
         e.stopPropagation();
     });
-    
+
     $("#browser-close").click(function(e) {
         hide_menu();
     });
-    
+
     $(document).click(function(e){
         hide_menu();
     });
@@ -258,38 +291,38 @@ $(function() {
     $("#browser-selector").click(function(e){
         e.stopPropagation();
     });
-    
+
     $("#browser-selector td:not(:empty)").click(function(e) {
         $("#browser-selector td").removeClass("selected");
         $(this).addClass("selected");
-        
+
         var tr = $(this).parent();
         var browserTH;
         do {
             browserTH = tr.find("th");
             tr = tr.prev();
         } while (tr && !browserTH.length);
-        
-        
+
+
         var platform = $("#browser-selector thead").find("th").eq($(this).index());
-        
+
         $("#browser-text").text(browserTH.text() + " on " + platform.text());
         $("#browser-icon").attr("src", $(this).find("img").attr("src"));
         $("#browser-label").text($(this).find("label").text());
-        
+
         hide_menu();
-        
+
         var path = $(this).attr("data-path");
         var full_url = window.location.origin + "/" + path + "/" + curr_ts + "/" + url;
         window.location.href = full_url;
     });
-    
+
     function hide_menu()
     {
         $("#browser-selector").hide();
         $("#browser-dropdown").removeClass("browser-drop-shown");
     }
-    
+
     function show_menu()
     {
         $("#browser-selector").show();
@@ -299,6 +332,16 @@ $(function() {
         pos.top += $("#browser-dropdown").outerHeight();
         $("#browser-selector").offset(pos);
     }
-        
+
     $("#browser-selector td[data-path='" + coll + "']").addClass("selected");
+});
+
+
+$(function() {
+    var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
+    $.getJSON(jsonUrl, function(data) {
+        init_spark("#spark", data, {width: 150, height: 500, thickness: 6, swap: true});
+    }).fail(function(e) {
+        console.log(e);
+    });
 });

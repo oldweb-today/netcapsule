@@ -67,6 +67,7 @@ span.purple{color:purple}
 .header {
     padding: 8px;
     font-size: 20px;
+    text-align: center;
     width: 310px;
     position: absolute;
     left: 0px;
@@ -103,6 +104,32 @@ span.purple{color:purple}
         display: none;
     }
 
+    #curr-date-label {
+        text-align: center;
+        font-size: 11px;
+        margin-top: 8px;
+    }
+
+    #curr-date-info {
+        font-weight: bold;
+        text-align: center;
+        line-height: 0.7;
+    }
+
+    #curr-date-space {
+        display: inline-block;
+        width: 10px
+    }
+
+    .memnav {
+        margin-top: 8px;
+        text-align: center;
+    }
+
+    .memnav button {
+        padding: 0 8px;
+    }
+
     /* button that opens the browser selector */
 
     #browser-dropdown {
@@ -110,7 +137,7 @@ span.purple{color:purple}
         padding: 8px;
         background-color: white;
         cursor: pointer;
-        margin-bottom: 30px;
+        margin-bottom: 4px;
         border: 1px solid #d1d1d1;
         border-radius: 4px;
         box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
@@ -265,5 +292,51 @@ span.purple{color:purple}
         }
 
 
+/* Sparklines */
+.axis {
+    font: 10px sans-serif;
+}
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+.brush .extent {
+    stroke: #fff;
+    fill-opacity: .125;
+    shape-rendering: crispEdges;
+}
 
+rect.pane {
+    cursor: pointer;
+    fill: transparent;
+}
+
+.tooltip {
+    position: absolute;
+    background-color: #ddd;
+    pointer-events: none;
+    width: 90px;
+    text-align: center;
+    font-size: 14px;
+    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+}
+
+.highlight {
+    fill: red !important;
+}
+
+#spark
+{
+    margin-top: 30px;
+    width: auto;
+    height: auto;
+    background-color: white;
+    text-align: left;
+}
+
+.hidden {
+    display: none;
+}
 

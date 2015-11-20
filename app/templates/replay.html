@@ -14,6 +14,10 @@
         <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="/static/normalize.css">
         <link rel="stylesheet" href="/static/skeleton.css">
+        
+        <!-- Viz -->
+        <script src="http://d3js.org/d3.v3.min.js"></script>
+        <script src="/static/timemap.js"></script>
 
         <!-- Main Netcapsule script -->
         <link rel="stylesheet" href="/static/main.css">
@@ -35,12 +39,32 @@
                 <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
+            <div id="curr-date-label">Current Page Archived On:</div>
+            <div id="curr-date-info">
+                <span id="curr-date"></span>
+                <span id="curr-date-space"></span>
+                <span id="curr-time"></span>            
+            </div>
+            
+            <div class="memnav">
+                <button>First</button>
+                <button>Prev</button>
+                <button>Current</button>
+                <button>Next</button>
+                <button>Last</button>
+            </div>
+
+            
+            <div id="spark"></div>
+            
+            <div style="display: none">
             <div>Date/Time:</div>
             <input id="ts" type="text" value="{{ ts }}"/>
             <input id="update" type="button" value="Update"/>
             <div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
             <div id="currLabel">Initializing Browser...</div>
             <div id="hosts" class="hosts"></div>
+            </div>
         </nav>
         <div class="browser">
             <div id="browserMsg">Initializing Browser...</div>

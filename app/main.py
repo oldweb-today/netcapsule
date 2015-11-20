@@ -213,6 +213,11 @@ def do_init(browser, url, ts, host):
     info['queue'] = 0
     return info
 
+@route(['/', '/index.html', '/index.htm'])
+@jinja2_view('index.html', template_lookup=['templates'])
+def index():
+    return {}
+
 @route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(path='', url='', ts=''):
