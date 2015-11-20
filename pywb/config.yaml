@@ -14,12 +14,12 @@ collections:
     memento_reconstruct:
         index_paths:
             # for LANL aggregator
-            timegate: http://timetravel.mementoweb.org/api/json/
-            timemap:  http://labs.mementoweb.org/timemap/json/
+            #timegate: http://timetravel.mementoweb.org/api/json/
+            #timemap:  http://labs.mementoweb.org/timemap/json/
 
             # for local aggregator
-            #timegate: http://netcapsule_memgator_1:1208/timenav/json/
-            #timemap: http://netcapsule_memgator_1:1208/timemap/json/
+            timegate: http://netcapsule_nginx_1:1208/timenav/json/
+            timemap: http://netcapsule_nginx_1:1208/timemap/json/
 
         server_cls: !!python/name:mementoquery.MementoIndexServer
 

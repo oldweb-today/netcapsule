@@ -1,22 +1,33 @@
 pywb:
     build: ./pywb
     restart: always
-#    environment:
-#        - ARCHIVE_JSON=${ARCHIVE_JSON}
+    environment:
+        - ARCHIVE_JSON=${ARCHIVE_JSON}
 
-#    volumes:
-#        - ./archives.json:/archives.json
+    volumes:
+        - ./archives.json:/archives.json
 
-#memgator:
-#    image: ibnesayeed/memgator:master
-#    restart: always
+memgator:
+    image: ibnesayeed/memgator:master
+    restart: always
 
-#    command: --arcs=${ARCHIVE_JSON} server
-#    ports:
-#        - 1208:1208
+    command: --arcs=${ARCHIVE_JSON} server
+    #ports:
+    #    - 1208:1208
 
-#    volumes:
-#        - ./archives.json:/archives.json
+    volumes:
+        - ./archives.json:/archives.json
+
+nginx:
+    build: ./nginx
+    restart: always
+    volumes:
+#        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+        - ./nginx/cache:/cache
+
+    ports:
+        - 1208:1208
+        - 1210:1210
 
 redis:
     image: redis:latest
