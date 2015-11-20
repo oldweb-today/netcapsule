@@ -138,6 +138,8 @@ $(".rel_message").hide();
             //}
 
             update_replay_state();
+            
+            ping_id = window.setTimeout(ping, ping_interval);
         });
     }
 
@@ -226,7 +228,7 @@ $(".rel_message").hide();
             ping_interval = 1000;
 
             // start ping at regular intervals
-            ping_id = window.setInterval(ping, ping_interval);
+            ping_id = window.setTimeout(ping, ping_interval);
         }
 
         //        var s, sb, cad, level;
