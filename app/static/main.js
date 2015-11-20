@@ -98,6 +98,9 @@ $(function() {
     $("#noVNC_screen").mouseleave(lose_focus);
 
     $("#noVNC_screen").mouseenter(grab_focus);
+    
+    $("#new_date").click(lose_focus);
+    $("#new_time").click(lose_focus);
 
     init_container();
 
@@ -138,7 +141,7 @@ $(".rel_message").hide();
             //}
 
             update_replay_state();
-            
+        }).complete(function() {
             ping_id = window.setTimeout(ping, ping_interval);
         });
     }
@@ -337,6 +340,72 @@ $(function() {
 
     $("#browser-selector td[data-path='" + coll + "']").addClass("selected");
 });
+
+// TimeUtils
+function TimeUtils()
+{
+    this.date_pad = "10000101";
+    this.time_pad = "000000";
+
+    this.set_from_ts = function(ts) {
+        ts = ts.substr(0, 14);
+        ts += this.date_pad.substr(ts.length);
+        ts += this.time_pad.substr(ts.length - this.date_pad.length);
+
+        this.set_date(ts.substr(0, this.date_pad.length));
+        this.set_time(ts.substr(this.date_pad.length));
+    };
+
+    this.set_date = function(value) {
+        $("#new-date").attr("data-date", value);
+
+        var formatted = value.substr(0, 4) + "-" + value.substr(4, 2) + "-" + value.substr(6);
+        $("#new-date").val(formatted);
+    };
+
+    this.set_time = function(value) {
+        $("#new-time").attr("data-time", value);
+
+        var formatted = value.substr(0, 2) + ":" + value.substr(2, 2) + ":" + value.substr(4);
+        $("#new-time").val(formatted);
+    };
+    
+    this.validate_date = function() {
+        var value = $("#new-date").val();
+        value = value.replace(/[^\d]/g, '');
+        value = value.substr(0, 8);
+        value += this.date_pad.substring(value.length);
+        this.set_date(value);
+    };
+    
+    this.validate_time = function() {
+        var value = $("#new-time").val();
+        value = value.replace(/[^\d]/g, '');
+        value = value.substr(0, 6);
+        value += this.time_pad.substring(value.length);
+        this.set_time(value);
+    };
+}
+
+$(function() {
+    var timeutil = new TimeUtils();
+    
+    timeutil.set_from_ts(curr_ts);
+    
+    $("#new-date").blur(function() {
+        timeutil.validate_date();
+    });
+    
+    $("#new-time").blur(function() {
+        timeutil.validate_time();
+    });
+});
+    
+    
+
+
+
+
 
 
 $(function() {

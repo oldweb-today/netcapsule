@@ -39,11 +39,17 @@
                 <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
-            <div id="curr-date-label">Current Page Archived On:</div>
+            <div class="nav-label">Current Page Archived On:</div>
             <div id="curr-date-info">
                 <span id="curr-date"></span>
                 <span id="curr-date-space"></span>
                 <span id="curr-time"></span>            
+            </div>
+            
+            <div class="nav-label">Navigate To:</div>
+            <div id="new-date-info" class="LCD">
+                <input id="new-date"/>
+                <input id="new-time"/>
             </div>
             
             <div class="memnav">
@@ -59,7 +65,6 @@
             
             <div style="display: none">
             <div>Date/Time:</div>
-            <input id="ts" type="text" value="{{ ts }}"/>
             <input id="update" type="button" value="Update"/>
             <div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
             <div id="currLabel">Initializing Browser...</div>

@@ -104,7 +104,7 @@ span.purple{color:purple}
         display: none;
     }
 
-    #curr-date-label {
+    .nav-label {
         text-align: center;
         font-size: 11px;
         margin-top: 8px;
@@ -129,6 +129,23 @@ span.purple{color:purple}
     .memnav button {
         padding: 0 8px;
     }
+
+    /* LCD */
+    @font-face {
+        font-family: "digital-7";
+        src: url(/static/digital-7.ttf) format("truetype");
+    }
+
+    .LCD input {
+        font-family: "digital-7", sans-serif;
+        margin: 0 8px 0 8px;
+        font-size: 24px;
+        background-color: black;
+        color: lightgreen;
+        max-width: 120px;
+        text-align: center;
+    }
+
 
     /* button that opens the browser selector */
 
