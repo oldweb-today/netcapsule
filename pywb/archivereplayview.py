@@ -70,6 +70,7 @@ class UpstreamArchiveLoader(object):
         self.session.max_redirects = 6
         self.archive_template = config['archive_template']
         self.archive_name = config['archive_name']
+        self.reverse_proxy_prefix = config.get('reverse_proxy_prefix', '')
 
         # init redis here only
         redisclient.init_redis(config)
@@ -86,6 +87,9 @@ class UpstreamArchiveLoader(object):
             headers={'Accept-Encoding': 'identity'}
 
         for url in urls:
+            if self.reverse_proxy_prefix:
+                url = self.reverse_proxy_prefix + url
+
             response = self.session.request(method='GET',
                                             url=url,
             #                                allow_redirects=False,

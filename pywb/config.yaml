@@ -31,9 +31,11 @@ collections:
         index_paths: $liveweb
 
 # Specify memento archivelist XML
-memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
+#memento_archive_xml: 'http://labs.mementoweb.org/aggregator_config/archivelist.xml'
 #memento_archive_json: '/archives.json'
-#memento_archive_json: $ARCHIVE_JSON
+memento_archive_json: $ARCHIVE_JSON
+
+reverse_proxy_prefix: http://netcapsule_nginx_1:1210/
 
 buffer_response: false
 urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
