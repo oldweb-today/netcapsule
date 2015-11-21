@@ -67,7 +67,6 @@ span.purple{color:purple}
 .header {
     padding: 8px;
     font-size: 20px;
-    text-align: center;
     width: 310px;
     position: absolute;
     left: 0px;
@@ -121,12 +120,12 @@ span.purple{color:purple}
         width: 10px
     }
 
-    .memnav {
-        margin-top: 8px;
+    .timenav {
+        margin-top: 4px;
         text-align: center;
     }
 
-    .memnav button {
+    .timenav button {
         padding: 0 8px;
     }
 
@@ -136,20 +135,27 @@ span.purple{color:purple}
         src: url(/static/digital-7.ttf) format("truetype");
     }
 
-    .LCD input {
+    .LCD {
         font-family: "digital-7", sans-serif;
-        margin: 0 8px 0 8px;
         font-size: 24px;
         background-color: black;
         color: lightgreen;
-        max-width: 120px;
+        max-width: 110px;
+        text-align: center;
+        display: none;
+    }
+
+    #datetime {
+        font-family: monospace;
+        font-size: 16px;
+        background-color: #ccc;
+        margin: 6px 0px 6px 0px;
         text-align: center;
     }
 
 
-    /* button that opens the browser selector */
-
-    #browser-dropdown {
+    /* Button that opens either browser or datetime selector */
+    .dropdown {
         width: 287px;
         padding: 8px;
         background-color: white;
@@ -165,7 +171,7 @@ span.purple{color:purple}
             display: block;
             margin: -24px 0 1rem 0;
         }
-        #browser-dropdown.browser-drop-shown {
+        .dropdown.dropdown-shown {
             border: 1px solid #1EAEDB;
         }
         #browser-icon-group {
@@ -199,21 +205,39 @@ span.purple{color:purple}
             display: inline-block;
             margin-left: 4px;
         }
-            #browser-dropdown:hover .arrow-down {border-top-color: #33C3F0}
-            .browser-drop-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
+            .dropdown:hover .arrow-down {border-top-color: #33C3F0}
+            .dropdown-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
 
+    /* Datetime Dropdown */
+    #datetime-dropdown {
+        text-align: center;
+    }
 
-    /* Browser Selector */
-    #browser-selector {
+    /* Both Selector Menus */
+    .selector-menu {
         width: 304px;
         font-size: 12px;
         position: absolute;
         float: left;
-        top: 40px;
-        left: 0px;
-
         background-color: white;
         box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+        display: none;
+    }
+
+    /* close menu via × */
+    .menu-selector-close {
+        text-align: right !important;
+        cursor: pointer;
+        font-size: 15px;
+    }
+    .menu-selector-close span { margin-right: 7px; }
+    .menu-selector-close:hover { color: #33C3F0; }
+
+
+    /* Browser Selector */
+    #browser-selector {
+        top: 40px;
+        left: 0px;
     }
 
         #browser-selector table {
@@ -229,14 +253,6 @@ span.purple{color:purple}
                     padding: 6px 10px;
                     text-align: center;
                 }
-                    /* close menu via × */
-                    #browser-close {
-                        text-align: right !important;
-                        cursor: pointer;
-                        font-size: 15px;
-                    }
-                    #browser-close span { margin-right: 7px; }
-                    #browser-close:hover { color: #33C3F0; }
 
                 /* background colors / stripes */
 
@@ -335,6 +351,7 @@ rect.pane {
     background-color: #ddd;
     pointer-events: none;
     width: 90px;
+    height: 22px;
     text-align: center;
     font-size: 14px;
     box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
@@ -344,9 +361,17 @@ rect.pane {
     fill: red !important;
 }
 
+.curr-dt-marker {
+    fill: blue !important;
+}
+
+.spark-selected {
+    fill: green !important;
+}
+
+
 #spark
 {
-    margin-top: 30px;
     width: auto;
     height: auto;
     background-color: white;

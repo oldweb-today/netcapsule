@@ -31,7 +31,7 @@
     </head>
     <body>
         <nav class="header">
-            <div id="browser-dropdown">
+            <div id="browser-dropdown" class="dropdown">
                 <span id="browser-icon-group">
                 <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
                 <label id="browser-label">{{ browser.version }}</label>
@@ -39,6 +39,7 @@
                 <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
+            
             <div class="nav-label">Current Page Archived On:</div>
             <div id="curr-date-info">
                 <span id="curr-date"></span>
@@ -46,22 +47,14 @@
                 <span id="curr-time"></span>            
             </div>
             
-            <div class="nav-label">Navigate To:</div>
-            <div id="new-date-info" class="LCD">
-                <input id="new-date"/>
-                <input id="new-time"/>
-            </div>
+            <div class="nav-label">Desired Date/Time:</div>
             
-            <div class="memnav">
-                <button>First</button>
-                <button>Prev</button>
-                <button>Current</button>
-                <button>Next</button>
-                <button>Last</button>
+            <div id="datetime-dropdown" class="dropdown">
+                <input id="new-date" class="LCD drop-skip"/>
+                <input id="new-time" class="LCD drop-skip"/>
+                <input id="datetime" class="drop-skip"/>
+                <span id="browser-arrow" class="arrow-down"></span>
             </div>
-
-            
-            <div id="spark"></div>
             
             <div style="display: none">
             <div>Date/Time:</div>
@@ -80,5 +73,14 @@
             </div>
         </div>
         {% include 'browser-select.html' %}
+        <div id="datetime-selector" class="selector-menu">
+            <div class="menu-selector-close"><span>&#10006;</span></div>
+        <div id="spark"></div>
+        <div class="timenav">
+            <button>First</button>
+            <button>Prev</button>
+            <button>Next</button>
+        </div>
+        </div>
     </body>
 </html>

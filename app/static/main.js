@@ -7,6 +7,10 @@ var connected = false;
 var ping_id = undefined;
 var ping_interval = undefined;
 
+var sparkline = undefined;
+var page_change = false;
+var spark_change = false;
+
 // Load supporting scripts
 Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
                    "keysymdef.js", "keyboard.js", "input.js", "display.js",
@@ -99,8 +103,7 @@ $(function() {
 
     $("#noVNC_screen").mouseenter(grab_focus);
     
-    $("#new_date").click(lose_focus);
-    $("#new_time").click(lose_focus);
+    $("#datetime").click(lose_focus);
 
     init_container();
 
@@ -123,13 +126,23 @@ $(".rel_message").hide();
 }
 */
             if (data.referrer && data.referrer_secs) {
-                var date_time = new Date(data.referrer_secs * 1000).toISOString().slice(0, -5).split("T");
+                var date = new Date(data.referrer_secs * 1000);
+                var date_time = date.toISOString().slice(0, -5).split("T");
                 //$("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
                 $(".rel_message").hide();
                 $("#curr-date").html(date_time[0]);
                 $("#curr-time").html(date_time[1]);
                 url = data.referrer;
-                ping_interval = 10000;
+                if (page_change) {
+                    ping_interval = 10000;
+                    page_change = false;
+                }
+                if (spark_change) {
+                    if (sparkline) {
+                        sparkline.move_marker("curr-dt", date);
+                        spark_change = false;
+                    }
+                }
             }
 
             
@@ -229,6 +242,8 @@ $(".rel_message").hide();
             $("#browserMsg").hide();
             
             ping_interval = 1000;
+            page_change = true;
+            spark_change = true;
 
             // start ping at regular intervals
             ping_id = window.setTimeout(ping, ping_interval);
@@ -274,26 +289,41 @@ $(".rel_message").hide();
 
 
 
-
+// Dropdowns
 $(function() {
-    $("#browser-dropdown").click(function(e) {
-        if (!$("#browser-selector").is(":visible")) {
-            show_menu();
-        } else {
-            hide_menu();
-        }
-        e.stopPropagation();
-    });
-
-    $("#browser-close").click(function(e) {
+    
+    
+    // Shared
+    $(".menu-selector-close").click(function(e) {
         hide_menu();
     });
 
     $(document).click(function(e){
         hide_menu();
     });
-
-    $("#browser-selector").click(function(e){
+    
+    $(".selector-menu").click(function(e){
+        e.stopPropagation();
+    });
+    
+    $(".drop-skip").click(function(e){
+        e.stopPropagation();
+    });
+    
+    function hide_menu()
+    {
+        $(".selector-menu").hide();
+        $(".dropdown").removeClass("dropdown-shown");
+    }
+    
+    
+    // Browser
+    $("#browser-dropdown").click(function(e) {
+        if (!$(".selector-menu").is(":visible")) {
+            show_browser_menu();
+        } else {
+            hide_menu();
+        }
         e.stopPropagation();
     });
 
@@ -308,7 +338,6 @@ $(function() {
             tr = tr.prev();
         } while (tr && !browserTH.length);
 
-
         var platform = $("#browser-selector thead").find("th").eq($(this).index());
 
         $("#browser-text").text(browserTH.text() + " on " + platform.text());
@@ -322,16 +351,10 @@ $(function() {
         window.location.href = full_url;
     });
 
-    function hide_menu()
-    {
-        $("#browser-selector").hide();
-        $("#browser-dropdown").removeClass("browser-drop-shown");
-    }
-
-    function show_menu()
+    function show_browser_menu()
     {
         $("#browser-selector").show();
-        $("#browser-dropdown").addClass("browser-drop-shown");
+        $("#browser-dropdown").addClass("dropdown-shown");
 
         var pos = $("#browser-dropdown").offset();
         pos.top += $("#browser-dropdown").outerHeight();
@@ -339,79 +362,90 @@ $(function() {
     }
 
     $("#browser-selector td[data-path='" + coll + "']").addClass("selected");
+
+    
+    // Datetime
+    $("#datetime-dropdown").click(function(e) {
+        if (!$(".selector-menu").is(":visible")) {
+            show_datetime_menu();
+        } else {
+            hide_menu();
+        }
+        e.stopPropagation();
+    });
+
+    function show_datetime_menu()
+    {
+        $("#datetime-selector").show();
+        $("#datetime-dropdown").addClass("dropdown-shown");
+
+        var pos = $("#datetime-dropdown").offset();
+        pos.top += $("#datetime-dropdown").outerHeight();
+        $("#datetime-selector").offset(pos);
+    }
 });
 
-// TimeUtils
-function TimeUtils()
-{
-    this.date_pad = "10000101";
-    this.time_pad = "000000";
 
-    this.set_from_ts = function(ts) {
+
+$(function() {
+    var pad = "10000101000000";
+    
+    function parse_ts(ts)
+    {
         ts = ts.substr(0, 14);
-        ts += this.date_pad.substr(ts.length);
-        ts += this.time_pad.substr(ts.length - this.date_pad.length);
-
-        this.set_date(ts.substr(0, this.date_pad.length));
-        this.set_time(ts.substr(this.date_pad.length));
-    };
-
-    this.set_date = function(value) {
-        $("#new-date").attr("data-date", value);
-
-        var formatted = value.substr(0, 4) + "-" + value.substr(4, 2) + "-" + value.substr(6);
-        $("#new-date").val(formatted);
-    };
-
-    this.set_time = function(value) {
-        $("#new-time").attr("data-time", value);
-
-        var formatted = value.substr(0, 2) + ":" + value.substr(2, 2) + ":" + value.substr(4);
-        $("#new-time").val(formatted);
-    };
+        ts += pad.substr(ts.length);
+        set_ts(ts);
+    }
     
-    this.validate_date = function() {
-        var value = $("#new-date").val();
+    function set_ts(ts)
+    {
+        $("#datetime").attr("data-dt", ts);
+        
+        var formatted = ts.substr(0, 4) + "-" + 
+                        ts.substr(4, 2) + "-" + 
+                        ts.substr(6, 2) + " " +
+                        ts.substr(8, 2) + ":" + 
+                        ts.substr(10, 2) + ":" +
+                        ts.substr(12, 2);
+        
+        $("#datetime").val(formatted);
+    }
+        
+    $("#datetime").blur(function() {
+        var value = $("#datetime").val();
         value = value.replace(/[^\d]/g, '');
-        value = value.substr(0, 8);
-        value += this.date_pad.substring(value.length);
-        this.set_date(value);
-    };
-    
-    this.validate_time = function() {
-        var value = $("#new-time").val();
-        value = value.replace(/[^\d]/g, '');
-        value = value.substr(0, 6);
-        value += this.time_pad.substring(value.length);
-        this.set_time(value);
-    };
-}
+        parse_ts(value);
+        if (sparkline) {
+            sparkline.move_selected($("#datetime").val());
+        }
+    });
 
-$(function() {
-    var timeutil = new TimeUtils();
     
-    timeutil.set_from_ts(curr_ts);
-    
-    $("#new-date").blur(function() {
-        timeutil.validate_date();
-    });
-    
-    $("#new-time").blur(function() {
-        timeutil.validate_time();
-    });
+    parse_ts(curr_ts);
 });
     
     
 
 
-
-
-
-
 $(function() {
+    function set_dt(date)
+    {
+        var date_time = date.toISOString().slice(0, -5).replace("T", " ")
+        $("#datetime").val(date_time);
+        var ts = date_time.replace(/[^\d]/g, '');
+        $("#datetime").attr("data-dt", ts);
+    }
+    
     var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
+    
     $.getJSON(jsonUrl, function(data) {
-        init_spark("#spark", data, {width: 150, height: 500, thickness: 6, swap: true});
+        sparkline = new Sparkline("#spark", data, {width: 200, 
+                                                   height: 550, 
+                                                   thickness: 6,
+                                                   swapXY: true, 
+                                                   onclick: set_dt});
+        
+        sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
     }).fail(function(e) {
         console.log(e);
     });
