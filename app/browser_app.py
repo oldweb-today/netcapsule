@@ -1,5 +1,6 @@
-#from selenium import webdriver
-#from selenium.webdriver.common.proxy import *
+from gevent import monkey, spawn, Timeout, sleep
+monkey.patch_all()
+
 
 from bottle import route, default_app, run, request, response, redirect
 
@@ -10,8 +11,15 @@ from redis import StrictRedis
 import time
 import sys
 import os
+import json
+import traceback
 
 from argparse import ArgumentParser
+
+from bottle.ext.websocket import GeventWebSocketServer
+from bottle.ext.websocket import websocket
+
+from geventwebsocket.exceptions import WebSocketError
 
 
 PYWB_HOST_PORT = os.environ.get('PYWB_HOST_PORT', 'netcapsule_pywb_1:8080')
@@ -24,7 +32,8 @@ my_ip = '127.0.0.1'
 
 pywb_ip = None
 start_url = None
-start_ts = None
+
+curr_ts = None
 
 redis = None
 local_redis = None
@@ -42,6 +51,9 @@ def set_timestamp(timestamp):
         r = requests.get('http://set.pywb.proxy/', params=params, proxies={'http': PYWB_HOST_PORT, 'https': PYWB_HOST_PORT})
 
         if r.status_code == 200:
+            global curr_ts
+            curr_ts = timestamp
+
             return {'success': r.json()}
         else:
             return {'error': r.body}
@@ -50,28 +62,75 @@ def set_timestamp(timestamp):
         return {'error': str(e)}
 
 
-@route('/set')
-def route_set_ts():
-    ts = request.query.get('ts')
-    res = set_timestamp(ts)
-    return res
+#@route('/set')
+#def route_set_ts():
+#    ts = request.query.get('ts')
+#    res = set_timestamp(ts)
+#    return res
+
+@route('/pingsock', apply=[websocket])
+def pingsock(ws):
+    spawn(receiver, ws)
+
+    last_data = None
+    sleep_timeout = 0.5
+
+    while True:
+        try:
+            data = get_update()
+            if data != last_data:
+                logging.debug('Sending' + str(data))
+                ws.send(json.dumps(data))
+                last_data = data
+        except WebSocketError as e:
+            traceback.print_exc(e)
+            mark_for_removal()
+            break
+        except Exception as e:
+            traceback.print_exc(e)
+
+        sleep(sleep_timeout)
+
+def receiver(ws):
+    while True:
+        data = ws.receive()
+        logging.debug('Received' + str(data))
+        if data is None:
+            continue
+
+        try:
+            data = json.loads(data)
+            if data['ts']:
+                set_timestamp(data['ts'])
+
+        except WebSocketError as e:
+            break
+
+        except Exception as e:
+            traceback.print_exc(e)
+
+def mark_for_removal():
+    redis.delete('c:' + HOST)
+
+    keylist = redis.keys(my_ip + ':*')
+    for key in keylist:
+        local_redis.delete(key)
 
 
-@route(['/ping'])
-def ping():
-    if not redis.hget('all_containers', HOST):
-        return
+def get_update():
+#    if not redis.hget('all_containers', HOST):
+#        return
 
-    global expire_time
-    expire_time = redis.get('container_expire_time')
-    if not expire_time:
-        expire_time = DEF_EXPIRE_TIME
+#    global expire_time
+#    expire_time = redis.get('container_expire_time')
+#    if not expire_time:
+#        expire_time = DEF_EXPIRE_TIME
 
-    redis.expire('c:' + HOST, expire_time)
+#    redis.expire('c:' + HOST, expire_time)
 
-    ts = request.query.get('ts')
+    #ts = request.query.get('ts')
 
-    base_key = my_ip + ':' + ts + ':'
+    base_key = my_ip + ':' + curr_ts + ':'
 
     # all urls
     all_urls = local_redis.hgetall(base_key + 'urls')
@@ -88,11 +147,12 @@ def ping():
     # all_hosts
     all_hosts = local_redis.smembers(base_key + 'hosts')
 
-    referrer = local_redis.get(base_key + 'r')
+    referrer = local_redis.get(base_key + 'ref')
 
     referrer_secs = int(all_urls.get(referrer, 0))
 
     return {'urls': count,
+            'req_ts': curr_ts,
             'min_sec': min_sec,
             'max_sec': max_sec,
             'hosts': list(all_hosts),
@@ -150,8 +210,8 @@ def do_init():
         start_url = 'http://' + start_url
 
     # not used here for now
-    global start_ts
-    start_ts = r.start_ts
+    global curr_ts
+    curr_ts = r.start_ts
 
     global redis
     redis = StrictRedis(REDIS_HOST)
@@ -163,8 +223,8 @@ def do_init():
         local_redis = redis
 
     # set initial url
-    base_key = my_ip + ':' + start_ts + ':'
-    local_redis.set(base_key + 'r', start_url)
+    #base_key = my_ip + ':' + curr_ts + ':'
+    #local_redis.set(base_key + 'r', start_url)
 
     return default_app()
 
@@ -178,5 +238,5 @@ def enable_cors():
 
 
 if __name__ == "__main__":
-    run(host='0.0.0.0', port='6082')
+    run(host='0.0.0.0', port='6082', server=GeventWebSocketServer)
 

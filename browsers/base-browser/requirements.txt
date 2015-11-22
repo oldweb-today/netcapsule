@@ -1,3 +1,5 @@
 requests
 bottle
 redis
+gevent
+bottle-websocket

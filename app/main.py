@@ -232,6 +232,7 @@ def route_load_url(path='', url='', ts=''):
     browser_info = dict(name=browser['name'],
                         os=browser['os'],
                         version=browser['version'],
+                        about=browser['about'],
                         icon=browser['icon'])
 
     return {'coll': path,

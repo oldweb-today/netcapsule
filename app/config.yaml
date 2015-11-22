@@ -2,7 +2,8 @@ api_version: '1.21'
 vnc_port: 6080
 cmd_port: 6082
 
-container_expire_secs: 90
+container_expire_secs: 600
+
 queue_expire_secs: 30
 remove_expired_secs: 20
 
@@ -19,6 +20,7 @@ browsers:
       version: '40'
       icon: 'firefox.png'
       path: firefox
+      about: 'https://en.wikipedia.org/wiki/Firefox'
 
     # chrome
     - id: chrome
@@ -27,6 +29,7 @@ browsers:
       version: '46'
       icon: 'chrome.png'
       path: chrome
+      about: 'https://en.wikipedia.org/wiki/Google_Chrome'
 
     # mosaic
     - id: mosaic
@@ -35,6 +38,7 @@ browsers:
       version: '2.2'
       icon: 'mosaic.png'
       path: mosaic
+      about: 'https://en.wikipedia.org/wiki/Mosaic_%28web_browser%29'
 
     # netscape 
     - id: netscape
@@ -43,6 +47,7 @@ browsers:
       version: '4.79'
       icon: 'win32-ns4.png'
       path: nslinux
+      about: 'https://en.wikipedia.org/wiki/Netscape_%28web_browser%29'
 
     - id: netscape4.8-win
       name: 'Netscape Navigator'
@@ -50,6 +55,7 @@ browsers:
       version: '4.8'
       icon: 'win32-ns4.png'
       path: nswin
+      about: 'https://en.wikipedia.org/wiki/Netscape_%28web_browser%29'
     
     - id: netscape-mac-3.04
       name: 'Netscape Navigator'
@@ -57,6 +63,7 @@ browsers:
       version: '3.04'
       icon: 'mac-ns2-3.png'
       path: nsmac3
+      about: 'https://en.wikipedia.org/wiki/Netscape_%28web_browser%29'
 
     - id: netscape-mac-4.08
       name: 'Netscape Navigator'
@@ -64,6 +71,7 @@ browsers:
       version: '4.08'
       icon: 'mac-ns4.png'
       path: nsmac4
+      about: 'https://en.wikipedia.org/wiki/Netscape_%28web_browser%29'
 
     - id: netscape4.8-mac
       name: 'Netscape Navigator'
@@ -71,6 +79,7 @@ browsers:
       version: '4.8'
       icon: 'mac-ns4.png'
       path: nsmac4.8
+      about: 'https://en.wikipedia.org/wiki/Netscape_%28web_browser%29'
 
     # Internet Explorer
     - id: ie4.01-mac
@@ -79,6 +88,7 @@ browsers:
       version: '4.01'
       icon: 'mac-ie4.png'
       path: ie4mac
+      about: 'https://en.wikipedia.org/wiki/Internet_Explorer_for_Mac#Internet_Explorer_4.0_for_Macintosh'
 
     - id: ie5.1-mac
       name: 'Internet Explorer'
@@ -86,6 +96,7 @@ browsers:
       version: '5.1.7'
       icon: 'mac-ie5.1.png'
       path: ie5mac
+      about: 'https://en.wikipedia.org/wiki/Internet_Explorer_for_Mac#Internet_Explorer_5_Macintosh_Edition'
 
     - id: ie4
       name: 'Internet Explorer'
@@ -93,6 +104,7 @@ browsers:
       version: '4.01'
       icon: 'win32-ie4.png'
       path: ie4
+      about: 'https://en.wikipedia.org/wiki/Internet_Explorer_4'
 
     - id: ie5.5
       name: 'Internet Explorer'
@@ -100,6 +112,7 @@ browsers:
       version: '5.5'
       icon: 'win32-ie5.5.png'
       path: ie5.5
+      about: 'https://en.wikipedia.org/wiki/Internet_Explorer_5'
 
     # Safari
     - id: safari5
@@ -108,3 +121,4 @@ browsers:
       version: '5.0'
       icon: 'safari.png'
       path: safari
+      about: 'https://en.wikipedia.org/wiki/Safari_%28web_browser%29#Safari_5'

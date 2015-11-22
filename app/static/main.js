@@ -11,6 +11,9 @@ var sparkline = undefined;
 var page_change = false;
 var spark_change = false;
 
+
+var pingsock = undefined;
+
 // Load supporting scripts
 Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
                    "keysymdef.js", "keyboard.js", "input.js", "display.js",
@@ -19,7 +22,7 @@ Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
 $(function() {
     function init_container() {
         var params = {"url": url, "ts": curr_ts, "browser": coll, "state": "ping"};
-        
+
         var fail_count = 0;
 
         function send_request() {
@@ -28,12 +31,12 @@ $(function() {
             $.getJSON(init_url, handle_response)
             .fail(function() {
                 fail_count++;
-                
+
                 if (fail_count <= 3) {
-                    browserMsg.text("Retry Browser Init...");
+                    $(browserMsg).text("Retry Browser Init...");
                     setTimeout(send_request, 5000);
                 } else {
-                    browserMsg.text("Failed to init browser... Please try again later");
+                    $(browserMsg).text("Failed to init browser... Please try again later");
                 }
             });
         }
@@ -102,7 +105,7 @@ $(function() {
     $("#noVNC_screen").mouseleave(lose_focus);
 
     $("#noVNC_screen").mouseenter(grab_focus);
-    
+
     $("#datetime").click(lose_focus);
 
     init_container();
@@ -114,47 +117,64 @@ $(function() {
         window.history.replaceState({}, "", full_url);
     }
 
+    function establish_ping_sock()
+    {
+        pingsock = new WebSocket("ws://" + cmd_host + "/pingsock");
+        pingsock.onerror = function(e) {
+            console.log("Sock Error");
+            window.setTimeout(establish_ping_sock, 1000);
+        }
+        pingsock.onclose = function(e) {
+            console.log("Sock Close");
+        }
+        pingsock.onmessage = function(e) {
+            handle_data_update(JSON.parse(e.data));
+        }
+    }
+
+    function handle_data_update(data) {
+        if (data.referrer && data.referrer_secs) {
+            var date = new Date(data.referrer_secs * 1000);
+            var date_time = date.toISOString().slice(0, -5).split("T");
+            //$("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
+            $(".rel_message").hide();
+            $("#curr-date").html(date_time[0]);
+            $("#curr-time").html(date_time[1]);
+            url = data.referrer;
+            if (page_change) {
+                ping_interval = 10000;
+                page_change = false;
+            }
+            if (spark_change) {
+                if (sparkline) {
+                    sparkline.move_marker("curr-dt", date);
+                    spark_change = false;
+                }
+            }
+        }
+
+
+        if (data.hosts && data.hosts.length > 0) {
+            $("#hosts").html("Archived content courtesy of <b>" + data.hosts.join(", ") + "</b>");
+        }
+        //if (sec) {
+        //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
+        //}
+
+        update_replay_state();
+
+
+//        if (data.urls && data.min_sec && data.max_sec) {
+//            var min_date = new Date(data.min_sec * 1000).toLocaleString();
+//            var max_date = new Date(data.max_sec * 1000).toLocaleString();
+//            $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
+//            $(".rel_message").hide();
+//        }
+    }
 
     function ping() {
-        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, function(data) {
-            /*
-if (data.urls && data.min_sec && data.max_sec) {
-var min_date = new Date(data.min_sec * 1000).toLocaleString();
-var max_date = new Date(data.max_sec * 1000).toLocaleString();
-$("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
-$(".rel_message").hide();
-}
-*/
-            if (data.referrer && data.referrer_secs) {
-                var date = new Date(data.referrer_secs * 1000);
-                var date_time = date.toISOString().slice(0, -5).split("T");
-                //$("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
-                $(".rel_message").hide();
-                $("#curr-date").html(date_time[0]);
-                $("#curr-time").html(date_time[1]);
-                url = data.referrer;
-                if (page_change) {
-                    ping_interval = 10000;
-                    page_change = false;
-                }
-                if (spark_change) {
-                    if (sparkline) {
-                        sparkline.move_marker("curr-dt", date);
-                        spark_change = false;
-                    }
-                }
-            }
-
-            
-            if (data.hosts && data.hosts.length > 0) {
-                $("#hosts").html("Archived content courtesy of <b>" + data.hosts.join(", ") + "</b>");
-            }
-            //if (sec) {
-            //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
-            //}
-
-            update_replay_state();
-        }).complete(function() {
+        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, handle_data_update)
+        .complete(function() {
             ping_id = window.setTimeout(ping, ping_interval);
         });
     }
@@ -240,13 +260,14 @@ $(".rel_message").hide();
         } else if (state == "normal") {
             $("#noVNC_canvas").show();
             $("#browserMsg").hide();
-            
+
             ping_interval = 1000;
             page_change = true;
             spark_change = true;
 
             // start ping at regular intervals
-            ping_id = window.setTimeout(ping, ping_interval);
+            //ping_id = window.setTimeout(ping, ping_interval);
+            establish_ping_sock();
         }
 
         //        var s, sb, cad, level;
@@ -291,8 +312,8 @@ $(".rel_message").hide();
 
 // Dropdowns
 $(function() {
-    
-    
+
+
     // Shared
     $(".menu-selector-close").click(function(e) {
         hide_menu();
@@ -301,22 +322,22 @@ $(function() {
     $(document).click(function(e){
         hide_menu();
     });
-    
+
     $(".selector-menu").click(function(e){
         e.stopPropagation();
     });
-    
+
     $(".drop-skip").click(function(e){
         e.stopPropagation();
     });
-    
+
     function hide_menu()
     {
         $(".selector-menu").hide();
         $(".dropdown").removeClass("dropdown-shown");
     }
-    
-    
+
+
     // Browser
     $("#browser-dropdown").click(function(e) {
         if (!$(".selector-menu").is(":visible")) {
@@ -363,7 +384,7 @@ $(function() {
 
     $("#browser-selector td[data-path='" + coll + "']").addClass("selected");
 
-    
+
     // Datetime
     $("#datetime-dropdown").click(function(e) {
         if (!$(".selector-menu").is(":visible")) {
@@ -389,28 +410,28 @@ $(function() {
 
 $(function() {
     var pad = "10000101000000";
-    
+
     function parse_ts(ts)
     {
         ts = ts.substr(0, 14);
         ts += pad.substr(ts.length);
         set_ts(ts);
     }
-    
+
     function set_ts(ts)
     {
         $("#datetime").attr("data-dt", ts);
-        
+
         var formatted = ts.substr(0, 4) + "-" + 
-                        ts.substr(4, 2) + "-" + 
-                        ts.substr(6, 2) + " " +
-                        ts.substr(8, 2) + ":" + 
-                        ts.substr(10, 2) + ":" +
-                        ts.substr(12, 2);
-        
+            ts.substr(4, 2) + "-" + 
+            ts.substr(6, 2) + " " +
+            ts.substr(8, 2) + ":" + 
+            ts.substr(10, 2) + ":" +
+            ts.substr(12, 2);
+
         $("#datetime").val(formatted);
     }
-        
+
     $("#datetime").blur(function() {
         var value = $("#datetime").val();
         value = value.replace(/[^\d]/g, '');
@@ -418,13 +439,21 @@ $(function() {
         if (sparkline) {
             sparkline.move_selected($("#datetime").val());
         }
+        
+        send_ts($("#datetime").attr("data-dt"));
     });
-
     
+    function send_ts(ts)
+    {
+        if (pingsock) {
+            pingsock.send(JSON.stringify({"ts": ts}));
+        }
+    }
+
     parse_ts(curr_ts);
 });
-    
-    
+
+
 
 
 $(function() {
@@ -435,16 +464,16 @@ $(function() {
         var ts = date_time.replace(/[^\d]/g, '');
         $("#datetime").attr("data-dt", ts);
     }
-    
+
     var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
-    
+
     $.getJSON(jsonUrl, function(data) {
         sparkline = new Sparkline("#spark", data, {width: 200, 
                                                    height: 550, 
                                                    thickness: 6,
                                                    swapXY: true, 
                                                    onclick: set_dt});
-        
+
         sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
     }).fail(function(e) {
         console.log(e);

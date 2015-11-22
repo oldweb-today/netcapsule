@@ -51,6 +51,9 @@ class RedisClient(object):
             self.redis.expire(full_key, 180)
             yield cdx
 
+    def pipeline(self):
+        return redis.utils.pipeline(self.redis)
+
     @staticmethod
     def get_url_key_p(ts, url):
         key = ts + '/' + canonicalize(url, False)

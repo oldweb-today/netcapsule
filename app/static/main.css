@@ -153,6 +153,12 @@ span.purple{color:purple}
         text-align: center;
     }
 
+    .about-browser {
+        font-size: 12px;
+        text-align: left;
+        margin-left: 4px;
+    }
+
 
     /* Button that opens either browser or datetime selector */
     .dropdown {
