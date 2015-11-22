@@ -11,8 +11,8 @@ var sparkline = undefined;
 var page_change = false;
 var spark_change = false;
 
-
 var pingsock = undefined;
+var fail_count = 0;
 
 // Load supporting scripts
 Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
@@ -22,8 +22,6 @@ Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
 $(function() {
     function init_container() {
         var params = {"url": url, "ts": curr_ts, "browser": coll, "state": "ping"};
-
-        var fail_count = 0;
 
         function send_request() {
             var init_url = "/init_browser?" + $.param(params);
@@ -108,9 +106,6 @@ $(function() {
 
     $("#datetime").click(lose_focus);
 
-    init_container();
-
-
     function update_replay_state() {
         var full_url = "/" + coll + "/" + curr_ts + "/" + url;
 
@@ -133,14 +128,14 @@ $(function() {
     }
 
     function handle_data_update(data) {
-        if (data.referrer && data.referrer_secs) {
-            var date = new Date(data.referrer_secs * 1000);
+        if (data.page_url && data.page_url_secs) {
+            var date = new Date(data.page_url_secs * 1000);
             var date_time = date.toISOString().slice(0, -5).split("T");
-            //$("#currLabel").html("Loaded <b>" + data.referrer + "</b> from <b>" + url_date + "</b>");
+            //$("#currLabel").html("Loaded <b>" + data.page_url + "</b> from <b>" + url_date + "</b>");
             $(".rel_message").hide();
             $("#curr-date").html(date_time[0]);
             $("#curr-time").html(date_time[1]);
-            url = data.referrer;
+            //url = data.page_url;
             if (page_change) {
                 ping_interval = 10000;
                 page_change = false;
@@ -264,6 +259,7 @@ $(function() {
             ping_interval = 1000;
             page_change = true;
             spark_change = true;
+            fail_count = 0;
 
             // start ping at regular intervals
             //ping_id = window.setTimeout(ping, ping_interval);
@@ -306,6 +302,15 @@ $(function() {
             UIresize();
         }, 500);
     };
+    
+    
+    // INIT
+    if (cmd_host && vnc_host) {
+        console.log("Reentrant!");
+        establish_ping_sock();
+    } else {
+        init_container();
+    }
 });
 
 

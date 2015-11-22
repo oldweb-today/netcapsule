@@ -142,12 +142,21 @@ class UpstreamArchiveLoader(object):
         sec = timestamp_to_sec(cdx['timestamp'])
         referrer = wbrequest.env.get('HTTP_REFERER')
 
-        with redisclient.pipeline() as pi:
+        try:
+            pi = redisclient.redis.pipeline(transaction=False)
+
             pi.hset(base_key + ':urls', cdx['url'], sec)
             pi.sadd(base_key + ':hosts', archive_name)
 
             if referrer and not referrer.endswith('.css'):
                 pi.set(base_key + ':ref', referrer)
+            elif not referrer:
+                pi.set(base_key + ':base', cdx['url'])
+
+            pi.execute()
+        except Exception as e:
+            import traceback
+            traceback.print_exc(e)
 
         statusline = str(response.status_code) + ' ' + response.reason
 

@@ -1,3 +1,13 @@
-<script>
-window.__wbinfo = {"ts": "{{ cdx.timestamp }}", "sec": "{{ cdx.timestamp | format_ts('%s') }}"};
-</script>
+<SCRIPT language="JavaScript">
+
+function beacon() {
+    if (window == window.top) {
+        document.writeln('<IMG SRC="http://pywb.proxy/beacon/{{ cdx.url }}" HEIGHT="1" WIDTH="1"/>')
+    }
+}
+
+beacon();
+</SCRIPT>
+<NOSCRIPT>
+<IMG SRC="http://pywb.proxy/beacon/{{ cdx.url }}" HEIGHT="1" WIDTH="1"/>
+</NOSCRIPT>

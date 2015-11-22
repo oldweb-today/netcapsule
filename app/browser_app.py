@@ -37,8 +37,9 @@ curr_ts = None
 
 redis = None
 local_redis = None
-DEF_EXPIRE_TIME = 30
-expire_time = DEF_EXPIRE_TIME
+
+stat_key_expire_time = 40
+container_expire_time = 600
 
 HOST = os.environ.get('HOSTNAME', 'localhost')
 
@@ -48,7 +49,9 @@ def set_timestamp(timestamp):
               'ip': my_ip}
 
     try:
-        r = requests.get('http://set.pywb.proxy/', params=params, proxies={'http': PYWB_HOST_PORT, 'https': PYWB_HOST_PORT})
+        r = requests.get('http://set.pywb.proxy/', params=params,
+                         proxies={'http': PYWB_HOST_PORT,
+                                  'https': PYWB_HOST_PORT})
 
         if r.status_code == 200:
             global curr_ts
@@ -75,13 +78,19 @@ def pingsock(ws):
     last_data = None
     sleep_timeout = 0.5
 
+    redis.expire('c:' + HOST, container_expire_time)
+
     while True:
         try:
             data = get_update()
             if data != last_data:
-                logging.debug('Sending' + str(data))
+                data['ttl'] = redis.ttl('c:' + HOST)
+                logging.debug('Sending ' + str(data))
                 ws.send(json.dumps(data))
                 last_data = data
+
+                # for comparison check
+                del last_data['ttl']
         except WebSocketError as e:
             traceback.print_exc(e)
             mark_for_removal()
@@ -93,28 +102,29 @@ def pingsock(ws):
 
 def receiver(ws):
     while True:
-        data = ws.receive()
-        logging.debug('Received' + str(data))
-        if data is None:
-            continue
-
         try:
+            data = ws.receive()
+            logging.debug('Received ' + str(data))
+            if data is None:
+                continue
+
             data = json.loads(data)
             if data['ts']:
                 set_timestamp(data['ts'])
 
         except WebSocketError as e:
+            traceback.print_exc()
+            mark_for_removal()
             break
 
         except Exception as e:
             traceback.print_exc(e)
 
 def mark_for_removal():
-    redis.delete('c:' + HOST)
+    logging.debug('Marked for removal')
 
-    keylist = redis.keys(my_ip + ':*')
-    for key in keylist:
-        local_redis.delete(key)
+    redis.expire('c:' + HOST, stat_key_expire_time)
+
 
 
 def get_update():
@@ -132,8 +142,22 @@ def get_update():
 
     base_key = my_ip + ':' + curr_ts + ':'
 
+    pi = local_redis.pipeline(transaction=False)
+
+    pi.hgetall(base_key + 'urls')
+    pi.smembers(base_key + 'hosts')
+    pi.get(base_key + 'ref')
+    pi.get(base_key + 'base')
+
+    pi.expire(base_key + 'urls', stat_key_expire_time)
+    pi.expire(base_key + 'hosts', stat_key_expire_time)
+    pi.expire(base_key + 'ref', stat_key_expire_time)
+    pi.expire(base_key + 'base', stat_key_expire_time)
+
+    result = pi.execute()
+
     # all urls
-    all_urls = local_redis.hgetall(base_key + 'urls')
+    all_urls = result[0]
 
     count = 0
     min_sec = sys.maxint
@@ -145,19 +169,25 @@ def get_update():
         max_sec = max(sec, max_sec)
 
     # all_hosts
-    all_hosts = local_redis.smembers(base_key + 'hosts')
+    all_hosts = result[1]
 
-    referrer = local_redis.get(base_key + 'ref')
+    referrer = result[2]
+    base = result[3]
 
-    referrer_secs = int(all_urls.get(referrer, 0))
+    if not referrer:
+        page_url = base
+    else:
+        page_url = referrer
+
+    page_url_secs = int(all_urls.get(page_url, 0))
 
     return {'urls': count,
             'req_ts': curr_ts,
             'min_sec': min_sec,
             'max_sec': max_sec,
             'hosts': list(all_hosts),
-            'referrer': referrer,
-            'referrer_secs': referrer_secs
+            'page_url': page_url,
+            'page_url_secs': page_url_secs,
            }
 
 

@@ -44,9 +44,10 @@ class MementoJsonApi(object):
         r = None
         try:
             r = self.session.get(full)
+            r.raise_for_status()
             result = r.json()
         except Exception as e:
-            if not r or r.status_code != 404:
+            if r and r.status_code != 404:
                 import traceback
                 traceback.print_exc(e)
 
