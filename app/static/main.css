@@ -3,7 +3,7 @@ html, body {
     margin: 0px;
     padding: 0px;
     border: 0px;
-    overflow: auto;
+    overflow: hidden;
     background-color: #f0f0f0;
 }
 
@@ -78,9 +78,31 @@ span.purple{color:purple}
     left: 0px;
     top: 0px;
     bottom: 0;
-
-    overflow-wrap: break-word;
+    overflow: visible;
+    /*overflow-wrap: break-word; */
 }
+
+
+    /* top line with title and session expiration info */
+    #title {
+       font-size: 32px;
+       margin: -5px 0 4rem 4px; 
+    }
+
+        #expireWrap {
+            font-size: 13px;
+            position: absolute;
+            top: 7px;
+            text-align: center;
+            right: 12px;
+            width: 62px;
+        }
+
+            #expire {
+                display: block;
+                margin-left: 0px;
+                text-align: center;
+            }
 
  /*   .header * {
         font-size: 20px;
@@ -110,20 +132,17 @@ span.purple{color:purple}
     }
 
     .nav-label {
-        text-align: center;
-        font-size: 11px;
-        margin-top: 8px;
+        font-size: 12px;
+        margin: 0 0 4px 4px;
     }
 
     #curr-date-info {
-        font-weight: bold;
-        text-align: center;
-        line-height: 0.7;
+        margin: 0 0 1rem 34px;
+
     }
 
     #curr-date-space {
-        display: inline-block;
-        width: 10px
+        display: none;
     }
 
     .timenav {
@@ -131,44 +150,37 @@ span.purple{color:purple}
         text-align: center;
     }
 
-    .timenav button {
-        padding: 0 8px;
-    }
+        .timenav button {
+            padding: 0 8px;
+        }
 
-    /* LCD */
-    @font-face {
-        font-family: "digital-7";
-        src: url(/static/digital-7.ttf) format("truetype");
-    }
-
-    .LCD {
-        font-family: "digital-7", sans-serif;
-        font-size: 24px;
-        background-color: black;
-        color: lightgreen;
-        max-width: 110px;
-        text-align: center;
-        display: none;
+    #datetime, #curr-date-info, #expire {
+        font-family: "Monaco", "DejaVu Sans Mono", "Consolas", "Courier New", monospace;
+        font-size: 16px;
     }
 
     #datetime {
-        font-family: monospace;
-        font-size: 16px;
-        background-color: #ccc;
-        margin: 6px 0px 6px 0px;
-        text-align: center;
+        
+        background-color: #fff;
+
+        display: block;
+        float: left;
+        width: 218px;
+        height: 100%;
+        padding-left: 25px;
+        border: 0;
     }
 
     .about-browser {
         font-size: 12px;
-        text-align: left;
-        margin-left: 4px;
+        margin: 0 0 4rem 4px;
     }
 
 
     /* Button that opens either browser or datetime selector */
     .dropdown {
         width: 287px;
+        height: 42px;
         padding: 8px;
         background-color: white;
         cursor: pointer;
@@ -179,10 +191,14 @@ span.purple{color:purple}
         font-size: 13px;
     }
 
-        a.about-browser {
-            display: block;
-            margin: -24px 0 1rem 0;
-        }
+
+            /* Is this styling stuff on the front page? 
+
+              a.about-browser {
+                display: block;
+                margin: -24px 0 1rem 0;
+            } */
+
         .dropdown.dropdown-shown {
             border: 1px solid #1EAEDB;
         }
@@ -228,7 +244,8 @@ span.purple{color:purple}
     }
 
     #datetime-info {
-        font-size: 16px;
+        font-size: 11px;
+        padding: 10px 0 0 8px
     }
 
     /* Both Selector Menus */
@@ -243,13 +260,28 @@ span.purple{color:purple}
     }
 
     /* close menu via × */
-    .menu-selector-close {
+    /* browser selector */
+    th.menu-selector-close {
         text-align: right !important;
         cursor: pointer;
         font-size: 15px;
     }
+
+    /* date selector */
+    div.menu-selector-close {
+        cursor: pointer;
+        font-size: 15px;
+        position: absolute;
+        right: 10px;
+        top: 7px;
+    }
+
     .menu-selector-close span { margin-right: 7px; }
     .menu-selector-close:hover { color: #33C3F0; }
+
+       #spark {
+           margin-left: 10px;
+       }
 
 
     /* Browser Selector */
@@ -324,7 +356,6 @@ span.purple{color:purple}
     top: 0px;
     left: 326px;
     right: 0;
-    background: #e1e1e1
 }
 
     /* noVNC classes */
@@ -346,39 +377,47 @@ span.purple{color:purple}
 
 
 /* Sparklines */
-.axis {
-    font: 10px sans-serif;
-}
-.axis path,
-.axis line {
-    fill: none;
-    stroke: #000;
-    shape-rendering: crispEdges;
-}
-.brush .extent {
-    stroke: #fff;
-    fill-opacity: .125;
-    shape-rendering: crispEdges;
+
+#spark {
+    width: auto;
+    height: auto;
+    background-color: white;
+    text-align: left;
 }
 
-rect.pane {
-    cursor: pointer;
-    fill: transparent;
-}
+    rect.pane {
+        cursor: pointer;
+        fill: transparent;
+    }
+
+        .axis {
+            font: 11px inherit;
+            fill: #222;
+        }
+
+        .axis path,
+        .axis line {
+            fill: none;
+            stroke: #222;
+            shape-rendering: crispEdges;
+        }
+
+        .bar {fill: rgba(153,153,153,.25)}
 
 .tooltip {
     position: absolute;
-    background-color: #ddd;
+    border: 1px solid #33C3F0;
+    border-radius: 4px;
+    background: #fff;
     pointer-events: none;
     width: 90px;
-    height: 22px;
+    height: 18px;
     text-align: center;
-    font-size: 14px;
-    box-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+    font-size: 11px;
 }
 
 .highlight {
-    fill: red !important;
+    fill: #33C3F0 !important;
 }
 
 .curr-dt-marker {
@@ -386,17 +425,11 @@ rect.pane {
 }
 
 .spark-selected {
-    fill: green !important;
+    fill: #1EAEDB !important;
 }
 
 
-#spark
-{
-    width: auto;
-    height: auto;
-    background-color: white;
-    text-align: left;
-}
+
 
 .hidden {
     display: none;
@@ -451,17 +484,3 @@ rect.pane {
     text-decoration: underline;
 }
 
-#title {
-    font-size: 24px;
-    font-weight: bold;
-    text-align: center;
-}
-
-#expireWrap {
-    font-style: italic;
-    margin-bottom: 10px;
-}
-
-#expire {
-    margin-left: 10px;
-}
