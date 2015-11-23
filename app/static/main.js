@@ -17,6 +17,7 @@ var curr_hosts = undefined;
 
 var end_time = undefined;
 var cid = undefined;
+var waiting_for_container = false;
 
 // Load supporting scripts
 Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
@@ -29,21 +30,30 @@ $(function() {
 
         function send_request() {
             var init_url = "/init_browser?" + $.param(params);
+            
+            if (waiting_for_container) {
+                return;
+            }
+            
+            waiting_for_container = true;
 
-            $.getJSON(init_url, handle_response)
+            $.getJSON(init_url, handle_browser_response)
             .fail(function() {
                 fail_count++;
 
                 if (fail_count <= 3) {
-                    $(browserMsg).text("Retry Browser Init...");
+                    $("#browserMsg").text("Retrying browser init...");
                     setTimeout(send_request, 5000);
                 } else {
-                    $(browserMsg).text("Failed to init browser... Please try again later");
+                    $("#browserMsg").text("Failed to init browser... Please try again later");
                 }
+                $("#browserMsg").show();
+            }).complete(function() {
+                waiting_for_container = false;
             });
         }
 
-        function handle_response(data) {
+        function handle_browser_response(data) {
             params.id = data.id;
 
             if (data.cmd_host && data.vnc_host) {
@@ -60,7 +70,7 @@ $(function() {
                 } else {
                     msg += "At most <b>" + data.queue + " user(s)</b> ahead of you";
                 }
-                $("#currLabel").html(msg);
+                $("#browserMsg").html(msg);
 
                 window.setTimeout(send_request, 3000);
             }
@@ -247,7 +257,6 @@ $(function() {
 
         try {
             rfb.connect(host, port, password, path);
-            connected = true;
         } catch (exc) {
             console.warn(exc);
             return false;
@@ -278,6 +287,8 @@ $(function() {
             $("#noVNC_canvas").show();
             $("#browserMsg").hide();
 
+            
+            connected = true;
             ping_interval = 1000;
             page_change = true;
             spark_change = true;
@@ -325,14 +336,8 @@ $(function() {
         }, 500);
     };
     
-    
     // INIT
-    if (cmd_host && vnc_host) {
-        console.log("Reentrant!");
-        establish_ping_sock();
-    } else {
-        init_container();
-    }
+    init_container();
 });
 
 

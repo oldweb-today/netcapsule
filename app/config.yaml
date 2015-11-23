@@ -2,6 +2,8 @@ api_version: '1.21'
 vnc_port: 6080
 cmd_port: 6082
 
+max_containers: 100
+
 container_expire_secs: 90
 
 queue_expire_secs: 30
@@ -10,6 +12,11 @@ remove_expired_secs: 20
 image_prefix: netcapsule
 
 default_browser: firefox
+
+redirect_paths:
+    '': firefox
+    'ie': ie5.5
+    'ns': nswin
 
 browsers:
 

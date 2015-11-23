@@ -440,12 +440,11 @@ rect.pane {
     font-size: 24px;
     font-weight: bold;
     text-align: center;
-    margin-bottom: 20px;
 }
 
 #expireWrap {
-    margin-bottom: 20px;
     font-style: italic;
+    margin-bottom: 10px;
 }
 
 #expire {

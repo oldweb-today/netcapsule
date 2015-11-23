@@ -2,7 +2,7 @@ from docker.client import Client
 from docker.utils import kwargs_from_env
 
 from bottle import route, run, template, request, default_app, jinja2_view
-from bottle import redirect, static_file
+from bottle import redirect, static_file, response
 
 import os
 import base64
@@ -16,8 +16,6 @@ import json
 
 from uwsgidecorators import timer
 import uwsgi
-
-MAX_CONT = 100
 
 #=============================================================================
 class DockerController(object):
@@ -40,6 +38,8 @@ class DockerController(object):
         self.VNC_PORT = config['vnc_port']
         self.CMD_PORT = config['cmd_port']
 
+        self.MAX_CONT = config['max_containers']
+
         self.image_prefix = config['image_prefix']
 
         self.browser_list = config['browsers']
@@ -53,10 +53,12 @@ class DockerController(object):
             self.browser_paths[path] = browser
 
         self.default_browser = config['default_browser']
+        self.redirect_paths = config['redirect_paths']
 
         self.redis = redis.StrictRedis(host=self.REDIS_HOST)
 
         self.redis.setnx('next_client', '1')
+        self.redis.setnx('max_containers', self.MAX_CONT)
 
         if os.path.exists('/var/run/docker.sock'):
             self.cli = Client(base_url='unix://var/run/docker.sock',
@@ -169,7 +171,12 @@ class DockerController(object):
 
         # not avail yet
         num_containers = self.redis.hlen('all_containers')
-        if num_containers >= MAX_CONT:
+
+        max_containers = self.redis.get('max_containers')
+        if not max_containers:
+            max_containers = self.MAX_CONT
+
+        if num_containers >= max_containers:
             self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
             return enc_id, client_id - next_client
 
@@ -197,6 +204,7 @@ def init_container():
     else:
         resp = {'queue': queue_pos, 'id': client_id}
 
+    response.headers['Cache-Control'] = 'no-cache, no-store, max-age=0, must-revalidate'
     return resp
 
 
@@ -210,7 +218,12 @@ def do_init(browser, url, ts, host):
     env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
     env['BROWSER'] = browser
 
+    start = time.time()
     info = dc.new_container(browser, env, host)
+    end = time.time()
+
+    print('TIME: ', (end - start))
+
     info['queue'] = 0
     return info
 
@@ -227,8 +240,13 @@ def route_load_url(path='', url='', ts=''):
 
 
     browser = dc.browser_paths.get(path)
+
     if not browser:
-        redirect('/' + dc.default_browser + '/' + ts + '/' + url)
+        path = dc.redirect_paths.get(path)
+        if not path:
+            path = dc.default_browser
+
+        redirect('/' + path + '/' + ts + '/' + url)
 
     browser_info = dict(name=browser['name'],
                         os=browser['os'],
