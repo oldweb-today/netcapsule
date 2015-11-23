@@ -28,6 +28,8 @@ LOCAL_REDIS_HOST = 'netcapsule_redis_1'
 
 REDIS_HOST = os.environ.get('REDIS_HOST', LOCAL_REDIS_HOST)
 
+BROWSER = os.environ.get('BROWSER')
+
 my_ip = '127.0.0.1'
 
 pywb_ip = None
@@ -39,9 +41,12 @@ redis = None
 local_redis = None
 
 stat_key_expire_time = 40
-container_expire_time = 600
+container_expire_time = 300
 
 HOST = os.environ.get('HOSTNAME', 'localhost')
+
+closed = False
+
 
 
 def set_timestamp(timestamp):
@@ -78,9 +83,32 @@ def pingsock(ws):
     last_data = None
     sleep_timeout = 0.5
 
-    redis.expire('c:' + HOST, container_expire_time)
+    duration = container_expire_time
 
-    while True:
+    global closed
+
+    if closed:
+        try:
+            # reentrancy: user returned likely after back/forward
+            # using cached response
+            remainder = redis.get('c:' + HOST)
+
+            if remainder.startswith('REM:'):
+                old_time = int(remainder[len('REM:'):])
+                # subtract time user was away
+                old_time -= (stat_key_expire_time - redis.ttl('c:' + HOST))
+                duration = old_time
+
+        except Exception as e:
+            traceback.print_exc(e)
+        finally:
+            closed = False
+
+    redis.expire('c:' + HOST, duration)
+
+    logging.debug('Controller for: ' + BROWSER)
+
+    while not closed:
         try:
             data = get_update()
             if data != last_data:
@@ -101,7 +129,7 @@ def pingsock(ws):
         sleep(sleep_timeout)
 
 def receiver(ws):
-    while True:
+    while not closed:
         try:
             data = ws.receive()
             logging.debug('Received ' + str(data))
@@ -123,8 +151,11 @@ def receiver(ws):
 def mark_for_removal():
     logging.debug('Marked for removal')
 
-    redis.expire('c:' + HOST, stat_key_expire_time)
+    ttl = redis.ttl('c:' + HOST)
+    redis.setex('c:' + HOST, stat_key_expire_time, 'REM:' + str(ttl))
 
+    global closed
+    closed = True
 
 
 def get_update():
@@ -174,10 +205,14 @@ def get_update():
     referrer = result[2]
     base = result[3]
 
+    page_url = referrer
     if not referrer:
-        page_url = base
-    else:
-        page_url = referrer
+        # never sends referrer so just stick with initial url
+        # or thinks will get confusing..
+        if BROWSER == 'mosaic':
+            page_url = start_url
+        else:
+            page_url = base
 
     page_url_secs = int(all_urls.get(page_url, 0))
 

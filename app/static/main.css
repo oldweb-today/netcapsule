@@ -308,7 +308,6 @@ span.purple{color:purple}
     position: absolute;
     top: 0px;
     left: 326px;
-    bottom: 0;
     right: 0;
     background: #e1e1e1
 }
@@ -388,3 +387,67 @@ rect.pane {
     display: none;
 }
 
+/* Stats */
+#statsCountWrap, #statsHostsWrap, #statsSpanWrap {
+    display: none;
+}
+
+#statsCountWrap {
+    text-align: center;
+}
+
+#statsCount {
+    font-weight: bold;
+    margin-right: 6px;
+}
+
+#statsSpanWrap {
+    height: 100px;
+    margin: 10px;
+}
+
+#statsSpanWrap table {
+    width: 100%;
+    text-align: center;
+}
+
+#statsSpanWrap td {
+    padding: 0px;
+    margin: 0px;
+    text-align: center;
+    border-style: none;
+}
+
+#statsHostsWrap {
+    font-size: 14px;
+}
+
+#statsHosts {
+    list-style-type: disc;
+    margin-left: 20px;
+    margin-top: 10px;
+}
+
+.session-info-label {
+    margin-top: 30px;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#expireWrap {
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+#expire {
+    margin-left: 10px;
+}

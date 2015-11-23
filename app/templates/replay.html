@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Netcapsule Web Archive Replay</title>
+        <title>OldWeb Today</title>
         <script src="/static/jquery-2.1.4.min.js"></script>
 
         <!-- noVNC Stylesheet and script -->
@@ -14,7 +14,7 @@
         <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="/static/normalize.css">
         <link rel="stylesheet" href="/static/skeleton.css">
-        
+
         <!-- Viz -->
         <script src="http://d3js.org/d3.v3.min.js"></script>
         <script src="/static/timemap.js"></script>
@@ -31,57 +31,72 @@
     </head>
     <body>
         <nav class="header">
+            <div id="title">oldweb.today</div>
+            <div id="expireWrap">Time Left:
+                <span id="expire"></span>
+            </div>
             <div id="browser-dropdown" class="dropdown">
                 <span id="browser-icon-group">
-                <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
-                <label id="browser-label">{{ browser.version }}</label>
+                    <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
+                    <label id="browser-label">{{ browser.version }}</label>
                 </span>
                 <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
             <div class="about-browser"><a href="{{ browser.about }}" target="_blank">about {{ browser.name }}</a></div>
-            
+
             <div class="nav-label">Current Page Archived On:</div>
             <div id="curr-date-info">
                 <span id="curr-date"></span>
                 <span id="curr-date-space"></span>
                 <span id="curr-time"></span>            
             </div>
-            
+
             <div class="nav-label">Desired Date/Time:</div>
-            
+
             <div id="datetime-dropdown" class="dropdown">
-                <input id="new-date" class="LCD drop-skip"/>
-                <input id="new-time" class="LCD drop-skip"/>
                 <input id="datetime" class="drop-skip"/>
                 <span id="browser-arrow" class="arrow-down"></span>
+                <div class="rel_message">Datetime changed, please click "reload" or "refresh" in the browser</div>
             </div>
-            
-            <div style="display: none">
-            <div>Date/Time:</div>
-            <input id="update" type="button" value="Update"/>
-            <div class="rel_message">Date/time set, please click "reload" or "refresh" in the browser below.</div>
-            <div id="currLabel">Initializing Browser...</div>
-            <div id="hosts" class="hosts"></div>
+
+            <div class="session-info-label">Session Info</div>
+
+            <div id="statsCountWrap"><span id="statsCount"></span>resources(s) loaded</div>
+            <div id="statsSpanWrap">
+                <div class="nav-label">Spanning</div>
+                <table>
+                    <tr>
+                        <td id="statsFrom"></td>
+                        <td>--</td>
+                        <td id="statsTo"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div id="statsHostsWrap"><span>from public web archives:</span>
+                <ul id="statsHosts"></ul>
+            </div>
+
             </div>
         </nav>
-        <div class="browser">
-            <div id="browserMsg">Initializing Browser...</div>
-            <div id="noVNC_screen">
-                <canvas id="noVNC_canvas" style="display: none">
-                    Canvas not supported.
-                </canvas>
-            </div>
+    <div class="browser">
+        <div id="browserMsg">Initializing Browser...</div>
+        <div id="noVNC_screen">
+            <canvas id="noVNC_canvas" style="display: none">
+                Canvas not supported.
+            </canvas>
         </div>
-        {% include 'browser-select.html' %}
-        <div id="datetime-selector" class="selector-menu">
-            <div class="menu-selector-close"><span>&#10006;</span></div>
+    </div>
+    {% include 'browser-select.html' %}
+    <div id="datetime-selector" class="selector-menu">
+        <div class="menu-selector-close"><span>&#10006;</span></div>
         <div id="spark"></div>
         <div class="timenav">
             <button>First</button>
             <button>Prev</button>
             <button>Next</button>
         </div>
-        </div>
+    </div>
     </body>
 </html>

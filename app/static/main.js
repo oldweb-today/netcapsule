@@ -13,6 +13,10 @@ var spark_change = false;
 
 var pingsock = undefined;
 var fail_count = 0;
+var curr_hosts = undefined;
+
+var end_time = undefined;
+var cid = undefined;
 
 // Load supporting scripts
 Util.load_scripts(["webutil.js", "base64.js", "websock.js", "des.js",
@@ -72,21 +76,6 @@ $(function() {
         }
     }
 
-    $("#update").click(function() {
-        var ts = $("#ts").val();
-
-        var cmd_url = "http://" + cmd_host + "/set?ts=" + ts;
-
-        $.getJSON(cmd_url, function(data) {
-            if (data && data.success) {
-                curr_ts = ts;
-                console.log("Updated Date to " + ts);
-                $(".rel_message").show();
-                update_replay_state();
-            }
-        });
-    });
-
     function lose_focus() {
         if (!rfb) return;
         rfb.get_keyboard().set_focused(false);
@@ -114,23 +103,34 @@ $(function() {
 
     function establish_ping_sock()
     {
-        pingsock = new WebSocket("ws://" + cmd_host + "/pingsock");
+        try {
+            pingsock = new WebSocket("ws://" + cmd_host + "/pingsock");
+        } catch (e) {
+            console.log(e);
+        }
+        
         pingsock.onerror = function(e) {
-            console.log("Sock Error");
+            //console.log("Sock Error");
+            pingsock = undefined;
             window.setTimeout(establish_ping_sock, 1000);
         }
         pingsock.onclose = function(e) {
-            console.log("Sock Close");
+            //console.log("Sock Close");
+            pingsock = undefined;
         }
         pingsock.onmessage = function(e) {
             handle_data_update(JSON.parse(e.data));
         }
     }
+    
+    function format_date(date) {
+        return date.toISOString().slice(0, -5).replace("T", " ");
+    }
 
     function handle_data_update(data) {
         if (data.page_url && data.page_url_secs) {
             var date = new Date(data.page_url_secs * 1000);
-            var date_time = date.toISOString().slice(0, -5).split("T");
+            var date_time = format_date(date).split(" ");
             //$("#currLabel").html("Loaded <b>" + data.page_url + "</b> from <b>" + url_date + "</b>");
             $(".rel_message").hide();
             $("#curr-date").html(date_time[0]);
@@ -150,29 +150,51 @@ $(function() {
 
 
         if (data.hosts && data.hosts.length > 0) {
-            $("#hosts").html("Archived content courtesy of <b>" + data.hosts.join(", ") + "</b>");
+            if (data.hosts != curr_hosts) {
+                $("#statsHosts").empty();
+                $.each(data.hosts, function(i, host) {
+                    var elem = document.createElement("li");
+                    $(elem).text(host);
+                    $("#statsHosts").append(elem);
+                });
+                
+                data.hosts = curr_hosts;
+                $("#statsHostsWrap").show();
+            }
         }
-        //if (sec) {
-        //    $("#currLabel").html("Current Page: <b>" + url + "</b> from <b>" + new Date(sec * 1000).toGMTString() + "</b>");
-        //}
 
+        if (data.urls) {
+            $("#statsCount").text(data.urls);
+            $("#statsCountWrap").show();
+        }
+            
+        if (data.min_sec && data.max_sec) {
+            var min_date = new Date(data.min_sec * 1000);
+            var max_date = new Date(data.max_sec * 1000);
+            $(".rel_message").hide();
+            $("#statsFrom").html(format_date(min_date).replace(" ", "<br>"));
+            $("#statsTo").html(format_date(max_date).replace(" ", "<br>"));
+            $("#statsSpanWrap").show();
+        }
+        
+        if (data.ttl != undefined) {
+            set_time_left(data.ttl);
+        }
+        
         update_replay_state();
-
-
-//        if (data.urls && data.min_sec && data.max_sec) {
-//            var min_date = new Date(data.min_sec * 1000).toLocaleString();
-//            var max_date = new Date(data.max_sec * 1000).toLocaleString();
-//            $("#currLabel").html("Loaded <b>" + data.urls + " urls </b> spanning " + min_date + " - " + max_date);
-//            $(".rel_message").hide();
-//        }
+    }
+    
+    function set_time_left(time_left) {
+        end_time = Math.floor(new Date().getTime() / 1000 + time_left);
     }
 
-    function ping() {
-        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, handle_data_update)
-        .complete(function() {
-            ping_id = window.setTimeout(ping, ping_interval);
-        });
-    }
+
+//    function ping() {
+//        $.getJSON("http://" + cmd_host + "/ping?ts=" + curr_ts, handle_data_update)
+//        .complete(function() {
+//            ping_id = window.setTimeout(ping, ping_interval);
+//        });
+//    }
 
     var rfb;
     var resizeTimeout;
@@ -469,18 +491,55 @@ $(function() {
         var ts = date_time.replace(/[^\d]/g, '');
         $("#datetime").attr("data-dt", ts);
     }
+    
+    function load_timemap() {
+        var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
 
-    var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
+        $.getJSON(jsonUrl, function(data) {
+            sparkline = new Sparkline("#spark", data, {width: 200, 
+                                                       height: 400, 
+                                                       thickness: 6,
+                                                       swapXY: true, 
+                                                       onclick: set_dt});
 
-    $.getJSON(jsonUrl, function(data) {
-        sparkline = new Sparkline("#spark", data, {width: 200, 
-                                                   height: 550, 
-                                                   thickness: 6,
-                                                   swapXY: true, 
-                                                   onclick: set_dt});
-
-        sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
-    }).fail(function(e) {
-        console.log(e);
-    });
+            sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
+        }).fail(function(e) {
+            console.log(e);
+        });
+    }
+    
+    if (url) {
+        load_timemap();
+    }
 });
+
+$(function() {
+    function update_countdown() {
+        if (!end_time) {
+            return;
+        }
+        var curr = Math.floor(new Date().getTime() / 1000);
+        var secdiff = end_time - curr;
+
+        if (secdiff < 0) {
+            return;
+        }
+
+        var min = Math.floor(secdiff / 60);
+        var sec = secdiff % 60;
+        if (sec <= 9) {
+            sec = "0" + sec;
+        }
+        if (min <= 9) {
+            min = "0" + min;
+        }
+
+        $("#expire").text(min + ":" + sec);       
+    }
+    
+    cid = setInterval(update_countdown, 1000);
+});
+
+
+
+

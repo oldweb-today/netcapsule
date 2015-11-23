@@ -208,6 +208,7 @@ def do_init(browser, url, ts, host):
     env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
     env['REDIS_HOST'] = dc.REDIS_HOST
     env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
+    env['BROWSER'] = browser
 
     info = dc.new_container(browser, env, host)
     info['queue'] = 0
