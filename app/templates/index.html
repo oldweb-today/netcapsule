@@ -30,9 +30,23 @@
             $("#mainform").submit(function(e) {
                 e.preventDefault();
                 
+                if (!coll || !curr_ts || !url) {
+                    $("#invalid-form").show();
+                    return;
+                }
+                
                 var full_url = window.location.origin + "/" + coll + "/" + curr_ts + "/" + url;
                 window.location.href = full_url;
             });
+            
+            function reset_error() {
+                if (coll && curr_ts && url) {
+                    $("#invalid-form").hide();
+                }
+            }
+            
+            $("#urlinput").blur(reset_error);
+            $("#browser-input").change(reset_error);
             
             url = $("#urlinput").val();
         });
@@ -82,8 +96,8 @@
                     </div>  
                 </div>
             </div>
-
-            <button type="submit" class="button-primary">Go back in time!</button>
+            <div id="invalid-form">Please select a browser, url and a date.</div>
+            <button type="submit" class="button-primary">Surf The Web!</button>
         </form>
 
         <div class="row">

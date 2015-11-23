@@ -51,6 +51,12 @@ iframe {
             a.support.shuttleworth {margin: -6px 0 6px -3px;}
     .link-github {margin-top: 1.5rem;}
 
+#invalid-form {
+    display: none;
+    font-size: 16px;
+    color: red;
+}
+
 /* rainbow */
 span.red{color:red}
 span.orange{color:orange}

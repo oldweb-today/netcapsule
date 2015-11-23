@@ -59,6 +59,8 @@ $(function() {
         hide_menu();
         
         coll = $(this).attr("data-path");
+        $("#browser-input").val(coll).trigger("change");
+        
         //$("#about-link").text("about " + browserTH.text());
         $("#about-link").attr("href", $(this).attr("data-about-url"));
         $(".about-browser").show();
