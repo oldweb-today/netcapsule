@@ -79,6 +79,8 @@ function Sparkline(target, data, options)
         timeAxisTrans = "translate(0," + graphHeight + ")";
     }
     
+    d3.select(target).select("svg").remove();
+    
     var svg = d3.select(target)
     .append("svg") 
     .attr("width", width)
@@ -136,9 +138,11 @@ function Sparkline(target, data, options)
     .attr("x", x_offset)
     .attr("y", 0)
     .attr("width", graphWidth)
-    .attr("height", 1);
+    .attr("height", 2);
 
     var dragging = false;
+    
+    var tooltip_x = $(target).find("svg").offset().left;
 
     bgrect.on("mousemove", function(d) {
         var date = timeScale.invert(d3.mouse(this)[1]);
@@ -146,7 +150,7 @@ function Sparkline(target, data, options)
         highlight.classed("hidden", false);
 
         tooltip.html(dateOnly(date))
-        .style("left", (width + 5) + "px")
+        .style("left", tooltip_x + (width + 5) + "px")
         .style("top", (d3.event.pageY - 11) + "px")
         .style("opacity", 1.0);
 

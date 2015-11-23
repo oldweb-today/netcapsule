@@ -221,6 +221,10 @@ span.purple{color:purple}
         text-align: center;
     }
 
+    #datetime-info {
+        font-size: 16px;
+    }
+
     /* Both Selector Menus */
     .selector-menu {
         width: 304px;

@@ -7,7 +7,6 @@ var connected = false;
 var ping_id = undefined;
 var ping_interval = undefined;
 
-var sparkline = undefined;
 var page_change = false;
 var spark_change = false;
 
@@ -343,91 +342,14 @@ $(function() {
         window.location.href = full_url;
     });
     
-    // INIT
-    init_container();
-});
 
-
-
-$(function() {
-    var pad = "10000101000000";
-
-    function parse_ts(ts)
-    {
-        ts = ts.substr(0, 14);
-        ts += pad.substr(ts.length);
-        set_ts(ts);
-    }
-
-    function set_ts(ts)
-    {
-        $("#datetime").attr("data-dt", ts);
-
-        var formatted = ts.substr(0, 4) + "-" + 
-            ts.substr(4, 2) + "-" + 
-            ts.substr(6, 2) + " " +
-            ts.substr(8, 2) + ":" + 
-            ts.substr(10, 2) + ":" +
-            ts.substr(12, 2);
-
-        $("#datetime").val(formatted);
-    }
-
-    $("#datetime").blur(function() {
-        var value = $("#datetime").val();
-        value = value.replace(/[^\d]/g, '');
-        parse_ts(value);
-        if (sparkline) {
-            sparkline.move_selected($("#datetime").val());
-        }
-        
-        send_ts($("#datetime").attr("data-dt"));
-    });
-    
-    function send_ts(ts)
-    {
+    // Update request dt
+    $("#datetime").blur(function() {        
         if (pingsock) {
-            pingsock.send(JSON.stringify({"ts": ts}));
+            pingsock.send(JSON.stringify({"ts": curr_ts}));
         }
-    }
+    });
 
-    parse_ts(curr_ts);
-});
-
-
-
-
-$(function() {
-    function set_dt(date)
-    {
-        var date_time = date.toISOString().slice(0, -5).replace("T", " ")
-        $("#datetime").val(date_time);
-        var ts = date_time.replace(/[^\d]/g, '');
-        $("#datetime").attr("data-dt", ts);
-    }
-    
-    function load_timemap() {
-        var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
-
-        $.getJSON(jsonUrl, function(data) {
-            sparkline = new Sparkline("#spark", data, {width: 200, 
-                                                       height: 400, 
-                                                       thickness: 6,
-                                                       swapXY: true, 
-                                                       onclick: set_dt});
-
-            sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
-        }).fail(function(e) {
-            console.log(e);
-        });
-    }
-    
-    if (url) {
-        load_timemap();
-    }
-});
-
-$(function() {
     function update_countdown() {
         if (!end_time) {
             return;
@@ -451,7 +373,11 @@ $(function() {
         $("#expire").text(min + ":" + sec);       
     }
     
+    // Countdown updater
     cid = setInterval(update_countdown, 1000);
+    
+    // INIT
+    init_container();
 });
 
 
