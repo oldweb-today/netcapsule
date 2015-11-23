@@ -24,10 +24,12 @@ nginx:
     volumes:
 #        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
         - ./nginx/cache:/cache
+        - ./app/static:/static
 
     ports:
+        - 80:80
         - 1208:1208
-        - 1210:1210
+        #- 1210:1210
 
 redis:
     image: redis:latest
