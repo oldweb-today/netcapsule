@@ -4,9 +4,7 @@
         <title>OldWeb Today</title>
         <script src="/static/jquery-2.1.4.min.js"></script>
 
-        <!-- noVNC Stylesheet and script -->
-        <!--
-<link rel="stylesheet" href="/static/novnc/base.css" title="plain">-->
+        <!-- noVNC script -->
         <script src="/static/novnc/util.js"></script>
 
         <!-- Skeleton -->
@@ -26,9 +24,10 @@
             var url = "{{ url }}";
             var curr_ts = "{{ ts }}";
         </script>
+        <script src="/static/shared.js"></script>
         <script src="/static/main.js"></script>
-
     </head>
+    
     <body>
         <nav class="header">
             <div id="title">oldweb.today</div>
@@ -43,7 +42,7 @@
                 <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
                 <span id="browser-arrow" class="arrow-down"></span>
             </div>
-            <div class="about-browser"><a href="{{ browser.about }}" target="_blank">about {{ browser.name }}</a></div>
+            <div class="about-browser"><a id="about-link" href="#" target="_blank">about this browser</a></div>
 
             <div class="nav-label">Current Page Archived On:</div>
             <div id="curr-date-info">

@@ -26,7 +26,7 @@ iframe {
 #frontpage {}
 
     #frontpage h1 {
-        margin-bottom: 5rem;
+        margin-bottom: 3rem;
         margin-top: 3rem;
     }
 
@@ -186,6 +186,8 @@ span.purple{color:purple}
             position: relative;
             top: -3px;
             margin-right: 8px;
+            min-width: 32px;
+            min-height: 40px;
         }
             /* version number of browser */
             #browser-icon-group label {
@@ -297,7 +299,10 @@ span.purple{color:purple}
                         margin: 0 auto;
                     }
 
-                    #browser-selector label {text-align: center;} /* browser version numbers*/
+                    #browser-selector label {
+                        text-align: center;
+                        line-height: inherit;
+                    } /* browser version numbers*/
 
                     #browser-selector input {display: none;}      /* make radio buttons invisible */
 

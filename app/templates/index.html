@@ -1,0 +1,235 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <title>oldweb.today</title>
+    
+    <script src="/static/jquery-2.1.4.min.js"></script>
+    
+    <!-- Skeleton -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/static/normalize.css">
+    <link rel="stylesheet" href="/static/skeleton.css">
+    
+    <!-- Viz -->
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script src="/static/timemap.js"></script>
+
+    <!-- Main Netcapsule script -->
+    <link rel="stylesheet" href="/static/main.css">
+    <script>
+        var path = undefined;
+        var url = undefined;
+        var curr_ts = undefined;
+    </script>
+    <script src="/static/shared.js"></script>
+    <script>
+    </script>
+    
+    
+    <!-- <script type="text/javascript" src="colors.js"></script> -->
+</head>
+<body id="frontpage">
+    <main class="container">
+        <h1 class="logo"><span class="colors">oldweb</span>.today</h1>
+
+        <form>
+            <div class="row">
+                <div class="two columns">
+                    <label for="browser-dropdown">browser</label>
+                </div>
+                <div class="nine columns">
+                    <div id="browser-dropdown" class="dropdown">
+                        <span id="browser-icon-group">
+                            <img id="browser-icon" src=""/>
+                            <label id="browser-label"></label>
+                        </span>
+                        <span id="browser-text">Choose Browser...</span>
+                        <span id="browser-arrow" class="arrow-down"></span>
+                    </div>
+                    <div class="about-browser"><a id="about-link" href="#" target="_blank">about this browser</a></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="two columns">
+                    <label for="input-URL">address</label>
+                </div>
+                <div class="seven columns">
+                    <input type="url" name="url" class="u-full-width" id="input-URL" placeholder="http://">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="two columns">
+                    <label>date</label>
+                </div>
+                <div class="nine columns">
+                
+                    <!-- should be hidden -->
+                    <input type="hidden" name="datestring">
+
+                    <!-- can have any number of years -->
+                    <select name="year">
+                        <option value="1994" selected>1994</option>
+                        <option value="1995">1995</option>
+                        <option value="1996">1996</option>
+                        <option value="1997">1997</option>
+                        <option value="2525">2525</option>
+                    </select>
+
+                    <!-- months haven't changed much since the beginning
+                         of web archiving -->
+                    <select name="month">
+                        <option value="" selected>*</option>
+                        <option value="01">January</option>
+                        <option value="02">February</option>
+                        <option value="03">March</option>
+                        <option value="04">April</option>
+                        <option value="05">May</option>
+                        <option value="06">June</option>
+                        <option value="07">July</option>
+                        <option value="08">August</option>
+                        <option value="09">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+                    </select>
+
+                    <!-- in the beginning, every month is assumed as 31 days long.
+                         this enables selecting a day via url. later, month
+                         days are generated automatically. it works! ;) -->
+                    <select name="day">
+                        <option value="" selected>*</option>
+                        <option value="01">1</option>
+                        <option value="02">2</option>
+                        <option value="03">3</option>
+                        <option value="04">4</option>
+                        <option value="05">5</option>
+                        <option value="06">6</option>
+                        <option value="07">7</option>
+                        <option value="08">8</option>
+                        <option value="09">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                        <option value="25">25</option>
+                        <option value="26">26</option>
+                        <option value="27">27</option>
+                        <option value="28">28</option>
+                        <option value="29">29</option>
+                        <option value="30">30</option>
+                        <option value="31">31</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="button-primary">Go back in time!</button>
+
+        </form>
+
+        <div class="row">
+            <div class="eight columns">
+                <p style="display: none">
+                    Session time limit: <strong id="session-limit">10 minutes</strong>.<br>
+                    Active users: <strong id="number-users">56</strong> of <strong id="max-users">100</strong>.
+                </p>
+                <p class="section">A project by <a href="https://github.com/ikreymer">Ilya Kreymer</a>, design by <a href="#">Dragan Espenschied</a>, with support from</p>
+                <div>
+                    <a class="support shuttleworth" href="https://www.shuttleworthfoundation.org/"><img src="/static/shuttleworth-tiny.png" alt="Shuttleworth Foundation"></a>
+                    <a class="support rhizome" href="http://rhizome.org/"><img src="/static/rhizome-tiny.png" alt="Rhizome"></a>
+                </div>
+                <p class="link-github"><a href="https://github.com/ikreymer/netcapsule">Source code available on Github.</a></p>
+                
+            </div>
+        </div>
+
+    </main>
+
+    {% include 'browser-select.html' %}
+    
+    <script type="text/javascript">
+
+        // generate date string on trigger
+        $('input[name=datestring]').on('update', function(){
+            var newDatestring = '';
+            $('select[name=month], select[name=year], select[name=day]').each(function(){
+                newDatestring = newDatestring + $(this).val();
+            });
+            $(this).val(newDatestring);
+        });
+
+        // when year or month are changed
+        $('select[name=month], select[name=year]').on('change', function(){
+            
+            var selectedYear = $('select[name=year]').val();
+            var selectedMonth = $('select[name=month]').val();
+            var selectedDay = $('select[name=day]').val();
+
+            // if month is set to 'any', remove day selector
+            if(selectedMonth == '') {
+                $('select[name=day]')
+                    .val('')
+                    .hide();
+            }
+
+            // if actual month was selected
+            else {
+
+                // store the 'any' option away...
+                var $anyDay = $('select[name=day] option:first-child').detach();
+                $('select[name=day]').empty();
+
+                // find out last day of any month... in this case (day of month = 0),
+                // months are not 0-based!
+                var d = new Date(parseInt(selectedYear), parseInt(selectedMonth), 0);
+                var lastDayOfMonth = d.getDate(); // day is 0-based again...
+
+                // create list of days that are available in a month to eventually
+                // keep the selected day when changing month or year
+                var availableDays = [''];
+
+                for(var i=1; i<lastDayOfMonth+1; i++) {
+                    var dayString = i.toString();
+                    if(dayString.length == 1) dayString = '0' + dayString; // 0-lead string
+                    $('select[name=day]').append('<option value="' +dayString+ '">' +i+'</option>');
+                    availableDays.push(dayString);
+                }
+                $('select[name=day]')
+                    .prepend($anyDay) // bring back the 'any' option
+                    .show(); 
+
+                // is the previously selected day of month available in the new
+                // month?
+                if(availableDays.indexOf(selectedDay) > -1) {
+                    $('select[name=day]').val(selectedDay);    
+                }
+                else {
+                    $('select[name=day]').val(''); // if not, move to any day
+                }
+            }
+
+            $('input[name=datestring]').trigger('update'); // generate new date string
+        });
+
+        // if day is changed, just trigger creation of a new date string
+        $('select[name=day]').on('change', function(){
+            $('input[name=datestring]').trigger('update');
+        });
+
+        // to create the first date string, pretend something was changed
+        $('select[name=year]').trigger('change');
+    </script>
+</body>
