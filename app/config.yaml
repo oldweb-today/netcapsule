@@ -17,6 +17,7 @@ redirect_paths:
     '': firefox
     'ie': ie5.5
     'ns': nswin
+    'safari3': safari
 
 browsers:
 
@@ -121,11 +122,23 @@ browsers:
       path: ie5.5
       about: 'https://en.wikipedia.org/wiki/Internet_Explorer_5'
 
+
     # Safari
+    - id: safari3
+      name: 'Apple Safari'
+      os: 'Windows'
+      version: '3.2.3'
+      icon: 'safari.png'
+      path: safari
+      about: 'https://en.wikipedia.org/wiki/Safari_(web_browser)#Safari_3'
+
     - id: safari5
       name: 'Apple Safari'
       os: 'Windows'
       version: '5.0'
       icon: 'safari.png'
-      path: safari
+      path: safari5
       about: 'https://en.wikipedia.org/wiki/Safari_%28web_browser%29#Safari_5'
+
+
+
