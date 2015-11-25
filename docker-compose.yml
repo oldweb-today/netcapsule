@@ -7,6 +7,10 @@ pywb:
     volumes:
         - ./archives.json:/archives.json
 
+    # for init order
+    volumes_from:
+        - redis
+
 memgator:
     image: ibnesayeed/memgator:master
     restart: always
