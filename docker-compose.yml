@@ -56,3 +56,7 @@ app:
 
     ports:
         - 9020:9020
+
+    # for init order
+    volumes_from:
+        - redis
