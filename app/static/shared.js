@@ -151,17 +151,19 @@ $(function() {
         var jsonUrl = "http://" + window.location.hostname + ":1208/timemap/json/" + url;
         
         sparkline_loading = true;
-        $("#datetime-info").text("Loading archived overview...");
+        $("#datetime-info").text("Loading archive stats...");
+        $("#datetime-info").addClass("loading");
 
         $.getJSON(jsonUrl, function(data) {
             init_sparkline(data);
             sparkline_url = url;
-            $("#datetime-info").text("Archived copies by date:");
+            $("#datetime-info").text("Archive plot by date:");
         }).fail(function(e) {
             console.log(e);
             $("#datetime-info").text("Sorry, couldn't load archive overview");
         }).complete(function(e) {
             sparkline_loading = false;
+            $("#datetime-info").removeClass("loading");
         });
     }
     

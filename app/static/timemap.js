@@ -39,25 +39,27 @@ function Sparkline(target, data, options)
                    }
         });
 
-        var dom = d3.extent(data, function(d) { return d.date; });
-        
-        if (requested_date || current_date) {
-            if (requested_date) {
-                dom.push(requested_date);
-            }
-            if (current_date) {
-                dom.push(current_date);
-            }
-            dom = d3.extent(dom);
-        }
-        
-        timeScale.domain(dom);
+// Variable time scale
+//        var dom = d3.extent(data, function(d) { return d.date; });
+//        
+//        if (requested_date || current_date) {
+//            if (requested_date) {
+//                dom.push(requested_date);
+//            }
+//            if (current_date) {
+//                dom.push(current_date);
+//            }
+//            dom = d3.extent(dom);
+//        }
+//        
+//        timeScale.domain(dom);
 
         linScale.domain([0, d3.max(data, function(d) { return d.total; })]);
     } else {
-        timeScale.domain([new Date(1991, 1, 1), new Date()]);
+        //timeScale.domain([new Date(1992, 1, 1), new Date()]);
         linScale.domain([0, 1]);
     }
+    timeScale.domain([new Date(1992, 1, 1), new Date()]);
     
     var timeAxisTrans;
     var graphTrans;
