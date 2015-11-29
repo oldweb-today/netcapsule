@@ -21,6 +21,13 @@ iframe {
         overflow: hidden;
     }
 
+.loading {
+    background-image: url(spinner.gif);
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+}
+
+
 /* front page */
 
 #frontpage {}
@@ -57,306 +64,127 @@ iframe {
     color: red;
 }
 
-/* rainbow */
-span.red{color:red}
-span.orange{color:orange}
-span.yellow{color:yellow}
-span.lime{color:lime}
-span.green{color:green}
-span.turquoise{color:turquoise}
-span.blue{color:blue}
-span.purple{color:purple}
+/* replay page */
 
+#page-replay {}
 
-/* app menu on the left */
-
-.header {
-    padding: 8px;
-    font-size: 20px;
-    width: 310px;
-    position: absolute;
-    left: 0px;
-    top: 0px;
-    bottom: 0;
-    overflow: visible;
-    /*overflow-wrap: break-word; */
-}
-
-
-    /* top line with title and session expiration info */
-    #title {
-       font-size: 32px;
-       margin: -5px 0 4rem 4px; 
-    }
-
-        #expireWrap {
-            font-size: 13px;
-            position: absolute;
-            top: 7px;
-            text-align: center;
-            right: 12px;
-            width: 62px;
-        }
-
-            #expire {
-                display: block;
-                margin-left: 0px;
-                text-align: center;
-            }
-
- /*   .header * {
-        font-size: 20px;
-    }
-*/
-
-    #browserMsg {
-        text-align: center;
-        margin: auto;
-    }
-
-
-
-    .hosts {
-        text-align: center;
-        font-size: 14px;
-    }
-    .hosts b {
-        font-size: 14px;
-    }
-
-    .rel_message {
-        font-size: 16px;
-        color: red;
-        font-style: italic;
-        display: none;
-    }
-
-    .nav-label {
-        font-size: 12px;
-        margin: 0 0 4px 4px;
-    }
-
-    #curr-date-info {
-        margin: 0 0 1rem 34px;
-
-    }
-
-    #curr-date-space {
-        display: none;
-    }
-
-    .timenav {
-        margin-top: 4px;
-        text-align: center;
-    }
-
-        .timenav button {
-            padding: 0 8px;
-        }
-
-    #datetime, #curr-date-info, #expire {
-        font-family: "Monaco", "DejaVu Sans Mono", "Consolas", "Courier New", monospace;
-        font-size: 16px;
-    }
-
-    #datetime {
-        
-        background-color: #fff;
-
-        display: block;
-        float: left;
-        width: 218px;
-        height: 100%;
-        padding-left: 25px;
-        border: 0;
-    }
-
-    .about-browser {
-        font-size: 12px;
-        margin: 0 0 4rem 4px;
-    }
-
-
-    /* Button that opens either browser or datetime selector */
-    .dropdown {
-        width: 287px;
-        height: 42px;
-        padding: 8px;
-        background-color: white;
-        cursor: pointer;
-        margin-bottom: 4px;
-        border: 1px solid #d1d1d1;
-        border-radius: 4px;
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+    /* fonts */
+    #page-replay {
         font-size: 13px;
     }
+    #page-replay label,
+    .browser-about {
+        font-size: 11px;
+    }
 
+    label {font-weight: normal;}
 
-            /* Is this styling stuff on the front page? 
+    .datetime-string {
+        font-family: "Monaco", "DejaVu Sans Mono", "Consolas", "Courier New", monospace;
+        font-size: 16px;
+        font-weight: normal;
+    }
 
-              a.about-browser {
-                display: block;
-                margin: -24px 0 1rem 0;
-            } */
+    /* app menu on the left */
 
-        .dropdown.dropdown-shown {
-            border: 1px solid #1EAEDB;
+    .header {
+        padding: 8px;
+        width: 310px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        overflow: visible;
+    }
+
+        .widget-group {margin-bottom: 1rem;}
+
+            .widget-group label {margin-left: 4px;}
+
+        .widget-group.timer {
+            margin-bottom: 3rem;
         }
-        #browser-icon-group {
-            vertical-align: middle;
-            display: inline-block;
-            position: relative;
-            top: -3px;
-            margin-right: 8px;
-            min-width: 32px;
-            min-height: 40px;
-        }
-            /* version number of browser */
-            #browser-icon-group label {
-                display: block;
-                margin: 0 auto;
-                text-align: center;
-                font-size: 12px;
-                font-weight: bold;
-                margin-top: 2px;
-                line-height: 0;
+
+            #page-replay h1 {
+                font-size: 32px;
+                font-weight: normal;
+                margin: 2px 0 4rem 4px; 
             }
 
-        /* button triangle */
-        .arrow-down {
-            width: 0; 
-            height: 0;
-            margin-right: 7px;
-            margin-top: 17px;
-            float: right;
-            border-left: 8px solid transparent;
-            border-right: 8px solid transparent;
-            border-top: 8px solid black;
-            display: inline-block;
-            margin-left: 4px;
-        }
-            .dropdown:hover .arrow-down {border-top-color: #33C3F0}
-            .dropdown-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
+            .widget-group.timer div.timer {
+                position: absolute;
+                top: 7px;
+                text-align: center;
+                right: 12px;
+                width: 62px;
+            }
 
-    /* Datetime Dropdown */
-    #datetime-dropdown {
-        text-align: center;
-    }
-
-    #datetime-info {
-        font-size: 11px;
-        padding: 10px 0 0 8px
-    }
-
-    /* Both Selector Menus */
-    .selector-menu {
-        width: 304px;
-        font-size: 12px;
-        position: absolute;
-        float: left;
-        background-color: white;
-        box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
-        display: none;
-    }
-
-    /* close menu via × */
-    /* browser selector */
-    th.menu-selector-close {
-        text-align: right !important;
-        cursor: pointer;
-        font-size: 15px;
-    }
-
-    /* date selector */
-    div.menu-selector-close {
-        cursor: pointer;
-        font-size: 15px;
-        position: absolute;
-        right: 10px;
-        top: 7px;
-    }
-
-    .menu-selector-close span { margin-right: 7px; }
-    .menu-selector-close:hover { color: #33C3F0; }
-
-       #spark {
-           margin-left: 10px;
-       }
-
-
-    /* Browser Selector */
-    #browser-selector {
-        top: 40px;
-        left: 0px;
-    }
-
-        #browser-selector table {
-            border-spacing: 0;
-            margin-bottom: 0px;
-        }
-
-            #browser-selector thead {height: 40px;}
-
-                /* table top row */
-                #browser-selector thead th {
-                    width: 56px;
-                    padding: 6px 10px;
+                #expire {
+                    display: block;
+                    margin-left: 0;
                     text-align: center;
                 }
 
-                /* background colors / stripes */
+        .widget-group.browser {
+            margin-bottom: 4rem;
+        }
 
-                #browser-selector tr.r-odd {background: #f8f8f8;}
-                #browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
-                #browser-selector tr.r-even {background: #e8e8e8;}
-                #browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
+        .widget-group.datetime {
+            margin-bottom: 5rem;
+        }
 
-                #browser-selector tbody th {
-                    padding: 3px 6px 0;
-                    text-align: center;
+            #curr-date-info {margin-bottom: 1rem;}
+
+                #curr-date {padding-left: 26px;}
+
+            .rel_message {display: none}
+
+        .widget-group.session-info {
+            padding-left: 4px;
+            display: none;
+        }
+
+            .spanning {
+                margin: 1em;
+            }
+                .spanning div {text-align: center;}
+                .spanning div:nth-child(2) {padding-top: 1em;}
+
+            .widget-group.session-info ul {
+                padding-left: 2ex;
+            }
+
+                #statsCount {
+                    font-weight: bold;
                 }
 
-                    #browser-selector td {
-                        border-bottom: 0;
-                        padding: 8px 10px 2px;
+                .widget-group.session-info li {
+                    margin: 0;
+                    position: relative;
+                    list-style: none;
+                }
+                    .widget-group.session-info li:before {
+                        content: '-';
+                        font-weight: bold;
+                        position: absolute;
+                        left: -1.5ex;
                     }
-
-                    #browser-selector th {font-weight: normal; background: #fff;}
-                    #browser-selector tbody th {text-align: left; vertical-align: top;}
-
-
-
-                    /* selection colors */
-                    #browser-selector td:not(:empty):hover {background-image: radial-gradient(circle, rgba(0,0,0,0), rgba(51,195,240,.5)) !important;}
-                    #browser-selector td.selected,
-                    #browser-selector td.selected:hover
-                        {background-image: radial-gradient(circle, #fff, #1EAEDB) !important;}
-
-                    
-                    /* display of browser icons */
-                    #browser-selector img {width: 32px; height: 32px;}
-                    #browser-selector img,
-                    #browser-selector label {
-                        display: block;
-                        margin: 0 auto;
-                    }
-
-                    #browser-selector label {
-                        text-align: center;
-                        line-height: inherit;
-                    } /* browser version numbers*/
-
-                    #browser-selector input {display: none;}      /* make radio buttons invisible */
 
 
 /* Area for browser */
 
-.browser {
+#browser {
     position: absolute;
     top: 0px;
     left: 326px;
     right: 0;
 }
+
+     #browserMsg {
+        text-align: center;
+        margin: auto;
+        padding-top: 48px;
+    }
 
     /* noVNC classes */
     #noVNC_screen {
@@ -383,6 +211,8 @@ span.purple{color:purple}
     height: auto;
     background-color: white;
     text-align: left;
+    margin-left: 10px;
+    position: relative;
 }
 
     rect.pane {
@@ -435,52 +265,7 @@ span.purple{color:purple}
     display: none;
 }
 
-/* Stats */
-#statsCountWrap, #statsHostsWrap, #statsSpanWrap {
-    display: none;
-}
 
-#statsCountWrap {
-    text-align: center;
-}
 
-#statsCount {
-    font-weight: bold;
-    margin-right: 6px;
-}
 
-#statsSpanWrap {
-    height: 100px;
-    margin: 10px;
-}
-
-#statsSpanWrap table {
-    width: 100%;
-    text-align: center;
-}
-
-#statsSpanWrap td {
-    padding: 0px;
-    margin: 0px;
-    text-align: center;
-    border-style: none;
-}
-
-#statsHostsWrap {
-    font-size: 14px;
-}
-
-#statsHosts {
-    list-style-type: disc;
-    margin-left: 20px;
-    margin-top: 10px;
-}
-
-.session-info-label {
-    margin-top: 30px;
-    font-size: 16px;
-    text-align: center;
-    font-weight: bold;
-    text-decoration: underline;
-}
 

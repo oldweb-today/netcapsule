@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>OldWeb Today</title>
+        <title>oldWeb.today</title>
         <script src="/static/jquery-2.1.4.min.js"></script>
 
         <!-- noVNC script -->
@@ -19,6 +19,7 @@
 
         <!-- Main Netcapsule script -->
         <link rel="stylesheet" href="/static/main.css">
+        <link rel="stylesheet" href="/static/dropdown.css">
         <script>
             var coll = "{{ coll }}";
             var url = "{{ url }}";
@@ -27,65 +28,77 @@
         <script src="/static/shared.js"></script>
         <script src="/static/main.js"></script>
     </head>
-    <body>
-        <nav class="header">
-            <div id="title">oldweb.today</div>
-            <div id="expireWrap">Time Left:
-                <span id="expire"></span>
-            </div>
-            <div id="browser-dropdown" class="dropdown">
-                <span id="browser-icon-group">
-                    <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
-                    <label id="browser-label">{{ browser.version }}</label>
-                </span>
-                <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
-                <span id="browser-arrow" class="arrow-down"></span>
-            </div>
-            <div class="about-browser"><a id="about-link" href="#" target="_blank">about this browser</a></div>
+    <body id="page-replay">
+        <div class="header">
 
-            <div class="nav-label">Current Page Archived On:</div>
-            <div id="curr-date-info">
-                <span id="curr-date"></span>
-                <span id="curr-date-space"></span>
-                <span id="curr-time"></span>            
+            <div class="widget-group timer">
+                <h1>oldweb.today</h1>
+                
+                <div class="timer">Time Left
+                    <span id="expire" class="datetime-string">0:00</span>
+                </div>
+            </div>
+            
+            <div class="widget-group browser">
+                <div id="browser-dropdown" class="dropdown">
+                    <span id="browser-icon-group">
+                        <img id="browser-icon" src="/static/icons/{{ browser.icon }}"/>
+                        <label id="browser-label">{{ browser.version }}</label>
+                    </span>
+                    <span id="browser-text">{{ browser.name }} on {{ browser.os }}</span>
+                    <div class="dropdown-button">
+                        <span class="arrow-down"></span>
+                    </div>
+                </div>
+
+                <label class="browser-about"><a id="about-link" href="#" target="_blank">about this browser</a></label>
             </div>
 
-            <div class="nav-label">Desired Date/Time:</div>
+            <div class="widget-group datetime">
+                <label>Current Page Archived On:</label>
+                <div id="curr-date-info" class="datetime-string">
+                    <span id="curr-date">&nbsp;</span>
+                    <span id="curr-time">&nbsp;</span>            
+                </div>
 
-            <div id="datetime-dropdown" class="dropdown">
-                <input id="datetime" class="drop-skip"/>
-                <span id="browser-arrow" class="arrow-down"></span>
+                <label>Requested Date/Time:</label>
+
+                <div id="datetime-dropdown" class="dropdown">
+                    <input id="datetime" class="drop-skip datetime-string"/>
+                    <div class="dropdown-button">
+                        <span class="arrow-down"></span>
+                    </div>
+                </div>
+
                 <div class="rel_message">Datetime changed, please click "reload" or "refresh" in the browser</div>
             </div>
 
-            <div class="session-info-label">Session Info</div>
+            <div class="widget-group session-info">
 
-            <div id="statsCountWrap"><span id="statsCount"></span>resource(s) loaded</div>
-            <div id="statsSpanWrap">
-                <div class="nav-label">Spanning</div>
-                <table>
-                    <tr>
-                        <td id="statsFrom"></td>
-                        <td>--</td>
-                        <td id="statsTo"></td>
-                    </tr>
-                </table>
-            </div>
+            <div>Loaded <span id="statsCount">0</span> resources, spanning</div>
+            
+                <div class="spanning row">
+                    <div id="statsFrom" class="datetime-string five columns"></div>
+                    <div class="two columns">to</div>
+                    <div id="statsTo" class="datetime-string five columns"></div>     
+                </div>
 
-            <div id="statsHostsWrap"><span>from public web archives:</span>
-                <ul id="statsHosts"></ul>
-            </div>
+                <div id="statsHostsWrap">
+                    <div>from public web archives:</div>
+                    <ul id="statsHosts"></ul>
+                </div>
 
             </div>
-        </nav>
-    <div class="browser">
-        <div id="browserMsg">Initializing Browser...</div>
-        <div id="noVNC_screen">
-            <canvas id="noVNC_canvas" style="display: none">
-                Canvas not supported.
-            </canvas>
+        </div> <!-- .header -->
+
+        <div id="browser">
+            <div id="browserMsg" class="loading">Initializing Browser…</div>
+            <div id="noVNC_screen">
+                <canvas id="noVNC_canvas" style="display: none">
+                    Canvas not supported.
+                </canvas>
+            </div>
         </div>
-    </div>
-    {% include 'browser-select.html' %}
+        {% include 'browser-select.html' %}
     </body>
 </html>

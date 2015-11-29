@@ -153,13 +153,7 @@ $(function() {
         $("#datetime-info").text("Loading archived overview...");
 
         $.getJSON(jsonUrl, function(data) {
-            sparkline = new Sparkline("#spark", data, {width: 200, 
-                                                       height: 400, 
-                                                       thickness: 6,
-                                                       swapXY: true, 
-                                                       onclick: set_dt});
-
-            sparkline.add_marker("curr-dt", "curr-dt-marker", "tooltip");
+            init_sparkline(data);
             sparkline_url = url;
             $("#datetime-info").text("Archived copies by date:");
         }).fail(function(e) {
@@ -168,6 +162,17 @@ $(function() {
         }).complete(function(e) {
             sparkline_loading = false;
         });
+    }
+    
+    function init_sparkline(data) {
+        sparkline = new Sparkline("#spark", data, {width: 200, 
+                                                   height: 400, 
+                                                   thickness: 6,
+                                                   swapXY: true, 
+                                                   onchange: set_dt,
+                                                   onmouseup: hide_menu});
+
+        sparkline.add_marker("curr-dt", "curr-dt-marker hidden", "Current");
     }
     
     // On Init
@@ -186,6 +191,10 @@ $(function() {
     if (curr_ts) {
         parse_ts(curr_ts);
     } else {
-        set_dt(new Date());
+        var z = new Date();
+        z = new Date(z.getFullYear() - 16, z.getMonth(), z.getDate(), z.getHours(), z.getMinutes(), z.getSeconds(), z.getMilliseconds())
+        set_dt(z);
     }
+    
+    init_sparkline();
 });

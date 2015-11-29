@@ -17,6 +17,7 @@
 
     <!-- Main Netcapsule script -->
     <link rel="stylesheet" href="/static/main.css">
+    <link rel="stylesheet" href="/static/dropdown.css">
     <script>
         var coll = undefined;
         var url = undefined;
@@ -49,6 +50,17 @@
             $("#browser-input").change(reset_error);
             
             url = $("#urlinput").val();
+                   
+            function random_browser() {
+                // Pick random browser
+                var browsers = $("#browser-selector td[data-path]");
+                if (browsers.length) {
+                    var i = Math.round(Math.random() * browsers.length);
+                    $(browsers[i]).trigger('click');
+                }
+            }
+            
+            setTimeout(random_browser, 50);
         });
     </script>
     <script src="/static/shared.js"></script>
@@ -65,11 +77,13 @@
                 <div class="nine columns">
                     <div id="browser-dropdown" class="dropdown">
                         <span id="browser-icon-group">
-                            <img id="browser-icon" src=""/>
-                            <label id="browser-label"></label>
+                            <img id="browser-icon" src="/static/icons/mosaic.png"/>
+                            <label id="browser-label">2.0.2</label>
                         </span>
-                        <span id="browser-text">Choose Browser...</span>
-                        <span id="browser-arrow" class="arrow-down"></span>
+                        <span id="browser-text">Mosaic on Linux</span>
+                        <div class="dropdown-button">
+                            <span class="arrow-down"></span>
+                        </div>
                     </div>
                     <div class="about-browser"><a id="about-link" href="#" target="_blank">about this browser</a></div>
                 </div>
@@ -90,10 +104,11 @@
                 </div>
                 <div class="nine columns">
                     <div id="datetime-dropdown" class="dropdown">
-                        <input id="datetime" class="drop-skip"/>
-                        <span id="browser-arrow" class="arrow-down"></span>
-                        <div class="rel_message">Datetime changed, please click "reload" or "refresh" in the browser</div>
-                    </div>  
+                        <input id="datetime" class="drop-skip datetime-string"/>
+                        <div class="dropdown-button">
+                            <span class="arrow-down"></span>
+                        </div>
+                    </div> 
                 </div>
             </div>
             <div id="invalid-form">Please select a browser, url and a date.</div>

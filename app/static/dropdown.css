@@ -1,0 +1,216 @@
+/* dropdown menus */
+
+.dropdown {
+    width: 303px;
+    height: 58px;
+    background-color: white;
+    cursor: pointer;
+    margin-bottom: 4px;
+    border: 1px solid #d1d1d1;
+    border-radius: 4px;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+    position: relative;
+}
+
+    .dropdown-button {
+        position: absolute;
+        right:0;
+        top:0;
+        bottom: 0;
+        width: 33px;
+        padding-top: 19px;
+        padding-left: 19px;
+    }
+
+        /* button triangle */
+        .arrow-down {
+            width: 0; 
+            height: 0;
+            margin-right: 7px;
+            border-left: 8px solid transparent;
+            border-right: 8px solid transparent;
+            border-top: 8px solid #222;
+            display: inline-block;
+        }
+            .dropdown:hover .arrow-down {border-top-color: #33C3F0}
+            .dropdown-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
+
+    
+    .dropdown.dropdown-shown {
+        border: 1px solid #1EAEDB;
+    }
+
+    /* close menu via × */
+        /* browser selector */
+        th.menu-selector-close {
+            text-align: right !important;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        /* date selector */
+        div.menu-selector-close {
+            cursor: pointer;
+            font-size: 15px;
+            position: absolute;
+            right: 10px;
+            top: 7px;
+        }
+
+
+    /* unfolded menus */
+
+        /* Both Selector Menus */
+        .selector-menu {
+            width: 304px;
+            position: absolute;
+            float: left;
+            background-color: white;
+            box-shadow: 4px 4px 8px rgba(0,0,0,0.4);
+            display: none;
+        }
+
+        .menu-selector-close span { margin-right: 8px; }
+            .menu-selector-close:hover { color: #33C3F0; }
+
+
+
+    /* Browser selector */
+
+        #browser-icon-group {
+            display: block;
+            position: relative;
+            float: left;
+            padding: 6px 8px;
+        }
+            /* version number of browser */
+            #browser-icon-group label {
+                display: block;
+                margin: 0 auto;
+                text-align: center;
+                font-weight: bold;
+                margin-top: 2px;
+                line-height: 0;
+            }
+
+            #browser-text {
+                line-height: 58px;
+            }
+
+
+    /* Datetime selector */
+
+    #datetime-dropdown {}
+
+        #datetime-dropdown .dropdown-button {
+            border-left: 1px solid #eee;
+        }
+
+        #datetime { /* text input field */
+            background-color: transparent;
+            display: block;
+            width: 224px;
+            height: 100%;
+            padding-left: 25px;
+            border: 0;
+        }
+
+            /* hover effect only needed when pointer is over button, not
+               all of the dropdown */
+            #datetime-dropdown:hover .arrow-down {border-top-color: #222}
+            #datetime-dropdown .dropdown-button:hover .arrow-down {border-top-color: #33C3F0}
+            .dropdown-shown .arrow-down {border-top-color: #1EAEDB} /* when selector is visible*/
+
+
+
+/* menus that unwrap when the dropdowns are opened */
+
+
+    
+
+
+   /* Browser Selector */
+    #browser-selector {
+        top: 40px;
+        left: 0px;
+        font-size: 11px;
+    }
+
+        #browser-selector table {
+            border-spacing: 0;
+            margin-bottom: 0px;
+        }
+
+            #browser-selector thead {height: 40px;}
+
+                /* table top row */
+                #browser-selector thead th {
+                    width: 56px;
+                    padding: 6px 10px;
+                    text-align: center;
+                }
+
+                /* background colors / stripes */
+
+                #browser-selector tr.r-odd {background: #f8f8f8;}
+                #browser-selector tr.r-odd td:nth-child(odd) {background: #f0f0f0;}
+                #browser-selector tr.r-even {background: #e8e8e8;}
+                #browser-selector tr.r-even td:nth-child(odd) {background: #e0e0e0;}
+
+                #browser-selector tbody th {
+                    padding: 3px 6px 0;
+                    text-align: center;
+                }
+
+                    #browser-selector td {
+                        border-bottom: 0;
+                        padding: 8px 10px 2px;
+                    }
+
+                    #browser-selector th {font-weight: normal; background: #fff;}
+                    #browser-selector tbody th {text-align: left; vertical-align: top;}
+
+
+
+                    /* selection colors */
+                    #browser-selector td:not(:empty):hover {background-image: radial-gradient(circle, rgba(0,0,0,0), rgba(51,195,240,.5)) !important;}
+                    #browser-selector td.selected,
+                    #browser-selector td.selected:hover
+                        {background-image: radial-gradient(circle, #fff, #1EAEDB) !important;}
+
+                    
+                    /* display of browser icons */
+                    #browser-selector img {width: 32px; height: 32px;}
+                    #browser-selector img,
+                    #browser-selector label {
+                        display: block;
+                        margin: 0 auto;
+                    }
+
+                    #browser-selector label {
+                        text-align: center;
+                        line-height: inherit;
+                        font-weight: bold;
+                    } /* browser version numbers*/
+
+                    #browser-selector input {display: none;}      /* make radio buttons invisible */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    #datetime-info {
+        padding: 10px 0 0 8px
+    }

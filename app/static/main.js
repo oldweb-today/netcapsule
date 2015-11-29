@@ -184,6 +184,7 @@ $(function() {
             $("#statsFrom").html(format_date(min_date).replace(" ", "<br>"));
             $("#statsTo").html(format_date(max_date).replace(" ", "<br>"));
             $("#statsSpanWrap").show();
+            $(".session-info").show();
         }
         
         if (data.ttl != undefined) {
