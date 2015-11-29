@@ -92,7 +92,7 @@ class UpstreamArchiveLoader(object):
 
             response = self.session.request(method='GET',
                                             url=url,
-            #                                allow_redirects=False,
+                                            allow_redirects=False,
                                             headers=headers,
                                             stream=True,
                                             verify=False)
