@@ -130,7 +130,7 @@ $(function() {
         value = value.replace(/[^\d]/g, '');
         parse_ts(value);
         if (sparkline) {
-            sparkline.move_selected($("#datetime").val());
+            sparkline.move_requested($("#datetime").val());
         }
     });
 
@@ -139,6 +139,7 @@ $(function() {
         var date_time = date.toISOString().slice(0, -5).replace("T", " ")
         $("#datetime").val(date_time);
         var ts = date_time.replace(/[^\d]/g, '');
+        $(".rel_message").show();
         curr_ts = ts;
     }
 
@@ -168,11 +169,10 @@ $(function() {
         sparkline = new Sparkline("#spark", data, {width: 200, 
                                                    height: 400, 
                                                    thickness: 6,
-                                                   swapXY: true, 
+                                                   swapXY: true,
+                                                   request_dt: $("#datetime").val(),
                                                    onchange: set_dt,
                                                    onmouseup: hide_menu});
-
-        sparkline.add_marker("curr-dt", "curr-dt-marker hidden", "Current");
     }
     
     // On Init

@@ -137,7 +137,10 @@ iframe {
 
                 #curr-date {padding-left: 26px;}
 
-            .rel_message {display: none}
+            .rel_message {
+                color: red;
+                display: none
+            }
 
         .widget-group.session-info {
             padding-left: 4px;

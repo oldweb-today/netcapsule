@@ -24,12 +24,10 @@
         var curr_ts = undefined;
         
         $(function() {
-            $("#urlinput").blur(function() {
-                url = $("#urlinput").val();
-            });
-            
             $("#mainform").submit(function(e) {
                 e.preventDefault();
+                
+                url = $("#urlinput").val();
                 
                 if (!coll || !curr_ts || !url) {
                     $("#invalid-form").show();

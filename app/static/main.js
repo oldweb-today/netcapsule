@@ -144,6 +144,7 @@ $(function() {
             $(".rel_message").hide();
             $("#curr-date").html(date_time[0]);
             $("#curr-time").html(date_time[1]);
+            $("#curr-date-info").removeClass("loading");
             //url = data.page_url;
             if (page_change) {
                 ping_interval = 10000;
@@ -151,12 +152,13 @@ $(function() {
             }
             if (spark_change) {
                 if (sparkline) {
-                    sparkline.move_marker("curr-dt", date);
+                    sparkline.move_current(date);
                     spark_change = false;
                 }
             }
         }
-
+        
+        var any_data = false;
 
         if (data.hosts && data.hosts.length > 0) {
             if (data.hosts != curr_hosts) {
@@ -170,11 +172,13 @@ $(function() {
                 data.hosts = curr_hosts;
                 $("#statsHostsWrap").show();
             }
+            any_data = true;
         }
 
         if (data.urls) {
             $("#statsCount").text(data.urls);
             $("#statsCountWrap").show();
+            any_data = true;
         }
             
         if (data.min_sec && data.max_sec) {
@@ -184,7 +188,12 @@ $(function() {
             $("#statsFrom").html(format_date(min_date).replace(" ", "<br>"));
             $("#statsTo").html(format_date(max_date).replace(" ", "<br>"));
             $("#statsSpanWrap").show();
+            any_data = true;
+        }
+        
+        if (any_data) {
             $(".session-info").show();
+            $("#session-loading").hide();
         }
         
         if (data.ttl != undefined) {

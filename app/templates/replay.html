@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>oldWeb.today</title>
+        <title>oldweb.today</title>
         <script src="/static/jquery-2.1.4.min.js"></script>
 
         <!-- noVNC script -->
@@ -56,7 +56,7 @@
 
             <div class="widget-group datetime">
                 <label>Current Page Archived On:</label>
-                <div id="curr-date-info" class="datetime-string">
+                <div id="curr-date-info" class="datetime-string loading">
                     <span id="curr-date">&nbsp;</span>
                     <span id="curr-time">&nbsp;</span>            
                 </div>
@@ -73,6 +73,8 @@
                 <div class="rel_message">Datetime changed, please click "reload" or "refresh" in the browser</div>
             </div>
 
+            <div id="session-loading" class="loading">&nbsp;</div>
+            
             <div class="widget-group session-info">
 
             <div>Loaded <span id="statsCount">0</span> resources, spanning</div>

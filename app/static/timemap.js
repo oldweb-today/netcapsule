@@ -1,5 +1,5 @@
 
-
+var current_date, requested_date;
 
 function Sparkline(target, data, options)
 {    
@@ -7,6 +7,10 @@ function Sparkline(target, data, options)
     var parseDate = d3.time.format.utc("%Y-%m-%dT%H:%M:%SZ").parse;
     var dateOnly = d3.time.format.utc("%Y-%m-%d");
     var userDate = d3.time.format.utc("%Y-%m-%d %H:%M:%S").parse;
+    
+    if (options.request_dt) {
+        requested_date = userDate(options.request_dt);
+    }
     
     var width = options.width;
     var height = options.height;
@@ -35,11 +39,23 @@ function Sparkline(target, data, options)
                    }
         });
 
-        timeScale.domain(d3.extent(data, function(d) { return d.date; }));
+        var dom = d3.extent(data, function(d) { return d.date; });
+        
+        if (requested_date || current_date) {
+            if (requested_date) {
+                dom.push(requested_date);
+            }
+            if (current_date) {
+                dom.push(current_date);
+            }
+            dom = d3.extent(dom);
+        }
+        
+        timeScale.domain(dom);
 
         linScale.domain([0, d3.max(data, function(d) { return d.total; })]);
     } else {
-        timeScale.domain([new Date(1996, 1, 1), new Date()]);
+        timeScale.domain([new Date(1991, 1, 1), new Date()]);
         linScale.domain([0, 1]);
     }
     
@@ -106,6 +122,9 @@ function Sparkline(target, data, options)
 
     var spark = svg.append("g").attr("class", options["class"]);
     
+    var requested_marker;
+    var current_marker;
+    
     spark.append("g")
     .attr("class", "axis")
     .attr("transform", timeAxisTrans)
@@ -131,13 +150,19 @@ function Sparkline(target, data, options)
     }
     
     //TODO make x-axis time friendly
-    function update_selected_marker(date) {
+    function update_marker(marker, date) {
+        marker.attr("transform", "translate(0, " + timeScale(date) + ")");
+        marker.classed("hidden", false);
+    }
+    
+    function update_requested_marker(date) {
         if (options.onchange) {
             options.onchange(date);
         }
         dragging = true;
-        selected.attr("transform", "translate(0, " + timeScale(date) + ")");
-        selected.classed("hidden", false);
+        
+        requested_date = date;
+        update_marker(requested_marker, requested_date);
     }
     
     var highlight = spark.append("rect")
@@ -168,8 +193,17 @@ function Sparkline(target, data, options)
         return marker;
     }
     
-    var selected = this.add_marker("select-dt", "spark-selected hidden", "Requested", graphWidth - 70);
-
+    requested_marker = this.add_marker("select-dt", "spark-selected hidden", "Requested", graphWidth - 70);
+    current_marker = this.add_marker("curr-dt", "curr-dt-marker hidden", "Current");
+    
+    if (requested_date) {
+        update_marker(requested_marker, requested_date);
+    }
+    
+    if (current_date) {
+        update_marker(current_marker, current_date);
+    }
+        
     var dragging = false;
     
     tooltip.style("left", width + "px");
@@ -185,13 +219,13 @@ function Sparkline(target, data, options)
         .style("opacity", 1.0);
 
         if (dragging) {
-            update_selected_marker(date);
+            update_requested_marker(date);
         }
     });
 
     bgrect.on("mousedown", function(d) {
         var date = timeScale.invert(d3.mouse(this)[1]);
-        update_selected_marker(date);
+        update_requested_marker(date);
     }).on("mouseup", function(d) {
         dragging = false;
         if (options.onmouseup) {
@@ -205,16 +239,15 @@ function Sparkline(target, data, options)
         tooltip.style("opacity", 0.0);
     });
 
-    this.move_marker = function(name, date) {
-        var marker = d3.select("#" + name);
-        marker.attr("transform", "translate(0, " + timeScale(date) + ")");
-        marker.classed("hidden", false);
+    this.move_current = function(date) {
+        current_date = date;
+        update_marker(current_marker, current_date);
     }
     
-    this.move_selected = function(datestr) {
+    this.move_requested = function(datestr) {
         var date = userDate(datestr);
         if (date) {
-            update_selected_marker(date);
+            update_requested_marker(date);
         }
     }
 }
