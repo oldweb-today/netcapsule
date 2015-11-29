@@ -113,8 +113,6 @@ $(function() {
 
     function set_ts(ts)
     {
-        curr_ts = ts;
-
         var formatted = ts.substr(0, 4) + "-" + 
             ts.substr(4, 2) + "-" + 
             ts.substr(6, 2) + " " +
@@ -123,6 +121,12 @@ $(function() {
             ts.substr(12, 2);
 
         $("#datetime").val(formatted);
+
+        curr_ts = ts;
+
+        if (window.on_change_curr_ts) {
+            window.on_change_curr_ts(curr_ts);
+        }
     }
 
     $("#datetime").blur(function() {
@@ -139,8 +143,12 @@ $(function() {
         var date_time = date.toISOString().slice(0, -5).replace("T", " ")
         $("#datetime").val(date_time);
         var ts = date_time.replace(/[^\d]/g, '');
-        $(".rel_message").show();
+
         curr_ts = ts;
+
+        if (window.on_change_curr_ts) {
+            window.on_change_curr_ts(curr_ts);
+        }
     }
 
     function load_timemap(url) {

@@ -354,11 +354,12 @@ $(function() {
     
 
     // Update request dt
-    $("#datetime").blur(function() {        
+    window.on_change_curr_ts = function(ts) {      
         if (pingsock) {
-            pingsock.send(JSON.stringify({"ts": curr_ts}));
+            pingsock.send(JSON.stringify({"ts": ts}));
+            $(".rel_message").show();
         }
-    });
+    }
 
     function update_countdown() {
         if (!end_time) {

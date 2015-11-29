@@ -41,7 +41,7 @@ redis = None
 local_redis = None
 
 stat_key_expire_time = 40
-container_expire_time = 300
+container_expire_time = 600
 
 HOST = os.environ.get('HOSTNAME', 'localhost')
 
