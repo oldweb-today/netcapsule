@@ -8,7 +8,6 @@ var ping_id = undefined;
 var ping_interval = undefined;
 
 var page_change = false;
-var spark_change = false;
 
 var pingsock = undefined;
 var fail_count = 0;
@@ -150,11 +149,8 @@ $(function() {
                 ping_interval = 10000;
                 page_change = false;
             }
-            if (spark_change) {
-                if (sparkline) {
-                    sparkline.move_current(date);
-                    spark_change = false;
-                }
+            if (sparkline) {
+                sparkline.move_current(date);
             }
         }
         
@@ -300,7 +296,6 @@ $(function() {
             connected = true;
             ping_interval = 1000;
             page_change = true;
-            spark_change = true;
             fail_count = 0;
 
             // start ping at regular intervals
