@@ -99,7 +99,7 @@ $(function() {
         if (url) {
             load_timemap(url);
         } else {
-            $("#datetime-info").text("Enter url above to see archive overview");
+            $("#datetime-info").text("Enter a URL above to see archival dates.");
         }
     }
 
@@ -169,7 +169,7 @@ $(function() {
             $("#datetime-info").text("Archive plot by date:");
         }).fail(function(e) {
             console.log(e);
-            $("#datetime-info").text("Sorry, couldn't load archive overview");
+            $("#datetime-info").text("Sorry, could not load archive overview!");
         }).complete(function(e) {
             sparkline_loading = false;
             $("#datetime-info").removeClass("loading");
