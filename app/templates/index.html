@@ -63,6 +63,11 @@
             }
             
             setTimeout(random_browser, 50);
+
+            $('.fold > label > a').on('click', function(){
+                $(this).parent().parent().toggleClass('open');
+            });
+
         });
     </script>
     <script src="/static/shared.js"></script>
@@ -129,18 +134,29 @@
                     <a class="support rhizome" href="http://rhizome.org/"><img src="/static/rhizome-tiny.png" alt="Rhizome"></a>
                 </div>
 
-                <div class="built-with">
-                    Built with free software tools and protocols:
-                    <ul>
-                        <li><a href="https://www.winehq.org/">Wine</a>, a Win32 layer for GNU/Linux</li>
-                        <li><a href="http://basilisk.cebix.net/">Basilisk</a>, a 68k Macintosh Emulator</li>
-                        <li><a href="http://mementoweb.org">Memento</a>, the Web Archive aggregation protocol</li>
-                        <li><a href="">Memento Aggregator</a>, a local Memento aggregator</li>
-                        <li><a href="https://github.com/ikreymer/pywb">pywb</a>, a Web Archive replayer</li>
-                    </ul>
-                    …and many more.<br>
-                    <br>
-                    <a href="https://github.com/ikreymer/netcapsule">Full source code available on Github.</a>
+                <div class="fold">
+                    <label><a>About / How it works</a></label>
+                    <div>
+                        <strong>oldweb.today</strong> is built with open source tools:
+                        <ul>
+                            <li><a href="https://www.docker.com/">Docker containers</a> to manage user sessions and scale across machines.</li>
+                            
+                            <li><a href="https://www.winehq.org/">Wine</a>, <a href="http://basilisk.cebix.net/">Basilisk</a> and <a href="http://sheepshaver.cebix.net/">Sheepshaver</a> emulators are used to run old browsers on legacy platforms.</li>
+                            
+                            <li><a href="https://github.com/ikreymer/pywb">pywb (Python Wayback)</a> is used as the web replay proxy system.</li>
+
+                            <li>The <a href="http://timetravel.mementoweb.org/guide/api/">Memento API</a> and <a href="github.com/oduwsdl/memgator">MemGator</a> are used to communicate with web archives.</li>
+                        </ul>
+                        <br>
+                        <a href="https://github.com/ikreymer/netcapsule">Full source code available on Github.</a><br>
+                        <br>
+                        The archived web pages are available courtesy of these public web archives:
+                        {% include 'archives-list.html' %}
+                        <br>
+                        Contact: oldwbeb.today@rhizome.org<br>
+                        <br>
+                        <br>
+                    </div>
                 </div>
                 
             </div>

@@ -3,7 +3,6 @@ html, body {
     margin: 0px;
     padding: 0px;
     border: 0px;
-    overflow: hidden;
     background-color: #f0f0f0;
     font-size: 13px;
 }
@@ -101,6 +100,32 @@ iframe {
             a.support.shuttleworth {margin: -6px 0 6px -3px;}
     
 
+    .fold {}
+
+       .fold > label:before {
+           content: "";
+           display: inline-block;
+           width: 0;
+           height: 0;
+           border-top: 5px solid transparent;
+           border-bottom: 5px solid transparent;
+           border-left: 5px solid #222;
+           margin-right: 8px
+       }
+       .fold.open > label:before {
+           content: "";
+           display: inline-block;
+           width: 0;
+           height: 0;
+           border-right: 5px solid transparent;
+           border-left: 5px solid transparent;
+           border-top: 5px solid #222;
+           margin-right: 8px
+       }
+
+       .fold > div {display: none}
+       .fold.open > div {display: block}
+
     #invalid-form {
         display: none;
         font-size: 16px;
@@ -109,7 +134,7 @@ iframe {
 
 /* replay page */
 
-#page-replay {}
+#page-replay {overflow: hidden;}
 
     /* fonts */
 
@@ -219,13 +244,14 @@ iframe {
     top: 0px;
     left: 326px;
     right: 0;
+    bottom: 0;
 }
 
     #browserMsg {
         position: absolute;
         top: 50%;
         text-align: center;
-        margin: -3rem auto 0px;
+        margin: -7rem auto 0px;
         font-size: 26px;
         width: 100%;
         background-position: top center;
