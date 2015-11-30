@@ -1,43 +1,51 @@
 # Wayback Based
 - id: rhizome
-  name: Rhizome Web Archive
+  name: Rhizome Webenact
   timegate: http://webenact.rhizome.org/all/
   timemap: http://webenact.rhizome.org/all/timemap/*/
+  link: http://webenact.rhizome.org/
 
 - id: ia
   name: Internet Archive
   timegate: http://web.archive.org/web/
   timemap: http://web.archive.org/web/timemap/link/
+  link: https://archive.org/web/
 
 - id: ba
   name: Bibliotheca Alexandrina Web Archive
   timegate: http://web.archive.bibalex.org/web/
   timemap: http://web.archive.bibalex.org/web/timemap/link/
+  link: http://www.bibalex.org/isis/frontend/archive/archive_web.aspx
 
 - id: blarchive
   name: UK Web Archive
   timegate: http://www.webarchive.org.uk/wayback/archive/
   timemap: http://www.webarchive.org.uk/wayback/archive/timemap/link/
+  link: http://www.webarchive.org.uk/ukwa/
 
 - id: loc
   name: Library of Congress
   timegate: http://webarchive.loc.gov/all/
   timemap: http://webarchive.loc.gov/all/timemap/link/
+  link: http://loc.gov/websites/
 
 - id: archiveit
   name: Archive-It
   timegate: http://wayback.archive-it.org/all/
   timemap: http://wayback.archive-it.org/all/timemap/link/
+  link: https://archive-it.org/
 
 - id: is
   name: Icelandic Web Archive
   timegate: http://wayback.vefsafn.is/wayback/
   timemap: http://wayback.vefsafn.is/wayback/timemap/link/
+  link: http://vefsafn.is/
 
 - id: swa
   name: Stanford Web Archive
   timegate: https://swap.stanford.edu/
   timemap: https://swap.stanford.edu/timemap/link/
+  link: https://swap.stanford.edu/
 
 # LANL Proxy
 - id: es
@@ -45,18 +53,21 @@
   timegate: http://timetravel.mementoweb.org/es/timegate/
   timemap: http://timetravel.mementoweb.org/es/timemap/link/
   unrewritten_url: http://veebiarhiiv.nlib.ee/a/{timestamp}id_/{url}
+  link: http://veebiarhiiv.digar.ee/
 
 - id: si
   name: Slovenian Web Archive
   timegate: http://timetravel.mementoweb.org/si/timegate/
   timemap: http://timetravel.mementoweb.org/si/timemap/link/
-  unrewritten_url: http://nukrobi2.nuk.uni-lj.si:8080/wayback/{timestamp}id_/{url}
+  unrewritten_url: 'http://nukrobi2.nuk.uni-lj.si:8080/wayback/{timestamp}id_/{url}'
+  link: http://www.zal-lj.si/
 
 - id: nara
-  name: Slovenian Web Archive
+  name: The National Archives and Records Administration
   timegate: http://timetravel.mementoweb.org/nara/timegate/
   timemap: http://timetravel.mementoweb.org/nara/timemap/link/
   unrewritten_url: '{archivehost}/{timestamp}id_/{url}'
+  link: http://www.webharvest.gov/
 
 
 # other
@@ -65,10 +76,11 @@
   timegate: http://webarchive.parliament.uk/timegate/
   timemap: http://webarchive.parliament.uk/timemap/
   unrewritten_url: http://webarchive.parliament.uk/frame/{timestamp}/{url}
+  link: http://webarchive.parliament.uk/
 
 - id: proni
-  name: PRONI Web Archive
+  name: Public Record Office of Northern Ireland
   timegate: http://webarchive.proni.gov.uk/timegate/
   timemap: http://webarchive.proni.gov.uk/timemap/
   unrewritten_url: http://webarchive.proni.gov.uk/frame/{timestamp}/{url}
-
+  link: http://webarchive.proni.gov.uk/
