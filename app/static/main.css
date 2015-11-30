@@ -221,10 +221,15 @@ iframe {
     right: 0;
 }
 
-     #browserMsg {
+    #browserMsg {
+        position: absolute;
+        top: 50%;
         text-align: center;
-        margin: auto;
-        padding-top: 48px;
+        margin: -3rem auto 0px;
+        font-size: 26px;
+        width: 100%;
+        background-position: top center;
+        padding-top: 40px;
     }
 
     /* noVNC classes */
