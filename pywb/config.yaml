@@ -38,7 +38,7 @@ memento_archive_json: '/archives.json'
 reverse_proxy_prefix: http://netcapsule_nginx_1:1210/
 
 buffer_response: false
-urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
+#urlrewriter_class: !!python/name:archivereplayview.ReUrlRewriter
 
 enable_cdx_api: true
 framed_replay: false

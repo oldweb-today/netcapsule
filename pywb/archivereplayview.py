@@ -19,7 +19,7 @@ import os
 
 
 #=============================================================================
-WBURL_RX = re.compile('(.*/)([0-9]{1,14})(\w{2}_)?(/https?://.*)')
+WBURL_RX = re.compile('(.*/)([0-9]{1,14})(\w{2}_)?/(https?://.*)')
 EXTRACT_ORIG_LINK = re.compile(r'<([^>]+)>;\s*rel=\"original\"')
 
 NO_GZIP_UAS = ['NCSA_Mosaic']
@@ -74,6 +74,15 @@ class UpstreamArchiveLoader(object):
 
         # init redis here only
         redisclient.init_redis(config)
+
+    def unrewrite_header(self, response, name):
+        value = response.headers.get(name)
+
+        # extract orig url from redirect, if any
+        if value:
+            m = WBURL_RX.match(value)
+            if m:
+                response.headers[name] = m.group(4)
 
     def _do_req(self, urls, host, env, skip_hosts):
         response = None
@@ -134,6 +143,10 @@ class UpstreamArchiveLoader(object):
         if response is None:
             print(skip_hosts)
             raise CaptureException('Content Could Not Be Loaded')
+
+        if response.status_code >= 300 and response.status_code < 400:
+            self.unrewrite_header(response, 'Location')
+            self.unrewrite_header(response, 'Content-Location')
 
         remote = wbrequest.env.get('REMOTE_ADDR')
         req_ts = wbrequest.wb_url.timestamp
@@ -289,57 +302,3 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
         wbrequest.urlrewriter.rewrite_opts['archive_info'] = info
         return try_urls, src_url, name
 
-
-#=============================================================================
-class ReUrlRewriter(UrlRewriter):
-    def __init__(self, *args, **kwargs):
-        self.session = None
-        super(ReUrlRewriter, self).__init__(*args, **kwargs)
-
-    def rewrite(self, url, mod=None):
-        info = self.rewrite_opts.get('archive_info')
-
-        # if archive info exists, and unrewrtten api exists,
-        # or archive is not rewritten, use as is
-        # (but add regex check for rewritten urls just in case, as they
-        # may pop up in Location headers)
-        if info and (info.get('unrewritten_url') or not info.get('rewritten')):
-            m = WBURL_RX.match(url)
-            if m:
-                if not mod:
-                    mod = self.wburl.mod
-                return self.prefix + m.group(2) + mod + m.group(4)
-            else:
-                return super(ReUrlRewriter, self).rewrite(url, mod)
-
-        # Use HEAD request to get original url
-        else:
-           # don't rewrite certain urls at all
-            if not url.startswith(self.NO_REWRITE_URI_PREFIX):
-                url = self.urljoin(self.rewrite_opts.get('orig_src_url'), url)
-                url = self.head_memento_orig(url)
-
-            return super(ReUrlRewriter, self).rewrite(url, mod)
-
-    def head_memento_orig(self, url):
-        try:
-            if not self.session:
-                self.session = requests.Session()
-
-            logging.debug('Loading HEAD Memento Headers from ' + url)
-            r = self.session.head(url)
-            link = r.headers.get('Link')
-            if link:
-                m = EXTRACT_ORIG_LINK.search(link)
-                if m:
-                    url = m.group(1)
-                    logging.debug('Found Original: ' + url)
-
-        except Exception as e:
-            logging.debug(e)
-
-        finally:
-            return url
-
-    def _create_rebased_rewriter(self, new_wburl, prefix):
-        return ReUrlRewriter(new_wburl, prefix)
