@@ -13,6 +13,7 @@ import atexit
 import redis
 import yaml
 import json
+import random
 
 from uwsgidecorators import timer
 import uwsgi
@@ -283,18 +284,24 @@ def index():
 @route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
 def route_load_url(path='', url='', ts=''):
-    if not ts:
-        ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
-
-
     browser = dc.browser_paths.get(path)
 
     if not browser:
-        path = dc.redirect_paths.get(path)
+        if path == 'random':
+            path = random.choice(dc.browser_paths.keys())
+        else:
+            path = dc.redirect_paths.get(path)
+
         if not path:
             path = dc.default_browser
 
-        redirect('/' + path + '/' + ts + '/' + url)
+        if ts:
+            ts += '/'
+
+        redirect('/' + path + '/' + ts + url)
+
+    if not ts:
+        ts = re.sub('[ :-]', '', str(datetime.datetime.utcnow()).split('.')[0])
 
     browser_info = dict(name=browser['name'],
                         os=browser['os'],
