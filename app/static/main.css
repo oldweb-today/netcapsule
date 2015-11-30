@@ -32,6 +32,10 @@ iframe {
 
 #frontpage {}
 
+    #frontpage {
+        font-size: 13px;
+    }
+
     #frontpage h1 {
         margin-bottom: 3rem;
         margin-top: 3rem;

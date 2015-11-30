@@ -54,6 +54,7 @@ $(function() {
 
         $("#browser-text").text(browserTH.text() + " on " + platform.text());
         $("#browser-icon").attr("src", $(this).find("img").attr("src"));
+        $("#browser-icon").removeClass("hidden");
         $("#browser-label").text($(this).find("label").text());
 
         hide_menu();
@@ -185,15 +186,7 @@ $(function() {
                                                    onmouseup: hide_menu});
     }
     
-    // On Init
-    
-    if (coll) {
-        var browser = $("#browser-selector td[data-path='" + coll + "']");
-        browser.addClass("selected");
-        $("#about-link").attr("href", browser.attr("data-about-url"));
-        $(".about-browser").show();
-    }
-
+    // On Init   
     if (url) {
         load_timemap(url);
     }

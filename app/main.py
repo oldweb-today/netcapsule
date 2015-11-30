@@ -60,6 +60,14 @@ class DockerController(object):
         self.redis.setnx('next_client', '1')
         self.redis.setnx('max_containers', self.MAX_CONT)
 
+        throttle_samples = config['throttle_samples']
+        self.redis.setnx('throttle_samples', throttle_samples)
+
+        throttle_max_avg = config['throttle_max_avg']
+        self.redis.setnx('throttle_max_avg', throttle_max_avg)
+
+        self.T_EXPIRE_TIME = config['throttle_expire_secs']
+
         if os.path.exists('/var/run/docker.sock'):
             self.cli = Client(base_url='unix://var/run/docker.sock',
                               version=self.VERSION)
@@ -76,6 +84,22 @@ class DockerController(object):
             host = default_host
 
         return host + ':' + info['HostPort']
+
+    def timed_new_container(self, browser, env, host, client_id):
+        start = time.time()
+        info = dc.new_container(browser, env, host)
+        end = time.time()
+        dur = end - start
+
+        time_key = 't:' + client_id
+        self.redis.setex(time_key, self.T_EXPIRE_TIME, dur)
+
+        throttle_samples = int(self.redis.get('throttle_samples'))
+        print('INIT DUR: ' + str(dur))
+        self.redis.lpush('init_timings', time_key)
+        self.redis.ltrim('init_timings', 0, throttle_samples - 1)
+
+        return info
 
     def new_container(self, browser_id, env=None, default_host=None):
         browser = self.browser_paths.get(browser_id)
@@ -119,7 +143,7 @@ class DockerController(object):
         self.redis.hdel('all_containers', short_id)
         self.redis.delete('c:' + short_id)
 
-        ip_keys = self.redis.keys(ip +':*')
+        ip_keys = self.redis.keys(ip + ':*')
         for key in ip_keys:
             self.redis.delete(key)
 
@@ -169,19 +193,48 @@ class DockerController(object):
 
             return enc_id, client_id - next_client
 
-        # not avail yet
-        num_containers = self.redis.hlen('all_containers')
-
-        max_containers = self.redis.get('max_containers')
-        if not max_containers:
-            max_containers = self.MAX_CONT
-
-        if num_containers >= max_containers:
+        # if true, container not avail yet
+        if self.throttle():
             self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
             return enc_id, client_id - next_client
 
         self.redis.incr('next_client')
         return enc_id, -1
+
+    def throttle(self):
+        num_containers = self.redis.hlen('all_containers')
+
+        max_containers = self.redis.get('max_containers')
+        max_containers = int(max_containers) if max_containers else self.MAX_CONT
+
+        if num_containers >= max_containers:
+            return True
+
+        timings = self.redis.lrange('init_timings', 0, -1)
+        if not timings:
+            return False
+
+        timings = self.redis.mget(*timings)
+
+        avg = 0
+        count = 0
+        for val in timings:
+            if val is not None:
+                avg += float(val)
+                count += 1
+
+        if count == 0:
+            return False
+
+        avg = avg / count
+
+        print('AVG: ', avg)
+        throttle_max_avg = float(self.redis.get('throttle_max_avg'))
+        if avg >= throttle_max_avg:
+            print('Throttling, too slow...')
+            return True
+
+        return False
 
 
 @route('/static/<filepath:path>')
@@ -200,7 +253,7 @@ def init_container():
         browser = request.query.get('browser')
         url = request.query.get('url')
         ts = request.query.get('ts')
-        resp = do_init(browser, url, ts, host)
+        resp = do_init(browser, url, ts, host, client_id)
     else:
         resp = {'queue': queue_pos, 'id': client_id}
 
@@ -208,7 +261,7 @@ def init_container():
     return resp
 
 
-def do_init(browser, url, ts, host):
+def do_init(browser, url, ts, host, client_id):
     env = {}
     env['URL'] = url
     env['TS'] = ts
@@ -218,12 +271,7 @@ def do_init(browser, url, ts, host):
     env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
     env['BROWSER'] = browser
 
-    start = time.time()
-    info = dc.new_container(browser, env, host)
-    end = time.time()
-
-    print('TIME: ', (end - start))
-
+    info = dc.timed_new_container(browser, env, host, client_id)
     info['queue'] = 0
     return info
 

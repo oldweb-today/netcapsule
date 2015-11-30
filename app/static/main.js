@@ -384,6 +384,13 @@ $(function() {
     
     // INIT
     init_container();
+
+    if (coll) {
+        var browser = $("#browser-selector td[data-path='" + coll + "']");
+        browser.addClass("selected");
+        $("#about-link").attr("href", browser.attr("data-about-url"));
+        $(".about-browser").show();
+    }
 });
 
 
