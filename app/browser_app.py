@@ -41,7 +41,6 @@ redis = None
 local_redis = None
 
 stat_key_expire_time = 40
-container_expire_time = 600
 
 HOST = os.environ.get('HOSTNAME', 'localhost')
 
@@ -83,7 +82,7 @@ def pingsock(ws):
     last_data = None
     sleep_timeout = 0.5
 
-    duration = container_expire_time
+    duration = int(redis.get('container_expire_secs'))
 
     global closed
 

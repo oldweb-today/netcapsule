@@ -31,7 +31,7 @@ class DockerController(object):
         self.LOCAL_REDIS_HOST = 'netcapsule_redis_1'
         self.REDIS_HOST = os.environ.get('REDIS_HOST', self.LOCAL_REDIS_HOST)
         self.PYWB_HOST = os.environ.get('PYWB_HOST', 'netcapsule_pywb_1')
-        self.C_EXPIRE_TIME = config['container_expire_secs']
+        self.C_EXPIRE_TIME = config['init_container_expire_secs']
         self.Q_EXPIRE_TIME = config['queue_expire_secs']
         self.REMOVE_EXP_TIME = config['remove_expired_secs']
         self.VERSION = config['api_version']
@@ -66,6 +66,9 @@ class DockerController(object):
 
         throttle_max_avg = config['throttle_max_avg']
         self.redis.setnx('throttle_max_avg', throttle_max_avg)
+
+        self.redis.setnx('container_expire_secs',
+                         config['full_container_expire_secs'])
 
         self.T_EXPIRE_TIME = config['throttle_expire_secs']
 
@@ -321,7 +324,7 @@ dc = DockerController()
 
 application = default_app()
 
-uwsgi.atexit = onexit
+#uwsgi.atexit = onexit
 
 def init_cleanup_timer(dc, expire_time):
     @timer(expire_time, target='mule')

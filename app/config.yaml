@@ -4,7 +4,8 @@ cmd_port: 6082
 
 max_containers: 100
 
-container_expire_secs: 90
+init_container_expire_secs: 90
+full_container_expire_secs: 600
 
 throttle_max_avg: 0.60
 throttle_samples: 10
