@@ -174,7 +174,7 @@ class UpstreamArchiveLoader(object):
 
         #full_url = self.archive_template + wbrequest.coll + '/' + cdx['timestamp'] + 'id_/' + url
         full_url = self.archive_template.format(timestamp=cdx['timestamp'],
-                                              url=cdx['url'])
+                                                url=cdx['url'])
 
         try_urls = [full_url]
         return try_urls, self.archive_template, self.archive_name
@@ -208,7 +208,9 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             id_ = arc['id']
             name = arc['name']
             uri = arc['timegate']
-            unrewritten_url = uri + '{timestamp}id_/{url}'
+            unrewritten_url = arc.get('unrewritten_url')
+            if not unrewritten_url:
+                unrewritten_url = uri + '{timestamp}id_/{url}'
 
             self.archive_infos[id_] = {'uri': uri,
                                        'name': name,
