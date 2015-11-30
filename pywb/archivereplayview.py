@@ -225,7 +225,8 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             if not unrewritten_url:
                 unrewritten_url = uri + '{timestamp}id_/{url}'
 
-            self.archive_infos[id_] = {'uri': uri,
+            self.archive_infos[id_] = {'id': id_,
+                                       'uri': uri,
                                        'name': name,
                                        'rewritten': True,
                                        'unrewritten_url': unrewritten_url}
@@ -295,7 +296,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             try_urls = [src_url]
 
         if info:
-            name = info.get('name', src_url)
+            name = info.get('id', src_url)
         else:
             name = src_url
 

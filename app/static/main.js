@@ -158,11 +158,13 @@ $(function() {
 
         if (data.hosts && data.hosts.length > 0) {
             if (data.hosts != curr_hosts) {
-                $("#statsHosts").empty();
+                //$("#statsHosts").empty();
+                $("#statsHosts li").hide();
                 $.each(data.hosts, function(i, host) {
-                    var elem = document.createElement("li");
-                    $(elem).text(host);
-                    $("#statsHosts").append(elem);
+                    //var elem = document.createElement("li");
+                    //$(elem).text(host);
+                    //$("#statsHosts").append(elem);
+                    $("#statsHosts li[data-id='" + host + "']").show();
                 });
                 
                 data.hosts = curr_hosts;
