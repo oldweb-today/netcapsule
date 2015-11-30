@@ -1,4 +1,9 @@
 # Wayback Based
+- id: rhizome
+  name: Rhizome Web Archive
+  timegate: http://webenact.rhizome.org/all/
+  timemap: http://webenact.rhizome.org/all/timemap/*/
+
 - id: ia
   name: Internet Archive
   timegate: http://web.archive.org/web/
@@ -67,79 +72,3 @@
   timemap: http://webarchive.proni.gov.uk/timemap/
   unrewritten_url: http://webarchive.proni.gov.uk/frame/{timestamp}/{url}
 
-
-# Rhizome Collections
-- id: excellences-and-perfections
-  name: 'Excellences & Perfections by Amalia Ulman'
-  timegate: http://webenact.rhizome.org/excellences-and-perfections/
-  timemap: http://webenact.rhizome.org/excellences-and-perfections/timemap/*/
-
-- id: my-body-a-wunderkammer
-  name: "my body -- a Wunderkammer by Shelley Jackson"
-  timegate: http://webenact.rhizome.org/my-body-a-wunderkammer/
-  timemap: http://webenact.rhizome.org/my-body-a-wunderkammer/timemap/*/
-
-- id: beautiful-frog
-  name: 'Beautiful Frog by Porpentine'
-  timegate: http://webenact.rhizome.org/beautiful-frog/
-  timemap: http://webenact.rhizome.org/beautiful-frog/timemap/*/
-
-- id: howling-dogs
-  name: 'Howling Dogs by Porpentine'
-  timegate: http://webenact.rhizome.org/howling-dogs/
-  timemap: http://webenact.rhizome.org/howling-dogs/timemap/*/
-
-- id: either-we-inspire-or-we-expire
-  name: 'Either we inspire or we expire by Liam Gillick and Nate Silver'
-  timegate: http://webenact.rhizome.org/either-we-inspire-or-we-expire/
-  timemap: http://webenact.rhizome.org/either-we-inspire-or-we-expire/timemap/*/
-
-- id: do-you-want-love-or-lust
-  name: 'Do you want love or lust? by Claude Closky'
-  timegate: http://webenact.rhizome.org/do-you-want-love-or-lust/
-  timemap: http://webenact.rhizome.org/do-you-want-love-or-lust/timemap/*/
-
-- id: smiling-at-the-past
-  name: 'Smiling at the Past by Constant Dullaart'
-  timegate: http://webenact.rhizome.org/smiling-at-the-past/
-  timemap: http://webenact.rhizome.org/smiling-at-the-past/timemap/*/
-
-- id: vvork
-  name: 'VVORK by Rhizome'
-  timegate: http://webenact.rhizome.org/vvork/
-  timemap: http://webenact.rhizome.org/vvork/timemap/*/
-
-- id: yelp-droitcour
-  name: 'Yelp! reviews by Brian Droitcour'
-  timegate: http://webenact.rhizome.org/yelp-droitcour/
-  timemap: http://webenact.rhizome.org/yelp-droitcour/timemap/*/
-
-- id: keeping-up-appearances
-  name: 'keeping up appearances by Mendi+Keith Obadike'
-  timegate: http://webenact.rhizome.org/keeping-up-appearances/
-  timemap: http://webenact.rhizome.org/keeping-up-appearances/timemap/*/
-
-- id: big-data-little-narration
-  name: 'Big Data, Little Narration by Dragan Espenschied'
-  timegate: http://webenact.rhizome.org/big-data-little-narration/
-  timemap: http://webenact.rhizome.org/big-data-little-narration/timemap/*/
-
-- id: v4ult
-  name: 'V4ULT by V4ULT'
-  timegate: http://webenact.rhizome.org/v4ult/
-  timemap: http://webenact.rhizome.org/v4ult/timemap/*/
-
-- id: sqrrl
-  name: 'SQRRL by John Russel'
-  timegate: http://webenact.rhizome.org/sqrrl/
-  timemap: http://webenact.rhizome.org/sqrrl/timemap/*/
-
-- id: untitled-scrollbars
-  name: 'Scrollbar Composition by Jan Robert Leegte'
-  timegate: http://webenact.rhizome.org/untitled-scrollbars/
-  timemap: http://webenact.rhizome.org/untitled-scrollbars/timemap/*/
-
-- id: queers-in-love-at-the-end-of-the-world
-  name: 'queers in love at the end of the world by Anna Anthropy'
-  timegate: http://webenact.rhizome.org/queers-in-love-at-the-end-of-the-world/
-  timemap: http://webenact.rhizome.org/queers-in-love-at-the-end-of-the-world/timemap/*/
