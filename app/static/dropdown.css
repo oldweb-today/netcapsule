@@ -125,10 +125,6 @@
 
 /* menus that unwrap when the dropdowns are opened */
 
-
-    
-
-
    /* Browser Selector */
     #browser-selector {
         top: 40px;
@@ -196,6 +192,69 @@
                     #browser-selector input {display: none;}      /* make radio buttons invisible */
 
 
+    /* Datetime selector */
+
+        #datetime-info {
+            padding: 10px 0 0 8px;
+            font-size: 11px;
+        }
+
+
+        /* Sparklines */
+
+        #spark {
+            width: auto;
+            height: auto;
+            text-align: left;
+            margin-left: 10px;
+            position: relative;
+            font-size: 11px;
+        }
+
+            rect.pane {
+                cursor: pointer;
+                fill: transparent;
+            }
+
+                .axis {
+                    font: inherit;
+                    fill: #222;
+                }
+
+                    .axis path,
+                    .axis line {
+                        fill: none;
+                        stroke: #222;
+                        shape-rendering: crispEdges;
+                    }
+
+                    .axis text {font-size: 11px;}
+
+                .bar {fill: rgba(153,153,153,.25)}
+
+                .tooltip {
+                    position: absolute;
+                    border: 1px solid #33C3F0;
+                    border-radius: 4px;
+                    background: #fff;
+                    pointer-events: none;
+                    width: 90px;
+                    height: 18px;
+                    text-align: center;
+                    font-size: 11px;
+                }
+
+                .highlight {
+                    fill: #33C3F0 !important;
+                }
+
+                .curr-dt-marker {
+                    fill: blue !important;
+                }
+
+                .spark-selected {
+                    fill: #1EAEDB !important;
+                }
 
 
 
@@ -207,10 +266,3 @@
 
 
 
-
-
-
-
-    #datetime-info {
-        padding: 10px 0 0 8px
-    }
