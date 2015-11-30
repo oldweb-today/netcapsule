@@ -7,7 +7,7 @@
     
     <!-- Skeleton -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+    <!-- <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css"> -->
     <link rel="stylesheet" href="/static/normalize.css">
     <link rel="stylesheet" href="/static/skeleton.css">
     
@@ -69,7 +69,7 @@
 
         <form id="mainform">
             <div class="row">
-                <div class="two columns">
+                <div class="one columns">
                     <label for="browser-dropdown">browser</label>
                 </div>
                 <div class="nine columns">
@@ -83,13 +83,13 @@
                             <span class="arrow-down"></span>
                         </div>
                     </div>
-                    <div class="about-browser"><a id="about-link" href="#" target="_blank">about this browser</a></div>
+                    <label class="browser-about"><a id="about-link" href="#" target="_blank">about this browser</a></label>
                 </div>
             </div>
 
             <div class="row">
-                <div class="two columns">
-                    <label for="urlinput">address</label>
+                <div class="one columns">
+                    <label for="urlinput">URL</label>
                 </div>
                 <div class="seven columns">
                     <input type="url" name="url" class="u-full-width" id="urlinput" value="" placeholder="http://">
@@ -97,8 +97,8 @@
             </div>
             
             <div class="row">
-                <div class="two columns">
-                    <label>date</label>
+                <div class="one columns">
+                    <label for="datetime-dropdown">date</label>
                 </div>
                 <div class="nine columns">
                     <div id="datetime-dropdown" class="dropdown">
@@ -110,21 +110,34 @@
                 </div>
             </div>
             <div id="invalid-form">Please select a browser, url and a date.</div>
-            <button type="submit" class="button-primary">Surf The Web!</button>
+            <button type="submit" class="button-primary">Surf The Old Web!</button>
         </form>
 
-        <div class="row">
-            <div class="eight columns">
+        <div class="row" class="section">
+            <div class="seven columns">
                 <p style="display: none">
                     Session time limit: <strong id="session-limit">10 minutes</strong>.<br>
                     Active users: <strong id="number-users">56</strong> of <strong id="max-users">100</strong>.
                 </p>
-                <p class="section">A project by <a href="https://github.com/ikreymer">Ilya Kreymer</a>, design by <a href="#">Dragan Espenschied</a>, with support from</p>
-                <div>
+                A project by <a href="https://github.com/ikreymer">Ilya Kreymer</a>, with support from
+                <div class="support">
                     <a class="support shuttleworth" href="https://www.shuttleworthfoundation.org/"><img src="/static/shuttleworth-tiny.png" alt="Shuttleworth Foundation"></a>
                     <a class="support rhizome" href="http://rhizome.org/"><img src="/static/rhizome-tiny.png" alt="Rhizome"></a>
                 </div>
-                <p class="link-github"><a href="https://github.com/ikreymer/netcapsule">Source code available on Github.</a></p>
+
+                <div class="built-with">
+                    Built with free software tools and protocols:
+                    <ul>
+                        <li><a href="https://www.winehq.org/">Wine</a>, a Win32 layer for GNU/Linux</li>
+                        <li><a href="http://basilisk.cebix.net/">Basilisk</a>, a 68k Macintosh Emulator</li>
+                        <li><a href="http://mementoweb.org">Memento</a>, the Web Archive aggregation protocol</li>
+                        <li><a href="">Memento Aggregator</a>, a local Memento aggregator</li>
+                        <li><a href="https://github.com/ikreymer/pywb">pywb</a>, a Web Archive replayer</li>
+                    </ul>
+                    …and many more.<br>
+                    <br>
+                    <a href="https://github.com/ikreymer/netcapsule">Full source code available on Github.</a>
+                </div>
                 
             </div>
         </div>
