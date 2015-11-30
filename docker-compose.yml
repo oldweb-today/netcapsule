@@ -28,7 +28,10 @@ nginx:
     volumes:
 #        - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
         - ./nginx/cache:/cache
-        - ./app/static:/static
+#        - ./app/static:/static
+
+    volumes_from:
+        - app
 
     ports:
         - 80:80

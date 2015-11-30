@@ -120,7 +120,7 @@ class DockerController(object):
 
         res = self.cli.start(container=id_,
                              port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                             volumes_from=['netcapsule_shared_data_1'],
+                             #volumes_from=['netcapsule_shared_data_1'],
                              network_mode='netcapsule',
                             )
 
