@@ -1,38 +1,51 @@
 # Wayback Based
+- id: rhizome
+  name: Rhizome Webenact
+  timegate: http://webenact.rhizome.org/all/
+  timemap: http://webenact.rhizome.org/all/timemap/*/
+  link: http://webenact.rhizome.org/
+
 - id: ia
   name: Internet Archive
   timegate: http://web.archive.org/web/
   timemap: http://web.archive.org/web/timemap/link/
+  link: https://archive.org/web/
 
 - id: ba
   name: Bibliotheca Alexandrina Web Archive
   timegate: http://web.archive.bibalex.org/web/
   timemap: http://web.archive.bibalex.org/web/timemap/link/
+  link: http://www.bibalex.org/isis/frontend/archive/archive_web.aspx
 
 - id: blarchive
   name: UK Web Archive
   timegate: http://www.webarchive.org.uk/wayback/archive/
   timemap: http://www.webarchive.org.uk/wayback/archive/timemap/link/
+  link: http://www.webarchive.org.uk/ukwa/
 
 - id: loc
   name: Library of Congress
   timegate: http://webarchive.loc.gov/all/
   timemap: http://webarchive.loc.gov/all/timemap/link/
+  link: http://loc.gov/websites/
 
 - id: archiveit
   name: Archive-It
   timegate: http://wayback.archive-it.org/all/
   timemap: http://wayback.archive-it.org/all/timemap/link/
+  link: https://archive-it.org/
 
 - id: is
   name: Icelandic Web Archive
   timegate: http://wayback.vefsafn.is/wayback/
   timemap: http://wayback.vefsafn.is/wayback/timemap/link/
+  link: http://vefsafn.is/
 
 - id: swa
   name: Stanford Web Archive
   timegate: https://swap.stanford.edu/
   timemap: https://swap.stanford.edu/timemap/link/
+  link: https://swap.stanford.edu/
 
 # LANL Proxy
 - id: es
@@ -40,18 +53,21 @@
   timegate: http://timetravel.mementoweb.org/es/timegate/
   timemap: http://timetravel.mementoweb.org/es/timemap/link/
   unrewritten_url: http://veebiarhiiv.nlib.ee/a/{timestamp}id_/{url}
+  link: http://veebiarhiiv.digar.ee/
 
 - id: si
   name: Slovenian Web Archive
   timegate: http://timetravel.mementoweb.org/si/timegate/
   timemap: http://timetravel.mementoweb.org/si/timemap/link/
   unrewritten_url: http://nukrobi2.nuk.uni-lj.si:8080/wayback/{timestamp}id_/{url}
+  link: http://www.zal-lj.si/
 
 - id: nara
-  name: Slovenian Web Archive
+  name: The National Archives and Records Administration
   timegate: http://timetravel.mementoweb.org/nara/timegate/
   timemap: http://timetravel.mementoweb.org/nara/timemap/link/
   unrewritten_url: '{archivehost}/{timestamp}id_/{url}'
+  link: http://www.webharvest.gov/
 
 
 # other
@@ -60,86 +76,11 @@
   timegate: http://webarchive.parliament.uk/timegate/
   timemap: http://webarchive.parliament.uk/timemap/
   unrewritten_url: http://webarchive.parliament.uk/frame/{timestamp}/{url}
+  link: http://webarchive.parliament.uk/
 
 - id: proni
-  name: PRONI Web Archive
+  name: Public Record Office of Northern Ireland
   timegate: http://webarchive.proni.gov.uk/timegate/
   timemap: http://webarchive.proni.gov.uk/timemap/
   unrewritten_url: http://webarchive.proni.gov.uk/frame/{timestamp}/{url}
-
-
-# Rhizome Collections
-- id: excellences-and-perfections
-  name: 'Excellences & Perfections by Amalia Ulman'
-  timegate: http://webenact.rhizome.org/excellences-and-perfections/
-  timemap: http://webenact.rhizome.org/excellences-and-perfections/timemap/*/
-
-- id: my-body-a-wunderkammer
-  name: "my body -- a Wunderkammer by Shelley Jackson"
-  timegate: http://webenact.rhizome.org/my-body-a-wunderkammer/
-  timemap: http://webenact.rhizome.org/my-body-a-wunderkammer/timemap/*/
-
-- id: beautiful-frog
-  name: 'Beautiful Frog by Porpentine'
-  timegate: http://webenact.rhizome.org/beautiful-frog/
-  timemap: http://webenact.rhizome.org/beautiful-frog/timemap/*/
-
-- id: howling-dogs
-  name: 'Howling Dogs by Porpentine'
-  timegate: http://webenact.rhizome.org/howling-dogs/
-  timemap: http://webenact.rhizome.org/howling-dogs/timemap/*/
-
-- id: either-we-inspire-or-we-expire
-  name: 'Either we inspire or we expire by Liam Gillick and Nate Silver'
-  timegate: http://webenact.rhizome.org/either-we-inspire-or-we-expire/
-  timemap: http://webenact.rhizome.org/either-we-inspire-or-we-expire/timemap/*/
-
-- id: do-you-want-love-or-lust
-  name: 'Do you want love or lust? by Claude Closky'
-  timegate: http://webenact.rhizome.org/do-you-want-love-or-lust/
-  timemap: http://webenact.rhizome.org/do-you-want-love-or-lust/timemap/*/
-
-- id: smiling-at-the-past
-  name: 'Smiling at the Past by Constant Dullaart'
-  timegate: http://webenact.rhizome.org/smiling-at-the-past/
-  timemap: http://webenact.rhizome.org/smiling-at-the-past/timemap/*/
-
-- id: vvork
-  name: 'VVORK by Rhizome'
-  timegate: http://webenact.rhizome.org/vvork/
-  timemap: http://webenact.rhizome.org/vvork/timemap/*/
-
-- id: yelp-droitcour
-  name: 'Yelp! reviews by Brian Droitcour'
-  timegate: http://webenact.rhizome.org/yelp-droitcour/
-  timemap: http://webenact.rhizome.org/yelp-droitcour/timemap/*/
-
-- id: keeping-up-appearances
-  name: 'keeping up appearances by Mendi+Keith Obadike'
-  timegate: http://webenact.rhizome.org/keeping-up-appearances/
-  timemap: http://webenact.rhizome.org/keeping-up-appearances/timemap/*/
-
-- id: big-data-little-narration
-  name: 'Big Data, Little Narration by Dragan Espenschied'
-  timegate: http://webenact.rhizome.org/big-data-little-narration/
-  timemap: http://webenact.rhizome.org/big-data-little-narration/timemap/*/
-
-- id: v4ult
-  name: 'V4ULT by V4ULT'
-  timegate: http://webenact.rhizome.org/v4ult/
-  timemap: http://webenact.rhizome.org/v4ult/timemap/*/
-
-- id: sqrrl
-  name: 'SQRRL by John Russel'
-  timegate: http://webenact.rhizome.org/sqrrl/
-  timemap: http://webenact.rhizome.org/sqrrl/timemap/*/
-
-- id: untitled-scrollbars
-  name: 'Scrollbar Composition by Jan Robert Leegte'
-  timegate: http://webenact.rhizome.org/untitled-scrollbars/
-  timemap: http://webenact.rhizome.org/untitled-scrollbars/timemap/*/
-
-- id: queers-in-love-at-the-end-of-the-world
-  name: 'queers in love at the end of the world by Anna Anthropy'
-  timegate: http://webenact.rhizome.org/queers-in-love-at-the-end-of-the-world/
-  timemap: http://webenact.rhizome.org/queers-in-love-at-the-end-of-the-world/timemap/*/
+  link: http://webarchive.proni.gov.uk/
