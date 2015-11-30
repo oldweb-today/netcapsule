@@ -1,6 +1,8 @@
-# Netcapsule #
+# OldWeb.today / Netcapsule #
 
 ## Browse old websites the old way ##
+
+** This system is now deployed on http://oldweb.today/ **
 
 Netcapsule is a proof-of-concept system for browsing old web sites from existing web archives in old browsers, inside a modern browser.
 
@@ -237,3 +239,9 @@ This software is released under the [MPL 2.0](http://www.mozilla.org/MPL/2.0/). 
 Portions under the `./app/static/include/*.js` which are part of the [noVNC](https://github.com/kanaka/noVNC) project, also licensed under [MPL 2.0](http://www.mozilla.org/MPL/2.0/).
 
 See LICENSE.txt for details.
+
+Honored to have received support for this project from:
+
+![IMAGE](app/static/shuttleworth-tiny.png)
+and
+![IMAGE](app/static/rhizome-tiny.png)
