@@ -268,6 +268,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
 
     def find_archive_info(self, uri):
         #uri = uri.split('://', 1)[-1]
+        uri = uri.replace(':80/', '/')
         for name, info in self.archive_infos.iteritems():
             if info['uri'] in uri:
                 return info

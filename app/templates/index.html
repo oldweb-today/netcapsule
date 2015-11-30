@@ -47,6 +47,10 @@
             $("#urlinput").blur(reset_error);
             $("#browser-input").change(reset_error);
             
+            $("#urlinput").blur(function() {
+                url = $("#urlinput").val();
+            });
+            
             url = $("#urlinput").val();
                    
             function random_browser() {
