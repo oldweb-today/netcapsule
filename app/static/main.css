@@ -236,6 +236,12 @@ iframe {
                     font-weight: bold;
                 }
 
+        #viewSource {
+            font-size: 11px;
+            position: absolute;
+            top: 758px;
+            left: 260px;
+        }
 
 /* Area for browser */
 
