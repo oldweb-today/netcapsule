@@ -11,7 +11,7 @@ throttle_max_avg: 0.60
 throttle_samples: 10
 throttle_expire_secs: 60
 
-queue_expire_secs: 30
+queue_expire_secs: 10
 remove_expired_secs: 20
 
 image_prefix: netcapsule

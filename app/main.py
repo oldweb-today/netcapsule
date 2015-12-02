@@ -179,11 +179,15 @@ class DockerController(object):
         if not client_id:
             enc_id, client_id = dc.add_new_client()
 
+        if not self.throttle():
+            self.redis.incr('next_client')
+            return enc_id, -1
+
         client_id = int(client_id)
         next_client = int(self.redis.get('next_client'))
 
         # not next client
-        if next_client != client_id:
+        if client_id > next_client:
             # if this client expired, delete it from queue
             if not self.redis.get('q:' + str(next_client)):
                 print('skipping expired', next_client)
@@ -198,12 +202,12 @@ class DockerController(object):
             return enc_id, client_id - next_client
 
         # if true, container not avail yet
-        if self.throttle():
-            self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
-            return enc_id, client_id - next_client
+        #if self.throttle():
+        self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
+        return enc_id, client_id - next_client
 
-        self.redis.incr('next_client')
-        return enc_id, -1
+        #self.redis.incr('next_client')
+        #return enc_id, -1
 
     def throttle(self):
         num_containers = self.redis.hlen('all_containers')
