@@ -4,7 +4,7 @@ cmd_port: 6082
 
 max_containers: 100
 
-init_container_expire_secs: 90
+init_container_expire_secs: 30
 full_container_expire_secs: 600
 
 throttle_max_avg: 0.60
@@ -12,7 +12,7 @@ throttle_samples: 10
 throttle_expire_secs: 60
 
 queue_expire_secs: 10
-remove_expired_secs: 20
+remove_expired_secs: 10
 
 image_prefix: netcapsule
 

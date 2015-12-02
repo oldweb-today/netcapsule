@@ -70,7 +70,7 @@ $(function() {
                 }
                 $("#browserMsg").html(msg);
 
-                window.setTimeout(send_request, 3000);
+                window.setTimeout(send_request, 1000);
             }
         }
 
