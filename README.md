@@ -2,7 +2,7 @@
 
 ## Browse old websites the old way ##
 
-** This system is now deployed on http://oldweb.today/ **
+**This system is now deployed on http://oldweb.today/**
 
 Netcapsule is a proof-of-concept system for browsing old web sites from existing web archives in old browsers, inside a modern browser.
 
@@ -30,7 +30,7 @@ Currently included browsers are:
    - *IE 5.5 on Windows*
 
  - **Safari**
-   - *Safari 5 on Windows*
+   - *Safari 3 on Windows*
  
  - **Firefox**
    - *Firefox 40 on Linux*
@@ -47,6 +47,8 @@ Note: Netcapsule now requires latest Docker Engine 1.9 and Docker Compose 1.5
 
 
 ### Sample screenshots
+
+*TODO: Update screenshots to new UI that is now on http://oldweb.today These screenshots reflect old prototype UI*
 
 First US web site, from 1991, in NCSA Mosaic (archive courtesy of Stanford web archives), see http://www.slac.stanford.edu/history/earlyweb/firstpages.shtml)
 
