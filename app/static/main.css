@@ -100,6 +100,12 @@ iframe {
             a.support.shuttleworth {margin: -6px 0 6px -3px;}
     
 
+    h2 {
+        margin: 2rem 0 0.5rem 0;
+        font-size: 20px;
+        font-weight: normal;
+    }
+
     .fold {}
 
        .fold > label:before {
@@ -235,6 +241,13 @@ iframe {
                 #statsCount {
                     font-weight: bold;
                 }
+
+        .about {
+            position: absolute;
+            bottom: 4px;
+            left: 4px;
+            font-size: 11px;
+        }
 
 
 /* Area for browser */
