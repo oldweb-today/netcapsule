@@ -156,6 +156,10 @@ def mark_for_removal():
     global closed
     closed = True
 
+    # just exit to shutdown container
+    # will prevent reentrancy, but much safer for now
+    sys.exit(0)
+
 
 def get_update():
 #    if not redis.hget('all_containers', HOST):
