@@ -15,8 +15,11 @@ import yaml
 import json
 import random
 
+import traceback
+
 from uwsgidecorators import timer
 import uwsgi
+
 
 #=============================================================================
 class DockerController(object):
@@ -55,6 +58,13 @@ class DockerController(object):
 
         self.default_browser = config['default_browser']
         self.redirect_paths = config['redirect_paths']
+
+        self.randompages = []
+        try:
+            with open(config['random_page_file']) as fh:
+                self.randompages = list([line.rstrip() for line in fh])
+        except Exception as e:
+            print(e)
 
         self.redis = redis.StrictRedis(host=self.REDIS_HOST)
 
@@ -116,40 +126,49 @@ class DockerController(object):
                                               ports=[self.VNC_PORT, self.CMD_PORT],
                                               environment=env,
                                              )
-        id_ = container.get('Id')
+        short_id = None
+        try:
+            id_ = container.get('Id')
+            short_id = id_[:12]
 
-        res = self.cli.start(container=id_,
-                             port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                             volumes_from=['netcapsule_shared_data_1'],
-                             network_mode='netcapsule',
-                            )
+            res = self.cli.start(container=id_,
+                                 port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
+                                 volumes_from=['netcapsule_shared_data_1'],
+                                 network_mode='netcapsule',
+                                )
 
-        info = self.cli.inspect_container(id_)
-        ip = info['NetworkSettings']['IPAddress']
-        if not ip:
-            ip = info['NetworkSettings']['Networks']['netcapsule']['IPAddress']
+            info = self.cli.inspect_container(id_)
+            ip = info['NetworkSettings']['IPAddress']
+            if not ip:
+                ip = info['NetworkSettings']['Networks']['netcapsule']['IPAddress']
 
-        short_id = id_[:12]
-        self.redis.hset('all_containers', short_id, ip)
-        self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
+            self.redis.hset('all_containers', short_id, ip)
+            self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
-        return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
-                'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host),
-               }
+            return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
+                    'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host),
+                   }
+        except Exception as e:
+            if short_id:
+                self.remove_container(short_id)
 
-    def remove_container(self, short_id, ip):
+            traceback.print_exc(e)
+            return {}
+
+    def remove_container(self, short_id, ip=None):
         print('REMOVING ' + short_id)
         try:
             self.cli.remove_container(short_id, force=True)
         except Exception as e:
-            print(e)
+            traceback.print_exc(e)
 
         self.redis.hdel('all_containers', short_id)
         self.redis.delete('c:' + short_id)
 
-        ip_keys = self.redis.keys(ip + ':*')
-        for key in ip_keys:
-            self.redis.delete(key)
+        if ip:
+            ip_keys = self.redis.keys(ip + ':*')
+            for key in ip_keys:
+                self.redis.delete(key)
 
     def remove_all(self, check_expired=False):
         all_containers = self.redis.hgetall('all_containers')
@@ -244,6 +263,32 @@ class DockerController(object):
 
         return False
 
+    def do_init(self, browser, url, ts, host, client_id):
+        env = {}
+        env['URL'] = url
+        env['TS'] = ts
+        env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
+        env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
+        env['REDIS_HOST'] = dc.REDIS_HOST
+        env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
+        env['BROWSER'] = browser
+
+        info = self.timed_new_container(browser, env, host, client_id)
+        info['queue'] = 0
+        return info
+
+    def get_randompage(self):
+        if not self.randompages:
+            return '/'
+
+        url, ts = random.choice(self.randompages).split(' ', 1)
+        print(url, ts)
+        path = random.choice(self.browser_paths.keys())
+        return '/' + path + '/' + ts + '/' + url
+
+
+# Routes Below
+# ===================
 
 @route('/static/<filepath:path>')
 def server_static(filepath):
@@ -261,7 +306,7 @@ def init_container():
         browser = request.query.get('browser')
         url = request.query.get('url')
         ts = request.query.get('ts')
-        resp = do_init(browser, url, ts, host, client_id)
+        resp = dc.do_init(browser, url, ts, host, client_id)
     else:
         resp = {'queue': queue_pos, 'id': client_id}
 
@@ -269,24 +314,11 @@ def init_container():
     return resp
 
 
-def do_init(browser, url, ts, host, client_id):
-    env = {}
-    env['URL'] = url
-    env['TS'] = ts
-    env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
-    env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
-    env['REDIS_HOST'] = dc.REDIS_HOST
-    env['PYWB_HOST_PORT'] = dc.PYWB_HOST + ':8080'
-    env['BROWSER'] = browser
-
-    info = dc.timed_new_container(browser, env, host, client_id)
-    info['queue'] = 0
-    return info
-
 @route(['/', '/index.html', '/index.htm'])
 @jinja2_view('index.html', template_lookup=['templates'])
 def index():
     return {}
+
 
 @route(['/<path>/<ts:re:[0-9-]+>/<url:re:.*>', '/<path>/<url:re:.*>'])
 @jinja2_view('replay.html', template_lookup=['templates'])
@@ -321,12 +353,22 @@ def route_load_url(path='', url='', ts=''):
             'browser': browser_info}
 
 
-def onexit():
-    dc.remove_all(False)
+@route('/random')
+def randompage():
+    redirect(dc.get_randompage())
+
+
+# Init
+# ======================
 
 dc = DockerController()
 
 application = default_app()
+
+
+# Shutdown containers on exit?
+#def onexit():
+#    dc.remove_all(False)
 
 #uwsgi.atexit = onexit
 

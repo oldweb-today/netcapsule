@@ -18,6 +18,8 @@ image_prefix: netcapsule
 
 default_browser: firefox
 
+random_page_file: /app/urls.txt
+
 redirect_paths:
     '': firefox
     'ie': ie5.5

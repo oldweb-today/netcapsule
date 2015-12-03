@@ -120,47 +120,43 @@
             </div>
             <div id="invalid-form">Please select a browser, url and a date.</div>
             <button type="submit" class="button-primary">Surf The Old Web!</button>
+            <a class="button" href="/random">I'm feeling Random!</a>
+            <div class="fold">
+                <label><a>About / How it works</a></label>
+                <div>
+                    <strong>oldweb.today</strong> is built with open source tools:
+                    <ul>
+                        <li><a href="https://www.docker.com/">Docker containers</a> to manage user sessions and scale across machines.</li>
+
+                        <li><a href="https://www.winehq.org/">Wine</a>, <a href="http://basilisk.cebix.net/">Basilisk</a> and <a href="http://sheepshaver.cebix.net/">Sheepshaver</a> emulators are used to run old browsers on legacy platforms.</li>
+
+                        <li><a href="https://github.com/ikreymer/pywb">pywb</a> is used as the web archive replay proxy system.</li>
+
+                        <li><a href="https://kanaka.github.io/noVNC/">noVNC</a> provides VNC support in HTML over Websockets.</li>
+
+                        <li>The <a href="http://mementoweb.org/about/">Memento Web API</a> and <a href="https://github.com/oduwsdl/memgator">MemGator</a> are used to communicate with web archives.</li>
+                        <li>Random page list compiled with help from <a href="https://twitter.com/muffinista">@muffinista</a></li>
+                    </ul>
+                    <br>
+                    <a href="https://github.com/ikreymer/netcapsule">Full source code available on Github.</a><br>
+                    <br>
+                    The archived web pages are available courtesy of these public web archives:
+                    {% include 'archives-list.html' %}
+                    <br>
+                    <br>
+                </div>
+            </div>
         </form>
 
         <div class="row" class="section">
             <div class="seven columns">
-                <p style="display: none">
-                    Session time limit: <strong id="session-limit">10 minutes</strong>.<br>
-                    Active users: <strong id="number-users">56</strong> of <strong id="max-users">100</strong>.
-                </p>
-                A project by <a href="https://github.com/ikreymer">Ilya Kreymer</a>, with support from
+                A project by <a href="https://github.com/ikreymer">Ilya Kreymer</a>, with support from:
                 <div class="support">
                     <a class="support shuttleworth" href="https://www.shuttleworthfoundation.org/"><img src="/static/shuttleworth-tiny.png" alt="Shuttleworth Foundation"></a>
                     <a class="support rhizome" href="http://rhizome.org/"><img src="/static/rhizome-tiny.png" alt="Rhizome"></a>
                 </div>
 
                 <div>Contact: oldweb.today@rhizome.org</div>
-
-                <div>
-                    <h2>About / How it works</h2>
-                    <div>
-                        <strong>oldweb.today</strong> is built with open source tools:
-                        <ul>
-                            <li><a href="https://www.docker.com/">Docker containers</a> to manage user sessions and scale across machines.</li>
-                            
-                            <li><a href="https://www.winehq.org/">Wine</a>, <a href="http://basilisk.cebix.net/">Basilisk</a> and <a href="http://sheepshaver.cebix.net/">Sheepshaver</a> emulators are used to run old browsers on legacy platforms.</li>
-                            
-                            <li><a href="https://github.com/ikreymer/pywb">pywb (Python Wayback)</a> is used as the web replay proxy system.</li>
-
-                            <li><a href="https://kanaka.github.io/noVNC/">noVNC</a> provides VNC support in HTML over Websockets.</li>
-
-                            <li>The <a href="http://timetravel.mementoweb.org/guide/api/">Memento API</a> and <a href="https://github.com/oduwsdl/memgator">MemGator</a> are used to communicate with web archives.</li>
-                        </ul>
-                        <br>
-                        <a href="https://github.com/ikreymer/netcapsule">Full source code available on Github.</a><br>
-                        <br>
-                        The archived web pages are available courtesy of these public web archives:
-                        {% include 'archives-list.html' %}
-                        <br>
-                        <br>
-                    </div>
-                </div>
-                
             </div>
         </div>
 

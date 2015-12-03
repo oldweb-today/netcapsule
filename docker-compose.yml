@@ -56,6 +56,7 @@ app:
 
     volumes:
         - /var/run/docker.sock:/var/run/docker.sock
+        - ${RANDOM_URL_LIST}:/app/urls.txt
 
     environment:
         - SCREEN_WIDTH=1024
