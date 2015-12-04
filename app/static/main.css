@@ -242,9 +242,16 @@ iframe {
                     font-weight: bold;
                 }
 
+        .support-info {
+            position: absolute;
+            top: 700px;
+            left: 8px;
+            font-size: 13px;
+        }
+
         .about {
             position: absolute;
-            bottom: 4px;
+            top: 750px;
             left: 4px;
             font-size: 11px;
         }
