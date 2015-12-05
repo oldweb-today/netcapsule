@@ -14,10 +14,10 @@ import redis
 import yaml
 import json
 import random
-
+import itertools
 import traceback
 
-from uwsgidecorators import timer
+from uwsgidecorators import timer, mulefunc
 import uwsgi
 
 
@@ -70,6 +70,7 @@ class DockerController(object):
 
         self.redis.setnx('next_client', '1')
         self.redis.setnx('max_containers', self.MAX_CONT)
+        self.redis.setnx('num_containers', '0')
 
         throttle_samples = config['throttle_samples']
         self.redis.setnx('throttle_samples', throttle_samples)
@@ -142,7 +143,8 @@ class DockerController(object):
             if not ip:
                 ip = info['NetworkSettings']['Networks']['netcapsule']['IPAddress']
 
-            self.redis.hset('all_containers', short_id, ip)
+            #self.redis.hset('all_containers', short_id, ip)
+            self.redis.incr('num_containers')
             self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
             return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
@@ -160,9 +162,9 @@ class DockerController(object):
         try:
             self.cli.remove_container(short_id, force=True)
         except Exception as e:
-            traceback.print_exc(e)
+            print(e)
 
-        self.redis.hdel('all_containers', short_id)
+        #self.redis.hdel('all_containers', short_id)
         self.redis.delete('c:' + short_id)
 
         if ip:
@@ -170,17 +172,19 @@ class DockerController(object):
             for key in ip_keys:
                 self.redis.delete(key)
 
-    def remove_all(self, check_expired=False):
-        all_containers = self.redis.hgetall('all_containers')
+    def remove_expired(self):
+        print('Start Expired Check')
+        while True:
+            try:
+                value = self.redis.blpop('remove_q', 1000)
+                if not value:
+                    continue
 
-        for short_id, ip in all_containers.iteritems():
-            if check_expired:
-                remove = not self.redis.get('c:' + short_id)
-            else:
-                remove = True
-
-            if remove:
+                short_id, ip = value[1].split(' ')
                 self.remove_container(short_id, ip)
+                self.redis.decr('num_containers')
+            except Exception as e:
+                traceback.print_exc(e)
 
     def add_new_client(self):
         client_id = self.redis.incr('clients')
@@ -198,15 +202,11 @@ class DockerController(object):
         if not client_id:
             enc_id, client_id = dc.add_new_client()
 
-        if not self.throttle():
-            self.redis.incr('next_client')
-            return enc_id, -1
-
         client_id = int(client_id)
         next_client = int(self.redis.get('next_client'))
 
         # not next client
-        if client_id > next_client:
+        if client_id != next_client:
             # if this client expired, delete it from queue
             if not self.redis.get('q:' + str(next_client)):
                 print('skipping expired', next_client)
@@ -215,28 +215,28 @@ class DockerController(object):
             # missed your number somehow, get a new one!
             if client_id < next_client:
                 enc_id, client_id = self.add_new_client()
-            else:
-                self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
 
+        diff = client_id - next_client
+
+        if self.throttle():
+            self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
             return enc_id, client_id - next_client
 
-        # if true, container not avail yet
-        #if self.throttle():
-        self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
-        return enc_id, client_id - next_client
-
-        #self.redis.incr('next_client')
-        #return enc_id, -1
-
-    def throttle(self):
-        num_containers = self.redis.hlen('all_containers')
+        #num_containers = self.redis.hlen('all_containers')
+        num_containers = int(self.redis.get('num_containers'))
 
         max_containers = self.redis.get('max_containers')
         max_containers = int(max_containers) if max_containers else self.MAX_CONT
 
-        if num_containers >= max_containers:
-            return True
+        if diff <= (max_containers - num_containers):
+            self.redis.incr('next_client')
+            return enc_id, -1
 
+        else:
+            self.redis.expire('q:' + str(client_id), self.Q_EXPIRE_TIME)
+            return enc_id, client_id - next_client
+
+    def throttle(self):
         timings = self.redis.lrange('init_timings', 0, -1)
         if not timings:
             return False
@@ -366,16 +366,13 @@ dc = DockerController()
 application = default_app()
 
 
-# Shutdown containers on exit?
-#def onexit():
-#    dc.remove_all(False)
-
-#uwsgi.atexit = onexit
-
 def init_cleanup_timer(dc, expire_time):
-    @timer(expire_time, target='mule')
-    def check_abandonded(signum):
-        dc.remove_all(True)
+    @mulefunc
+    def check_abandonded():
+        dc.remove_expired()
+
+    check_abandonded()
+
 
 init_cleanup_timer(dc, dc.REMOVE_EXP_TIME)
 

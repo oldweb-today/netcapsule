@@ -153,6 +153,8 @@ def mark_for_removal():
     ttl = redis.ttl('c:' + HOST)
     redis.setex('c:' + HOST, stat_key_expire_time, 'REM:' + str(ttl))
 
+    redis.rpush('remove_q', HOST + ' ' + my_ip)
+
     global closed
     closed = True
 
@@ -160,6 +162,13 @@ def mark_for_removal():
     # will prevent reentrancy, but much safer for now
     sys.exit(0)
 
+
+def shutdown():
+    duration = int(redis.get('container_expire_secs'))
+
+    sleep(duration + 10)
+
+    mark_for_removal()
 
 def get_update():
 #    if not redis.hget('all_containers', HOST):
@@ -303,6 +312,9 @@ def enable_cors():
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Access-Control-Allow-Methods'] = 'PUT, GET, POST, DELETE, OPTIONS'
     response.headers['Access-Control-Allow-Headers'] = 'Origin, Accept, Content-Type, X-Requested-With, X-CSRF-Token'
+
+
+spawn(shutdown)
 
 
 if __name__ == "__main__":
