@@ -77,7 +77,8 @@ def set_timestamp(timestamp):
 
 @route('/pingsock', apply=[websocket])
 def pingsock(ws):
-    spawn(receiver, ws)
+    if ws:
+        spawn(receiver, ws)
 
     last_data = None
     sleep_timeout = 0.5
@@ -128,7 +129,7 @@ def pingsock(ws):
         sleep(sleep_timeout)
 
 def receiver(ws):
-    while not closed:
+    while not closed and ws:
         try:
             data = ws.receive()
             logging.debug('Received ' + str(data))
@@ -145,7 +146,8 @@ def receiver(ws):
             break
 
         except Exception as e:
-            traceback.print_exc(e)
+            print(e)
+            #traceback.print_exc(e)
 
 def mark_for_removal():
     logging.debug('Marked for removal')
