@@ -22,8 +22,6 @@ COPY run.sh /app/run.sh
 
 RUN sudo chmod a+x /app/run.sh
 
-RUN sudo chown -R browser /home/browser/chrome-linux
-
 WORKDIR /home/browser
 
 CMD /app/entry_point.sh /app/run.sh

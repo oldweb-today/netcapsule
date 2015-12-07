@@ -9,6 +9,8 @@ mkdir -p $HOME/.pki/nssdb
 certutil -d $HOME/.pki/nssdb -N
 certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n "pywb" -i /home/browser/pywb-ca.pem 
 
+sudo chown -R browser:browser /home/browser/chrome-linux
+
 mkdir ~/.config/
 mkdir ~/.config/chromium
 touch ~/.config/chromium/First\ Run
