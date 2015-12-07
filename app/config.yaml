@@ -46,6 +46,14 @@ browsers:
       path: chrome
       about: 'https://en.wikipedia.org/wiki/Google_Chrome'
 
+    - id: chromium5
+      name: 'Chromium'
+      os: 'Linux'
+      version: '5'
+      icon: 'chromium.png'
+      path: chromium5
+      about: 'https://en.wikipedia.org/wiki/Chromium_(web_browser)'
+
     - id: chromium10
       name: 'Chromium'
       os: 'Linux'
