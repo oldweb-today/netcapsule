@@ -71,6 +71,7 @@ class DockerController(object):
         self.redis.setnx('next_client', '1')
         self.redis.setnx('max_containers', self.MAX_CONT)
         self.redis.setnx('num_containers', '0')
+        self.redis.setnx('cpu_auto_adjust', 5.5)
 
         throttle_samples = config['throttle_samples']
         self.redis.setnx('throttle_samples', throttle_samples)
@@ -102,7 +103,7 @@ class DockerController(object):
 
     def timed_new_container(self, browser, env, host, client_id):
         start = time.time()
-        info = dc.new_container(browser, env, host)
+        info = self.new_container(browser, env, host)
         end = time.time()
         dur = end - start
 
@@ -186,6 +187,25 @@ class DockerController(object):
             except Exception as e:
                 traceback.print_exc(e)
 
+    def check_nodes(self):
+        print('Check Nodes')
+        try:
+            scale = self.redis.get('cpu_auto_adjust')
+            if not scale:
+                return
+
+            info = self.cli.info()
+            cpus = int(info.get('NCPU', 0))
+            if cpus <= 1:
+                return
+
+            total = int(float(scale) * cpus)
+            self.redis.set('max_containers', total)
+
+        except Exception as e:
+            print(e)
+
+
     def add_new_client(self):
         client_id = self.redis.incr('clients')
         enc_id = base64.b64encode(os.urandom(27))
@@ -200,7 +220,7 @@ class DockerController(object):
             client_id = self.redis.get('cm:' + enc_id)
 
         if not client_id:
-            enc_id, client_id = dc.add_new_client()
+            enc_id, client_id = self.add_new_client()
 
         client_id = int(client_id)
         next_client = int(self.redis.get('next_client'))
@@ -367,9 +387,13 @@ application = default_app()
 
 
 def init_cleanup_timer(dc, expire_time):
-    @mulefunc
+    @mulefunc(1)
     def check_abandonded():
         dc.remove_expired()
+
+    @timer(30, target='mule2')
+    def check_node(signum):
+        dc.check_nodes()
 
     check_abandonded()
 
