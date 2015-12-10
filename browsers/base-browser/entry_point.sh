@@ -14,13 +14,19 @@ Xvfb $DISPLAY -screen 0 $GEOMETRY -ac +extension RANDR &
 bash /novnc/utils/launch.sh --vnc localhost:5900 &
 
 
-http_proxy=http://netcapsule_pywb_1:8080  wget -O /tmp/res "http://set.pywb.proxy/setts?ts=$TS"
+export http_proxy=http://netcapsule_pywb_1:8080
+export https_proxy=http://netcapsule_pywb_1:8080
+wget -O /dev/null "http://set.pywb.proxy/setts?ts=$TS"
 
 
 function shutdown {
   kill -s SIGTERM $NODE_PID
   wait $NODE_PID
 }
+
+# disable any terms
+sudo chmod a-x /usr/bin/*term
+sudo chmod a-x /bin/*term
 
 # Run browser here
 eval "$@" &
