@@ -367,6 +367,7 @@ $(function() {
 
         if (secdiff < 0) {
             window.location.href = window.location.origin + "/";
+            return;
         }
 
         var min = Math.floor(secdiff / 60);

@@ -221,14 +221,15 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             id_ = arc['id']
             name = arc['name']
             uri = arc['timegate']
+            base_url = arc.get('base_url', uri)
             unrewritten_url = arc.get('unrewritten_url')
             if not unrewritten_url:
-                unrewritten_url = uri + '{timestamp}id_/{url}'
+                unrewritten_url = base_url + '{timestamp}id_/{url}'
 
             self.archive_infos[id_] = {'id': id_,
                                        'uri': uri,
                                        'name': name,
-                                       'rewritten': True,
+                                       'base_url': base_url,
                                        'unrewritten_url': unrewritten_url}
 
 
@@ -271,7 +272,7 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
         #uri = uri.split('://', 1)[-1]
         uri = uri.replace(':80/', '/')
         for name, info in self.archive_infos.iteritems():
-            if info['uri'] in uri:
+            if info['base_url'] in uri:
                 return info
         return None
 
@@ -291,9 +292,14 @@ class MementoUpstreamArchiveLoader(UpstreamArchiveLoader):
             orig_url = info['unrewritten_url'].format(archive_host=archive_host,
                                                       timestamp=cdx['timestamp'],
                                                       url=cdx['url'])
-            try_urls = [orig_url]
         else:
-            try_urls = [src_url]
+            m = WBURL_RX.match(src_url)
+            if m:
+                orig_url = m.group(1) + m.group(2) + 'id_/' + m.group(4)
+            else:
+                orig_url = src_url
+
+        try_urls = [orig_url]
 
         if info:
             name = info.get('id', src_url)
