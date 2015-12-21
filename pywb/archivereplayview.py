@@ -3,7 +3,7 @@ from pywb.utils.statusandheaders import StatusAndHeaders
 from pywb.webapp.replay_views import ReplayView, CaptureException
 from pywb.rewrite.url_rewriter import UrlRewriter
 from pywb.rewrite.rewrite_live import LiveRewriter
-from pywb.utils.timeutils import timestamp_to_sec
+from pywb.utils.timeutils import timestamp_to_sec, timestamp_to_http_date
 from pywb.utils.loaders import BlockLoader
 
 from redisclient import redisclient
@@ -71,6 +71,7 @@ class UpstreamArchiveLoader(object):
         self.archive_template = config['archive_template']
         self.archive_name = config['archive_name']
         self.reverse_proxy_prefix = config.get('reverse_proxy_prefix', '')
+        self.user_agent = config.get('user_agent', 'netcapsule for ({})')
 
         # init redis here only
         redisclient.init_redis(config)
@@ -84,7 +85,7 @@ class UpstreamArchiveLoader(object):
             if m:
                 response.headers[name] = m.group(4)
 
-    def _do_req(self, urls, host, env, skip_hosts):
+    def _do_req(self, urls, host, cdx, env, skip_hosts):
         response = None
 
         headers = {}
@@ -93,7 +94,12 @@ class UpstreamArchiveLoader(object):
         # disable gzip, as mosaic won't support it!
         # TODO: maybe ungzip later
         if any(exclude in user_agent for exclude in NO_GZIP_UAS):
-            headers={'Accept-Encoding': 'identity'}
+            headers['Accept-Encoding'] = 'identity'
+
+        # needed to avoid interstitial in openwayback
+        headers['Accept-Datetime'] = timestamp_to_http_date(cdx['timestamp'])
+
+        headers['User-Agent'] = self.user_agent.format(user_agent)
 
         for url in urls:
             if self.reverse_proxy_prefix:
@@ -135,7 +141,7 @@ class UpstreamArchiveLoader(object):
         try_urls, host, archive_name = self._get_urls_to_try(cdx, skip_hosts, wbrequest)
 
         try:
-            response = self._do_req(try_urls, host, wbrequest.env, skip_hosts)
+            response = self._do_req(try_urls, host, cdx, wbrequest.env, skip_hosts)
         except Exception as e:
             print(e)
             response = None
