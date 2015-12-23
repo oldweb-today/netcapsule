@@ -63,7 +63,7 @@ browsers:
       about: 'https://en.wikipedia.org/wiki/Chromium_(web_browser)'
 
     # WWW
-    - id: WWW
+    - id: www
       name: 'WWW'
       os: 'NextSTEP'
       icon: 'firefox.png'
