@@ -62,6 +62,15 @@ browsers:
       path: chromium10
       about: 'https://en.wikipedia.org/wiki/Chromium_(web_browser)'
 
+    # WWW
+    - id: WWW
+      name: 'WWW'
+      os: 'NextSTEP'
+      icon: 'firefox.png'
+      path: www
+      version: '1.0'
+      about: ''
+
     # mosaic
     - id: mosaic
       name: 'NCSA Mosaic'
