@@ -124,6 +124,12 @@ class DockerController(object):
         if not browser:
             browser = self.browser_paths.get(self.default_browser)
 
+        if browser.get('req_width'):
+            env['SCREEN_WIDTH'] = browser.get('req_width')
+
+        if browser.get('req_height'):
+            env['SCREEN_HEIGHT'] = browser.get('req_height')
+
         container = self.cli.create_container(image=self.image_prefix + '/' + browser['id'],
                                               ports=[self.VNC_PORT, self.CMD_PORT],
                                               environment=env,

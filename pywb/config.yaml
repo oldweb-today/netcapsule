@@ -11,7 +11,7 @@ collections:
 
 
     # Memento Aggregator Collection: Specify paths to Timegate, Timemap
-    memento_reconstruct:
+    all:
         index_paths:
             # for LANL aggregator
             #timegate: http://timetravel.mementoweb.org/api/json/
@@ -24,6 +24,8 @@ collections:
         server_cls: !!python/name:mementoquery.MementoIndexServer
 
         wb_handler_class: !!python/name:archivereplayview.MementoHandler
+
+        head_insert_html: ./templates/blank.html
 
 #        fallback: live
 
@@ -55,7 +57,7 @@ proxy_options:
 
     # Select one of these
     #use_default_coll: 'single_archive'
-    use_default_coll: 'memento_reconstruct'
+    use_default_coll: 'all'
 
     cookie_resolver: ip
     use_client_rewrite: false

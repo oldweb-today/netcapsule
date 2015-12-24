@@ -140,7 +140,7 @@ iframe {
 
 /* replay page */
 
-#page-replay {overflow: hidden;}
+#page-replay {overflow: inherit;}
 
     /* fonts */
 

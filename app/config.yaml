@@ -66,10 +66,12 @@ browsers:
     - id: www
       name: 'WWW'
       os: 'NextSTEP'
-      icon: 'firefox.png'
+      icon: 'next-www.png'
       path: www
       version: '1.0'
-      about: ''
+      about: 'https://en.wikipedia.org/wiki/WorldWideWeb'
+      req_width: 1120
+      req_height: 856
 
     # mosaic
     - id: mosaic

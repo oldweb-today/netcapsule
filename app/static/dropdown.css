@@ -94,6 +94,11 @@
                 line-height: 0;
             }
 
+            #browser-icon {
+                width: 32px;
+                height: 32px;
+            }
+
             #browser-text {
                 line-height: 58px;
             }

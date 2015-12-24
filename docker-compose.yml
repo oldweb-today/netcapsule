@@ -59,8 +59,8 @@ app:
         - ${RANDOM_URL_LIST}:/app/urls.txt
 
     environment:
-        - SCREEN_WIDTH=1120
-        - SCREEN_HEIGHT=856
+        - SCREEN_WIDTH=1024
+        - SCREEN_HEIGHT=768
 
     ports:
         - 9020:9020

@@ -21,6 +21,8 @@ COPY tars.iso.dmg /home/browser/
 
 COPY previous.cfg /home/browser/.previous/previous.cfg
 
+COPY proxy.py /home/browser/proxy.py
+
 COPY run.sh /app/run.sh
 RUN sudo chmod a+x /app/run.sh
 
