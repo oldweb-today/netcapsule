@@ -128,6 +128,11 @@ $(function() {
         }
         pingsock.onmessage = function(e) {
             handle_data_update(JSON.parse(e.data));
+
+            // hide cursor for nextstep for now due to mouse issues
+            if (coll == "WWW") {
+                $("#noVNC_canvas").css("cursor", "none");
+            }
         }
     }
     
@@ -294,7 +299,6 @@ $(function() {
             $("#noVNC_canvas").show();
             $("#browserMsg").hide();
 
-            
             connected = true;
             ping_interval = 1000;
             page_change = true;

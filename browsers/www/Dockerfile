@@ -16,7 +16,6 @@ RUN cd previous-code; ./configure; make;\
 
 ADD NS33.tar.gz /home/browser/
 
-COPY Rev_* /home/browser/
 COPY tars.iso.dmg /home/browser/
 
 COPY previous.cfg /home/browser/.previous/previous.cfg
