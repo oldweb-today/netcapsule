@@ -3,8 +3,8 @@ from argparse import ArgumentParser
 
 import requests
 
-pywb_prefix = 'localhost'
-proxy_host = '10.0.2.2'
+proxies = 'localhost'
+proxy_prefix = 'http://10.0.2.2/'
 start_ts = '1990'
 start_url = ''
 
@@ -16,16 +16,18 @@ def do_default():
     return do_proxy(start_ts + '/' + start_url)
 
 
-@route('/all/<url:re:.*>')
+@route('/<url:re:.*>')
 def do_proxy(url):
     headers = {'User-Agent': request.environ.get('HTTP_USER_AGENT'),
-               'Host': proxy_host,
+               #'Host': proxy_host,
                'Accept-Encoding': 'identity',
+               'Pywb-Rewrite-Prefix': proxy_prefix,
               }
 
-    r = requests.get(url=pywb_prefix + url, headers=headers,
+    r = requests.get(url=url, headers=headers,
                      stream=True,
-                     allow_redirects=False)
+                     allow_redirects=False,
+                     proxies=proxies)
 
     resp_headers = []
     for n, v in r.headers.iteritems():
@@ -51,8 +53,9 @@ if __name__ == "__main__":
 
     r = parser.parse_args()
 
-    global pywb_prefix
-    pywb_prefix = r.pywb_prefix
+    global proxies
+    proxies = dict(http=pywb_prefix,
+                   https=pywb_prefix)
 
     global start_ts
     start_ts = r.start_ts
