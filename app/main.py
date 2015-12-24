@@ -309,8 +309,16 @@ class DockerController(object):
 
         url, ts = random.choice(self.randompages).split(' ', 1)
         print(url, ts)
-        path = random.choice(self.browser_paths.keys())
+        path = self.get_random_browser()
         return '/' + path + '/' + ts + '/' + url
+
+    def get_random_browser(self):
+        while True:
+            id_ = random.choice(self.browser_paths.keys())
+            if self.browser_paths[id_].get('skip_random'):
+                continue
+
+            return id_
 
 
 # Routes Below
@@ -353,7 +361,7 @@ def route_load_url(path='', url='', ts=''):
 
     if not browser:
         if path == 'random':
-            path = random.choice(dc.browser_paths.keys())
+            path = dc.get_random_browser()
         else:
             path = dc.redirect_paths.get(path)
 

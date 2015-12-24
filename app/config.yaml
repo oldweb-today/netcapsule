@@ -61,17 +61,19 @@ browsers:
       icon: 'chromium.png'
       path: chromium10
       about: 'https://en.wikipedia.org/wiki/Chromium_(web_browser)'
+      skip_random: true
 
     # WWW
     - id: www
       name: 'WWW'
       os: 'NextSTEP'
       icon: 'next-www.png'
-      path: www
+      path: WWW
       version: '1.0'
       about: 'https://en.wikipedia.org/wiki/WorldWideWeb'
       req_width: 1120
       req_height: 856
+      skip_random: true
 
     # mosaic
     - id: mosaic
