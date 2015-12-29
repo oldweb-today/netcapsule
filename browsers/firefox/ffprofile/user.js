@@ -10,3 +10,7 @@ user_pref("datareporting.healthreport.uploadEnabled", false);
 
 user_pref("browser.selfsupport.url", "");
 user_pref("geo.enabled", false);
+
+user_pref("browser.readinglist.enabled", false);
+user_pref("browser.readinglist.sidebarEverOpened", false);
+user_pref("reader.parse-on-load.enabled", false);
