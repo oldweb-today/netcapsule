@@ -63,7 +63,17 @@ browsers:
       about: 'https://en.wikipedia.org/wiki/Chromium_(web_browser)'
       skip_random: true
 
-    # WWW
+    # Lynx
+    - id: lynx
+      name: lynx
+      os: 'Linux'
+      icon: 'lynx.png'
+      path: lynx
+      version: '2.8.9'
+      about: 'https://en.wikipedia.org/wiki/Lynx_(web_browser)'
+      skip_random: true
+
+     # WWW
     - id: www
       name: 'WWW'
       os: 'NextSTEP'
