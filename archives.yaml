@@ -23,6 +23,7 @@
   timegate: http://www.webarchive.org.uk/wayback/archive/
   timemap: http://www.webarchive.org.uk/wayback/archive/timemap/link/
   link: http://www.webarchive.org.uk/ukwa/
+  ignore: true
 
 - id: loc
   name: Library of Congress
@@ -41,7 +42,6 @@
   timegate: http://wayback.vefsafn.is/wayback/
   timemap: http://wayback.vefsafn.is/wayback/timemap/link/
   link: http://vefsafn.is/
-  ignore: true
 
 - id: swa
   name: Stanford Web Archive
