@@ -118,17 +118,12 @@ class UpstreamArchiveLoader(object):
             mem_date_time = response.headers.get('memento-datetime')
 
             if (response.status_code >= 400 and not mem_date_time):
-                # assume temp failure, can try again
-                if response.status_code == 503:
-                    return None
-
-                elif response.status_code == 403 or response.status_code >= 500:
-                    # don't try again
+                if response.status_code == 403 or response.status_code >= 500:
+                    # skip host
                     skip_hosts.append(host)
-                    return None
 
-                 # try again
-                continue
+                # try again with diff memento
+                return None
 
             # success
             return response
