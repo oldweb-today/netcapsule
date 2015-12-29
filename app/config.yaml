@@ -65,7 +65,7 @@ browsers:
 
     # Lynx
     - id: lynx
-      name: lynx
+      name: Lynx
       os: 'Linux'
       icon: 'lynx.png'
       path: lynx
