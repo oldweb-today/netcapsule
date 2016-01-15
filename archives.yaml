@@ -71,20 +71,28 @@
   base_url: '{archivehost}/'
   link: http://www.webharvest.gov/
 
-
-# other
+# IMF-based
 - id: ukparliament
   name: UK Parliament Web Archive
   timegate: http://webarchive.parliament.uk/timegate/
   timemap: http://webarchive.parliament.uk/timemap/
-  unrewritten_url: http://webarchive.parliament.uk/frame/{timestamp}/{url}
+  base_url: http://webarchive.parliament.uk/
+  unrewritten_url: http://webarchive.parliament.uk/raw/{timestamp}/{url}
   link: http://webarchive.parliament.uk/
-  ignore: true
 
 - id: proni
   name: Public Record Office of Northern Ireland
   timegate: http://webarchive.proni.gov.uk/timegate/
   timemap: http://webarchive.proni.gov.uk/timemap/
-  unrewritten_url: http://webarchive.proni.gov.uk/frame/{timestamp}/{url}
+  base_url: http://webarchive.proni.gov.uk/
+  unrewritten_url: http://webarchive.proni.gov.uk/raw/{timestamp}/{url}
   link: http://webarchive.proni.gov.uk/
-  ignore: true
+
+- id: uknatarchives
+  name: UK National Archives
+  timegate: http://webarchive.nationalarchives.gov.uk/timegate/
+  timemap: http://webarchive.nationalarchives.gov.uk/timemap/
+  base_url: http://webarchive.nationalarchives.gov.uk/
+  unrewritten_url: http://webarchive.nationalarchives.gov.uk/raw/{timestamp}/{url}
+  link: http://www.nationalarchives.gov.uk/webarchive/
+
