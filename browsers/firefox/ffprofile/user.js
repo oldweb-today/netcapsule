@@ -1,6 +1,6 @@
-user_pref("network.proxy.http", "netcapsule_pywb_1");
+user_pref("network.proxy.http", "proxy");
 user_pref("network.proxy.http_port", 8080);
-user_pref("network.proxy.ssl", "netcapsule_pywb_1");
+user_pref("network.proxy.ssl", "proxy");
 user_pref("network.proxy.ssl_port", 8080);
 user_pref("network.proxy.type", 1);
 user_pref("network.proxy.share_proxy_settings", true);

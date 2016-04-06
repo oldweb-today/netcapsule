@@ -1,4 +1,8 @@
-window.INCLUDE_URI = "/static/novnc/";
+if (window.STATIC_PREFIX) {
+    window.INCLUDE_URI = window.STATIC_PREFIX + "novnc/";
+} else{
+    window.INCLUDE_URI = "/static/novnc/";
+}
 
 var cmd_host = undefined;
 var vnc_host = undefined;
