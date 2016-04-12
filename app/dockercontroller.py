@@ -20,8 +20,7 @@ class DockerController(object):
     def __init__(self):
         config = self._load_config()
 
-        self.LOCAL_REDIS_HOST = 'netcapsule_redis_1'
-        self.REDIS_HOST = os.environ.get('REDIS_HOST', self.LOCAL_REDIS_HOST)
+        self.REDIS_URL = os.environ['REDIS_BROWSER_URL']
         self.PYWB_HOST = os.environ.get('PYWB_HOST', 'netcapsule_pywb_1')
         self.C_EXPIRE_TIME = config['init_container_expire_secs']
         self.Q_EXPIRE_TIME = config['queue_expire_secs']
@@ -57,7 +56,7 @@ class DockerController(object):
         except Exception as e:
             print(e)
 
-        self.redis = redis.StrictRedis(host=self.REDIS_HOST)
+        self.redis = redis.StrictRedis.from_url(self.REDIS_URL, decode_responses=True)
 
         self.redis.setnx('next_client', '1')
         self.redis.setnx('max_containers', self.MAX_CONT)
@@ -121,7 +120,10 @@ class DockerController(object):
         if browser.get('req_height'):
             env['SCREEN_HEIGHT'] = browser.get('req_height')
 
-        container = self.cli.create_container(image=self.image_prefix + '/' + browser['id'],
+        image = self.image_prefix + '/' + browser['id']
+        print('Launching ' + image)
+
+        container = self.cli.create_container(image=image,
                                               ports=[self.VNC_PORT, self.CMD_PORT],
                                               environment=env,
                                              )
@@ -132,7 +134,7 @@ class DockerController(object):
 
             res = self.cli.start(container=id_,
                                  port_bindings={self.VNC_PORT: None, self.CMD_PORT: None},
-                                 volumes_from=['webrecorder_browserpool_1'],
+                                 volumes_from=['webrecorder_browsermanager_1'],
                                  network_mode=self.network_name,
                                  cap_add=['ALL'],
                                 )
@@ -146,9 +148,19 @@ class DockerController(object):
             self.redis.incr('num_containers')
             self.redis.setex('c:' + short_id, self.C_EXPIRE_TIME, 1)
 
-            return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
-                    'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host),
+            vnc_host = self._get_host_port(info, self.VNC_PORT, default_host)
+            cmd_host = self._get_host_port(info, self.CMD_PORT, default_host)
+            print(vnc_host)
+            print(cmd_host)
+
+            return {'vnc_port': vnc_host.split(':')[-1],
+                    'cmd_port': cmd_host.split(':')[-1],
+                    'ip': ip,
                    }
+
+            #return {'vnc_host': self._get_host_port(info, self.VNC_PORT, default_host),
+            #        'cmd_host': self._get_host_port(info, self.CMD_PORT, default_host),
+            #       }
         except Exception as e:
             if short_id:
                 self.remove_container(short_id)
@@ -179,7 +191,6 @@ class DockerController(object):
                 if not value:
                     continue
 
-                value = value.decode('utf-8')
                 short_id, ip = value[1].split(' ')
                 self.remove_container(short_id, ip)
                 self.redis.decr('num_containers')
@@ -281,13 +292,14 @@ class DockerController(object):
 
         return False
 
-    def do_init(self, browser, url, ts, host, client_id):
+    def do_init(self, browser, url, ts, host, client_id,
+                width=None, height=None):
         env = {}
         env['URL'] = url
         env['TS'] = ts
-        env['SCREEN_WIDTH'] = os.environ.get('SCREEN_WIDTH')
-        env['SCREEN_HEIGHT'] = os.environ.get('SCREEN_HEIGHT')
-        env['REDIS_HOST'] = self.REDIS_HOST
+        env['SCREEN_WIDTH'] = width or os.environ.get('SCREEN_WIDTH')
+        env['SCREEN_HEIGHT'] = height or os.environ.get('SCREEN_HEIGHT')
+        env['REDIS_URL'] = self.REDIS_URL
         env['PYWB_HOST_PORT'] = self.PYWB_HOST + ':8080'
         env['BROWSER'] = browser
 

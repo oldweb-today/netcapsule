@@ -26,7 +26,9 @@ def init_container():
         browser = request.query.get('browser')
         url = request.query.get('url')
         ts = request.query.get('ts')
-        resp = dc.do_init(browser, url, ts, host, client_id)
+        width = request.query.get('width')
+        height = request.query.get('height')
+        resp = dc.do_init(browser, url, ts, host, client_id, width, height)
     else:
         resp = {'queue': queue_pos, 'id': client_id}
 

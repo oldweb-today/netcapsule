@@ -14,7 +14,7 @@ throttle_expire_secs: 60
 queue_expire_secs: 30
 remove_expired_secs: 30
 
-image_prefix: netcapsule
+image_prefix: webrecorder
 
 default_browser: firefox
 
@@ -29,7 +29,7 @@ redirect_paths:
 browsers:
 
     # firefox
-    - id: firefox
+    - id: 'browser-firefox'
       name: 'Mozilla Firefox'
       os: 'Linux'
       version: '40'
@@ -38,7 +38,7 @@ browsers:
       about: 'https://en.wikipedia.org/wiki/Firefox'
 
     # chrome
-    - id: chrome
+    - id: 'browser-chrome'
       name: 'Google Chrome'
       os: 'Linux'
       version: '46'
