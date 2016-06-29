@@ -19,7 +19,7 @@ from urlparse import urlsplit
 from redisclient import redisclient
 
 
-EXCLUDE_LIST = ('http://archive.today/', 'http://archive.is', 'https://archive.today/', 'https://archive.is/', 'http://arquivo.pt')
+EXCLUDE_LIST = ('http://archive.today/', 'http://archive.is', 'https://archive.today/', 'https://archive.is/')
 
 
 #=============================================================================
@@ -259,14 +259,14 @@ class MementoIndexServer(object):
             else:
                 yield url
 
+        if pt:
+            yield pt
+
         if ait:
             yield ait
 
         if ia:
             yield ia
-
-        if pt:
-            yield pt
 
     def memento_to_cdx(self, url, mem_iter, limit, skip_exclude=True):
         key = canonicalize(url)

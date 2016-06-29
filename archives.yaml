@@ -11,6 +11,12 @@
   timemap: http://web.archive.org/web/timemap/link/
   link: https://archive.org/web/
 
+- id: pwa
+  name: Portuguese Web Archive
+  timegate: http://arquivo.pt/wayback/
+  timemap: http://arquivo.pt/wayback/timemap/*/
+  link: http://arquivo.pt/
+
 - id: ba
   name: Bibliotheca Alexandrina Web Archive
   timegate: http://web.archive.bibalex.org/web/
@@ -48,6 +54,7 @@
   timegate: https://swap.stanford.edu/
   timemap: https://swap.stanford.edu/timemap/link/
   link: https://swap.stanford.edu/
+
 
 # LANL Proxy
 - id: es
