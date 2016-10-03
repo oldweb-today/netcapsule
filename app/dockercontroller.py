@@ -20,7 +20,7 @@ class DockerController(object):
     def __init__(self):
         config = self._load_config()
 
-        self.REDIS_URL = os.environ['REDIS_BROWSER_URL']
+        self.REDIS_BROWSER_URL = os.environ['REDIS_BROWSER_URL']
         self.PYWB_HOST = os.environ.get('PYWB_HOST', 'netcapsule_pywb_1')
         self.C_EXPIRE_TIME = config['init_container_expire_secs']
         self.Q_EXPIRE_TIME = config['queue_expire_secs']
@@ -56,7 +56,7 @@ class DockerController(object):
         except Exception as e:
             print(e)
 
-        self.redis = redis.StrictRedis.from_url(self.REDIS_URL, decode_responses=True)
+        self.redis = redis.StrictRedis.from_url(self.REDIS_BROWSER_URL, decode_responses=True)
 
         self.redis.setnx('next_client', '1')
         self.redis.setnx('max_containers', self.MAX_CONT)
@@ -299,7 +299,7 @@ class DockerController(object):
         env['TS'] = ts
         env['SCREEN_WIDTH'] = width or os.environ.get('SCREEN_WIDTH')
         env['SCREEN_HEIGHT'] = height or os.environ.get('SCREEN_HEIGHT')
-        env['REDIS_URL'] = self.REDIS_URL
+        env['REDIS_BROWSER_URL'] = self.REDIS_BROWSER_URL
         env['PYWB_HOST_PORT'] = self.PYWB_HOST + ':8080'
         env['BROWSER'] = browser
 

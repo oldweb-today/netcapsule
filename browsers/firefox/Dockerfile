@@ -1,12 +1,12 @@
 FROM netcapsule/base-browser
 
-ENV FF_VERSION 40.0.3
-
 RUN apt-get update && apt-get install -y \
-    libgtk2.0-0 libasound2 libdbus-glib-1-2 libnss3-tools jwm \
+    libgtk-3-0 libasound2 libdbus-glib-1-2 libnss3-tools jwm \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /download
+
+ENV FF_VERSION 49.0.1
 
 RUN wget https://download-installer.cdn.mozilla.net/pub/firefox/releases/$FF_VERSION/linux-x86_64/en-US/firefox-$FF_VERSION.tar.bz2 && \
     tar xvf firefox-$FF_VERSION.tar.bz2
