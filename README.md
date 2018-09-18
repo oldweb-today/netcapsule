@@ -104,7 +104,7 @@ requiring Docker Engine 1.9 and Compose 1.5)
 The `browsers` directory corresponds to each supported browser and a `base-browser` image which serves as the base.
 
 Current Browsers include:
-   * Moscaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
+   * Mosaic (built from https://github.com/alandipert/ncsa-mosaic) `netcapsule/mosaic`
    * Netscape 4.79 (built based on [instructions from here](https://www.ailis.de/~k/archives/75-Netscape-Navigator-4-on-Ubuntu-Linux-12.10.html) `netcapsule/netscape`
    * Firefox 40 `netcapsule/firefox`
    * Internet Explorer 4.02 `netcapsule/ie4` (using WINE, built with [steps from here](https://appdb.winehq.org/objectManager.php?sClass=version&iId=2743)
