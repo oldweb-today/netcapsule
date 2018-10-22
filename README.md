@@ -6,7 +6,7 @@
 
 Netcapsule is a proof-of-concept system for browsing old web sites from existing web archives in old browsers, inside a modern browser.
 
-When the Netcapsule web page is loaded, the old browser is loaded in an emulator-like setup (Docker container) connecting to an existing archiving service through an HTTP/S proxy (powered by [pywb] (https://github.com/ikreymer/pywb) software). The proxy configures the date/time
+When the Netcapsule web page is loaded, the old browser is loaded in an emulator-like setup (Docker container) connecting to an existing archiving service through an HTTP/S proxy (powered by [pywb](https://github.com/ikreymer/pywb) software). The proxy configures the date/time
 setting and proxies the content from the archive in its original form (whenever possible).
 
 Any web archive (supporting CDX or Memento protocol interfaces) can be a source, and any browser running under Linux can be used.
